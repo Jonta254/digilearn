@@ -12,16 +12,24 @@ interface DLUser {
 
 function DigiLearnLogo({ size = 32 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 36 36" fill="none">
-      <rect width="36" height="36" rx="10" fill="url(#dl-a-bg)"/>
-      <circle cx="18" cy="18" r="8" stroke="url(#dl-a-ring)" strokeWidth="1.5" fill="none"/>
-      <circle cx="18" cy="10" r="2.5" fill="#00D4FF"/><circle cx="10" cy="22" r="2.5" fill="#FF7A00"/><circle cx="26" cy="22" r="2.5" fill="#A855F7"/>
-      <line x1="18" y1="12.5" x2="12" y2="20.5" stroke="#00D4FF" strokeWidth="1" strokeOpacity="0.6"/>
-      <line x1="18" y1="12.5" x2="24" y2="20.5" stroke="#00D4FF" strokeWidth="1" strokeOpacity="0.6"/>
-      <line x1="12.5" y1="22" x2="23.5" y2="22" stroke="#00D4FF" strokeWidth="1" strokeOpacity="0.4"/>
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <rect width="40" height="40" rx="11" fill="url(#dla-bg)"/>
+      <circle cx="20" cy="20" r="12" stroke="white" strokeWidth="1" fill="none" strokeOpacity="0.3" strokeDasharray="4 2"/>
+      <circle cx="20" cy="9"  r="3.5" fill="url(#dla-n1)"/>
+      <circle cx="9"  cy="27" r="3.5" fill="url(#dla-n2)"/>
+      <circle cx="31" cy="27" r="3.5" fill="url(#dla-n3)"/>
+      <circle cx="20" cy="20" r="2.5" fill="white" fillOpacity="0.9"/>
+      <line x1="20" y1="12.5" x2="11"  y2="25"  stroke="white" strokeWidth="1" strokeOpacity="0.3"/>
+      <line x1="20" y1="12.5" x2="29"  y2="25"  stroke="white" strokeWidth="1" strokeOpacity="0.3"/>
+      <line x1="12.5" y1="27" x2="27.5" y2="27" stroke="white" strokeWidth="1" strokeOpacity="0.3"/>
+      <line x1="20" y1="12.5" x2="20" y2="17.5" stroke="white" strokeWidth="1" strokeOpacity="0.4"/>
       <defs>
-        <linearGradient id="dl-a-bg" x1="0" y1="0" x2="36" y2="36"><stop offset="0%" stopColor="#061A24"/><stop offset="100%" stopColor="#050508"/></linearGradient>
-        <linearGradient id="dl-a-ring" x1="10" y1="10" x2="26" y2="26"><stop offset="0%" stopColor="#00D4FF"/><stop offset="100%" stopColor="#0077AA"/></linearGradient>
+        <linearGradient id="dla-bg" x1="0" y1="0" x2="40" y2="40">
+          <stop offset="0%" stopColor="#0284C7"/><stop offset="100%" stopColor="#0369A1"/>
+        </linearGradient>
+        <radialGradient id="dla-n1"><stop offset="0%" stopColor="#7DD3FC"/><stop offset="100%" stopColor="#38BDF8"/></radialGradient>
+        <radialGradient id="dla-n2"><stop offset="0%" stopColor="#FED7AA"/><stop offset="100%" stopColor="#FB923C"/></radialGradient>
+        <radialGradient id="dla-n3"><stop offset="0%" stopColor="#C4B5FD"/><stop offset="100%" stopColor="#A78BFA"/></radialGradient>
       </defs>
     </svg>
   );
@@ -76,9 +84,9 @@ function AuthContent() {
   };
 
   return (
-    <div style={{ minHeight:"100svh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem 1.5rem", position:"relative" }}>
-      <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 80% 60% at 20% 20%, rgba(0,212,255,0.12),transparent 55%), radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,122,0,0.08),transparent 50%), var(--bg)" }} />
-      <div className="neural-bg" style={{ position:"absolute", inset:0, opacity:0.35 }} />
+    <div style={{ minHeight:"100svh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"2rem 1.5rem", position:"relative", background:"var(--bg2)" }}>
+      <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 80% 60% at 20% 20%, rgba(2,132,199,0.06),transparent 55%), radial-gradient(ellipse 60% 50% at 80% 80%, rgba(234,88,12,0.04),transparent 50%)", pointerEvents:"none" }} />
+      <div className="neural-bg" style={{ position:"absolute", inset:0, opacity:0.3 }} />
 
       <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none", marginBottom:"2.5rem", position:"relative", zIndex:1 }}>
         <DigiLearnLogo size={34} />
@@ -131,7 +139,7 @@ function AuthContent() {
 
         <p style={{ fontSize:"0.75rem", color:"var(--text-mute)", textAlign:"center", marginTop:"1.25rem", lineHeight:1.6 }}>
           {mode==="signup"
-            ? <>By signing up you agree to our <span style={{ color:"var(--cyan)", cursor:"pointer" }}>Terms</span> and <span style={{ color:"var(--cyan)", cursor:"pointer" }}>Privacy Policy</span>.</>
+            ? <>By signing up you agree to our <span style={{ color:"var(--cyan)", cursor:"pointer", fontWeight:600 }}>Terms</span> and <span style={{ color:"var(--cyan)", cursor:"pointer", fontWeight:600 }}>Privacy Policy</span>.</>
             : <>Don&apos;t have an account?{" "}<button onClick={()=>{setMode("signup");setError("");}} style={{ background:"none",border:"none",color:"var(--cyan)",cursor:"pointer",fontWeight:600,fontSize:"inherit" }}>Sign up free →</button></>
           }
         </p>
