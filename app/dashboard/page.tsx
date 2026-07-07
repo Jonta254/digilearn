@@ -60,6 +60,7 @@ const VIEWS = [
   { id:"paths", icon:"🛣️", label:"Learning Paths" },
   { id:"tools", icon:"🤖", label:"AI Tools Hub" },
   { id:"challenges", icon:"⚔️", label:"Daily Challenges" },
+  { id:"billing", icon:"💳", label:"Billing" },
 ];
 
 export default function Dashboard() {
@@ -128,7 +129,7 @@ export default function Dashboard() {
         <div style={{ padding:"1rem", background:"var(--surface)", borderRadius:10, marginBottom:"0.75rem" }}>
           <div style={{ fontSize:"0.68rem", color:"var(--text-mute)", textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:"0.4rem" }}>Plan</div>
           <div style={{ fontWeight:800, fontSize:"0.9rem", textTransform:"capitalize", color: user.plan==="pro"?"var(--cyan)":undefined }}>{user.plan}</div>
-          {user.plan==="free" && <Link href="/auth" style={{ fontSize:"0.72rem", color:"var(--cyan)", fontWeight:600, textDecoration:"none" }}>Upgrade to Pro →</Link>}
+          {user.plan==="free" && <Link href="/pricing" style={{ fontSize:"0.72rem", color:"var(--cyan)", fontWeight:600, textDecoration:"none" }}>Upgrade to Pro →</Link>}
         </div>
         <button className="dash-nav-item" onClick={logout} style={{ color:"var(--rose)" }}>
           <span style={{ fontSize:"1rem", width:20, textAlign:"center" }}>🚪</span> Sign out
@@ -356,6 +357,127 @@ export default function Dashboard() {
             </p>
             <div style={{ padding:"0.625rem 1.5rem", borderRadius:9, background:"rgba(var(--cyan-rgb),0.08)", border:"1px solid rgba(var(--cyan-rgb),0.2)", color:"var(--cyan)", fontSize:"0.8rem", fontWeight:600 }}>
               Coming soon — you&apos;ll be first to know
+            </div>
+          </div>
+        )}
+
+        {view === "billing" && (
+          <div>
+            <h2 style={{ fontWeight:800, fontSize:"1.3rem", marginBottom:"0.375rem" }}>Billing & Plan</h2>
+            <p style={{ color:"var(--text-mute)", fontSize:"0.875rem", marginBottom:"2rem" }}>Manage your subscription, view usage, and upgrade your plan.</p>
+
+            {/* Current plan hero */}
+            <div className="billing-plan-hero">
+              <div style={{ position:"relative", zIndex:1 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:"1rem", flexWrap:"wrap" }}>
+                  <div style={{ fontSize:"0.68rem", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", color:"var(--text-mute)" }}>Current plan</div>
+                  <div style={{ padding:"3px 12px", borderRadius:100, background: user.plan==="pro"?"var(--cyan)":"var(--bg3)", color: user.plan==="pro"?"#fff":"var(--text-dim)", fontSize:"0.7rem", fontWeight:800, textTransform:"uppercase", letterSpacing:"0.1em" }}>
+                    {user.plan === "pro" ? "Pro" : "Free"}
+                  </div>
+                </div>
+                <div style={{ fontSize:"2rem", fontWeight:900, letterSpacing:"-0.04em", marginBottom:"0.375rem", color: user.plan==="pro"?"var(--cyan)":"var(--text)" }}>
+                  {user.plan === "pro" ? "$16/month" : "$0/month"}
+                </div>
+                <p style={{ fontSize:"0.875rem", color:"var(--text-dim)", marginBottom:"1.5rem", lineHeight:1.6 }}>
+                  {user.plan === "pro"
+                    ? "Full access to 800+ lessons, certificates, AI assistant, and all Pro features."
+                    : "Access to 5 starter courses. Upgrade to Pro to unlock everything."}
+                </p>
+                {user.plan === "free" && (
+                  <Link href="/pricing" className="btn-primary" style={{ display:"inline-flex" }}>
+                    Upgrade to Pro — 7-day free trial →
+                  </Link>
+                )}
+                {user.plan === "pro" && (
+                  <button className="btn-ghost" style={{ fontSize:"0.825rem" }}>Manage subscription</button>
+                )}
+              </div>
+            </div>
+
+            {/* Usage */}
+            <div className="dash-card" style={{ marginBottom:"1.5rem" }}>
+              <div style={{ fontWeight:700, fontSize:"0.95rem", marginBottom:"1.25rem" }}>Your usage this month</div>
+              {[
+                { label:"Courses enrolled",    used:user.coursesEnrolled.length, max: user.plan==="pro"?999:5,   unit:"courses" },
+                { label:"Learning hours",       used:user.hoursLearned,           max: user.plan==="pro"?999:10,  unit:"hours" },
+                { label:"AI assistant queries", used:Math.floor(user.hoursLearned*3), max: user.plan==="pro"?999:10, unit:"queries" },
+              ].map((u) => {
+                const pct = Math.min((u.used / Math.max(u.max,1)) * 100, 100);
+                const unlimited = user.plan==="pro";
+                return (
+                  <div key={u.label} style={{ marginBottom:"1.25rem" }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4, fontSize:"0.825rem" }}>
+                      <span style={{ color:"var(--text-dim)", fontWeight:500 }}>{u.label}</span>
+                      <span style={{ fontFamily:"'Fira Code',monospace", fontSize:"0.75rem", color:"var(--text-mute)" }}>
+                        {unlimited ? `${u.used} / ∞` : `${u.used} / ${u.max} ${u.unit}`}
+                      </span>
+                    </div>
+                    <div className="billing-usage-bar">
+                      <div className="billing-usage-fill" style={{ width:`${unlimited ? Math.min(pct,30) : pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Plan comparison */}
+            <div className="dash-card" style={{ marginBottom:"1.5rem" }}>
+              <div style={{ fontWeight:700, fontSize:"0.95rem", marginBottom:"1.25rem" }}>What Pro unlocks</div>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,220px),1fr))", gap:"0.875rem" }}>
+                {[
+                  { icon:"📚", title:"800+ lessons", desc:"Every course and track unlocked" },
+                  { icon:"🤖", title:"AI study assistant", desc:"Unlimited queries, 24/7" },
+                  { icon:"📜", title:"Certificates", desc:"Verifiable on LinkedIn" },
+                  { icon:"📲", title:"Offline access", desc:"Download lessons to your phone" },
+                  { icon:"💼", title:"Job board", desc:"100+ AI & tech roles" },
+                  { icon:"🙋", title:"Ask the instructor", desc:"Direct Q&A on any lesson" },
+                ].map(f => (
+                  <div key={f.title} style={{ display:"flex", gap:12, padding:"0.875rem", borderRadius:10, background:"var(--bg2)", border:"1px solid var(--border)" }}>
+                    <span style={{ fontSize:"1.4rem", flexShrink:0 }}>{f.icon}</span>
+                    <div>
+                      <div style={{ fontWeight:700, fontSize:"0.875rem" }}>{f.title}</div>
+                      <div style={{ fontSize:"0.75rem", color:"var(--text-mute)", lineHeight:1.5 }}>{f.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {user.plan === "free" && (
+                <div style={{ marginTop:"1.5rem", padding:"1.25rem", borderRadius:10, background:"linear-gradient(135deg,rgba(var(--cyan-rgb),0.06),transparent)", border:"1px solid rgba(var(--cyan-rgb),0.15)", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+                  <div>
+                    <div style={{ fontWeight:700, fontSize:"0.9rem" }}>Pro plan · $16/month</div>
+                    <div style={{ fontSize:"0.8rem", color:"var(--text-mute)" }}>or $13/month billed annually · 7-day free trial</div>
+                  </div>
+                  <Link href="/pricing" className="btn-primary" style={{ padding:"0.6rem 1.5rem", fontSize:"0.85rem" }}>View plans →</Link>
+                </div>
+              )}
+            </div>
+
+            {/* Invoices placeholder */}
+            <div className="dash-card">
+              <div style={{ fontWeight:700, fontSize:"0.95rem", marginBottom:"1rem" }}>Billing history</div>
+              {user.plan === "free" ? (
+                <div style={{ textAlign:"center", padding:"2rem", color:"var(--text-mute)", fontSize:"0.875rem" }}>
+                  No billing history — you&apos;re on the Free plan.
+                </div>
+              ) : (
+                <div style={{ display:"flex", flexDirection:"column", gap:"0.5rem" }}>
+                  {[
+                    { date:"Jul 1, 2026", amount:"$16.00", status:"Paid", desc:"DigiLearn Pro — Monthly" },
+                    { date:"Jun 1, 2026", amount:"$16.00", status:"Paid", desc:"DigiLearn Pro — Monthly" },
+                    { date:"May 1, 2026", amount:"$16.00", status:"Paid", desc:"DigiLearn Pro — Monthly" },
+                  ].map((inv, i) => (
+                    <div key={i} style={{ display:"flex", alignItems:"center", gap:16, padding:"0.75rem 0", borderBottom: i<2?"1px solid var(--border)":"none", flexWrap:"wrap" }}>
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontSize:"0.875rem", fontWeight:600 }}>{inv.desc}</div>
+                        <div style={{ fontSize:"0.73rem", color:"var(--text-mute)" }}>{inv.date}</div>
+                      </div>
+                      <span style={{ fontSize:"0.875rem", fontWeight:700 }}>{inv.amount}</span>
+                      <span style={{ padding:"2px 10px", borderRadius:100, background:"var(--green-light)", color:"var(--green)", fontSize:"0.7rem", fontWeight:700 }}>{inv.status}</span>
+                      <button className="btn-ghost" style={{ padding:"0.3rem 0.875rem", fontSize:"0.75rem" }}>Receipt</button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -50,12 +50,16 @@ const COURSES_PREVIEW = [
 ];
 
 const TRACKS = [
-  { icon:"🤖", title:"AI Power User",       desc:"Master ChatGPT, Claude, Midjourney, Copilot and every AI tool transforming how humans work.", courses:12, color:"#0284C7", bg:"#EFF6FF", border:"#BFDBFE" },
-  { icon:"👨‍💻", title:"Become a Developer",  desc:"HTML to deployed fullstack apps — web, mobile, APIs, and cloud. From first line to first job.", courses:18, color:"#EA580C", bg:"#FFF7ED", border:"#FED7AA" },
-  { icon:"🧠", title:"AI & Machine Learning",desc:"Build intelligent systems with Python, PyTorch, TensorFlow. Train models, deploy them, ship them.", courses:14, color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
-  { icon:"⚙️", title:"Automation & No-Code", desc:"Automate repetitive work, build complex workflows, ship products without writing backend code.", courses:9,  color:"#16A34A", bg:"#F0FDF4", border:"#BBF7D0" },
-  { icon:"📊", title:"Data & Analytics",     desc:"SQL, Pandas, Tableau — collect, clean, analyze and visualize data for real business decisions.", courses:10, color:"#D97706", bg:"#FFFBEB", border:"#FDE68A" },
-  { icon:"🔐", title:"Cybersecurity",        desc:"Understand threats, secure apps and devices, pass CompTIA Security+, think like an attacker.", courses:8,  color:"#E11D48", bg:"#FFF1F2", border:"#FECDD3" },
+  { icon:"🤖", title:"AI Power User",         desc:"Master ChatGPT, Claude, Midjourney, and every AI tool transforming how humans work.", courses:12, color:"#0284C7", bg:"#EFF6FF", border:"#BFDBFE" },
+  { icon:"👨‍💻", title:"Become a Developer",    desc:"HTML to deployed fullstack apps — web, mobile, APIs, and cloud. From first line to first job.", courses:18, color:"#EA580C", bg:"#FFF7ED", border:"#FED7AA" },
+  { icon:"🧠", title:"AI & Machine Learning",  desc:"Build intelligent systems with Python, PyTorch, TensorFlow. Train, deploy, and ship real models.", courses:14, color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
+  { icon:"🗄️", title:"Databases & Data Eng",  desc:"SQL, PostgreSQL, MongoDB, Redis, BigQuery and vector databases — the foundation of every data-driven product.", courses:7, color:"#0891B2", bg:"#ECFEFF", border:"#A5F3FC" },
+  { icon:"⚖️", title:"AI Ethics & Policy",     desc:"Understand bias, fairness, AI regulation, and how to build technology that respects human rights.", courses:6,  color:"#D97706", bg:"#FFFBEB", border:"#FDE68A" },
+  { icon:"💹", title:"Finance & Fintech",      desc:"Algo trading, financial modelling, blockchain, and Python for quant analysis. Tech meets capital markets.", courses:6, color:"#16A34A", bg:"#F0FDF4", border:"#BBF7D0" },
+  { icon:"🏥", title:"Healthcare & Health IT", desc:"AI diagnostics, EHR systems, biomedical data analysis, and the digital future of medicine.", courses:5,  color:"#7C3AED", bg:"#F5F3FF", border:"#DDD6FE" },
+  { icon:"🏛️", title:"Policy & Civic Tech",   desc:"Open data, AI governance, data journalism, and civic technology that drives real public impact.", courses:6,  color:"#0284C7", bg:"#EFF6FF", border:"#BFDBFE" },
+  { icon:"⚙️", title:"Automation & No-Code",   desc:"Automate repetitive work, build complex workflows, ship products without writing backend code.", courses:9,  color:"#16A34A", bg:"#F0FDF4", border:"#BBF7D0" },
+  { icon:"🔐", title:"Cybersecurity",          desc:"Understand threats, secure apps and devices, pass CompTIA Security+, think like an attacker.", courses:8,  color:"#E11D48", bg:"#FFF1F2", border:"#FECDD3" },
 ];
 
 const FEATURES = [
