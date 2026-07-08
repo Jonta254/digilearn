@@ -95,6 +95,11 @@ export default function HomePage() {
 
   return (
     <>
+      {/* ── FLOATING CTA ─────────────────────────────────── */}
+      <a href="/courses" className="float-cta" aria-label="Browse all courses">
+        📚 Browse Courses
+      </a>
+
       {/* ── NAV ──────────────────────────────────────────── */}
       <nav className="nav">
         <Link href="/" className="nav-logo">
@@ -153,8 +158,8 @@ export default function HomePage() {
             <Link href="/auth?mode=signup" className="btn-primary" style={{ fontSize:"1rem" }}>
               Start learning free →
             </Link>
-            <Link href="/courses" className="btn-secondary">
-              Browse 80+ courses
+            <Link href="/courses" className="btn-secondary" style={{ fontSize:"1rem" }}>
+              Browse 100+ Courses →
             </Link>
           </div>
 
