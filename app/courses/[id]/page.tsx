@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 
 // ── Data ────────────────────────────────────────────────────────────────────
@@ -180,11 +181,8 @@ function DigiLearnLogo({ size = 28 }: { size?: number }) {
 
 // ── Course detail page ───────────────────────────────────────────────────────
 
-export function generateStaticParams() {
-  return ALL_COURSES.map((c) => ({ id: c.id }));
-}
-
-export default function CoursePage({ params }: { params: { id: string } }) {
+export default function CoursePage() {
+  const params = useParams<{ id: string }>();
   const course = ALL_COURSES.find((c) => c.id === params.id);
   const [openSection, setOpenSection] = useState<number | null>(0);
 

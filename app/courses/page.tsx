@@ -166,7 +166,7 @@ export default function CoursesPage() {
       {/* Header */}
       <div style={{ paddingTop:"5rem", background:"linear-gradient(180deg,rgba(0,212,255,0.06) 0%,transparent 100%)", borderBottom:"1px solid var(--border)" }}>
         <div style={{ maxWidth:1120, margin:"0 auto", padding:"3rem 1.5rem" }}>
-          <div className="section-tag tag-cyan" style={{ marginBottom:"1rem" }}>80+ courses · All free to browse</div>
+          <div className="section-tag tag-cyan" style={{ marginBottom:"1rem" }}>72 courses · free to browse</div>
           <h1 style={{ fontSize:"clamp(2rem,5vw,3.5rem)", fontWeight:800, letterSpacing:"-0.04em", marginBottom:"1rem" }}>
             Every course you need to<br/><span className="cyan-text">thrive in the AI era</span>
           </h1>
@@ -229,7 +229,7 @@ export default function CoursesPage() {
         ) : (
           <div className="course-grid">
             {filtered.map((c) => (
-              <div key={c.id} className="course-card">
+              <Link key={c.id} href={`/courses/${c.id}`} className="course-card" style={{ textDecoration:"none", color:"inherit", display:"block" }}>
                 <div className="course-thumb" style={{ background:c.thumb }}>
                   <span style={{ fontSize:"3.5rem", filter:"drop-shadow(0 4px 12px rgba(0,0,0,0.5))" }}>{c.icon}</span>
                   {c.badge && (
@@ -261,7 +261,7 @@ export default function CoursesPage() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

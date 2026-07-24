@@ -67,20 +67,17 @@ const FEATURES = [
   { icon:"🧠", title:"AI learning assistant",     desc:"Ask questions mid-lesson, get personalized feedback, and get unstuck instantly with your built-in tutor.", color:"orange" },
   { icon:"📱", title:"Learn anywhere, offline",   desc:"Download lessons and continue on a plane, train, or anywhere without internet.", color:"violet" },
   { icon:"🏆", title:"Verified certificates",     desc:"Complete a path and earn a shareable certificate that LinkedIn, employers, and clients recognize.", color:"green" },
-  { icon:"👥", title:"Peer community",            desc:"Join 52,000+ learners. Daily accountability rooms, peer reviews, and mentors who actually answer.", color:"cyan" },
-  { icon:"🚀", title:"Career outcomes focus",     desc:"Resume reviews, mock interviews, job board access, and a hiring partner network with 200+ companies.", color:"orange" },
+  { icon:"👥", title:"Learn with others",         desc:"Topic discussion rooms, peer review on your projects, and Q&A threads where questions actually get answered.", color:"cyan" },
+  { icon:"🚀", title:"Built around outcomes",     desc:"Every course ends in a portfolio project, with resume and interview practice to help you turn skills into real work.", color:"orange" },
 ];
 
-const TESTIMONIALS = [
-  { text:"I went from zero coding knowledge to landing a frontend job in 8 months. The AI path helped me understand tools I now use every single day.", name:"Amara Diallo", role:"Frontend Developer, Nairobi", init:"AD", color:"#0284C7" },
-  { text:"The prompt engineering course alone saved me 3 hours per day. I use Claude to draft documents, analyze data, and automate half my workflow.", name:"James Kwame", role:"Operations Manager, Accra", init:"JK", color:"#7C3AED" },
-  { text:"I'm 47 and completely self-taught from DigiLearn. Built my own business website, set up automations, and now consult other small businesses.", name:"Fatou Ndiaye", role:"Digital Consultant, Dakar", init:"FN", color:"#EA580C" },
-  { text:"The ML path was the most practical ML content I've found anywhere — better than expensive bootcamps. Python went from beginner to deployed models.", name:"Luca Moretti", role:"ML Engineer, Lagos", init:"LM", color:"#16A34A" },
-  { text:"DigiLearn covers tools I actually use — ChatGPT, Notion AI, Make, n8n. I automated 40% of my agency work within a month of starting.", name:"Sofia Ribeiro", role:"Agency Founder, London", init:"SR", color:"#D97706" },
-  { text:"The cybersecurity path gave me the confidence to secure my startup's infrastructure. We passed our first security audit. Game-changing ROI.", name:"Kwabena Asante", role:"CTO at Fintech Startup", init:"KA", color:"#E11D48" },
+const HOW_IT_WORKS = [
+  { icon:"🧭", title:"Pick a path", desc:"Choose a track — AI power user, developer, data — and follow an ordered sequence instead of a pile of disconnected videos." },
+  { icon:"🛠️", title:"Learn by building", desc:"Every course ends in a real project you keep. You practise the skill yourself, not just watch someone else use it." },
+  { icon:"🔁", title:"Remember it", desc:"Reinforce each topic with active recall and spaced repetition, so what you learn stays with you long after the lesson." },
 ];
 
-const COMPANIES = ["Google","Microsoft","Stripe","OpenAI","Notion","Figma","Shopify"];
+const TOOLS_COVERED = ["ChatGPT","Claude","Python","JavaScript","React","Make","Midjourney"];
 
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -141,7 +138,7 @@ export default function HomePage() {
         <div style={{ position:"relative", zIndex:1, maxWidth:860, margin:"0 auto", width:"100%", padding:"0 0.5rem" }}>
           <div className="hero-badge">
             <span className="hero-badge-dot" />
-            52,000+ learners · AI, Dev, Automation, Data &amp; More
+            AI · Dev · Automation · Data &amp; more
           </div>
 
           <h1 className="hero-title">
@@ -159,17 +156,16 @@ export default function HomePage() {
               Start learning free →
             </Link>
             <Link href="/courses" className="btn-secondary" style={{ fontSize:"1rem" }}>
-              Browse 100+ Courses →
+              Browse the course library →
             </Link>
           </div>
 
           <div className="hero-stats reveal">
             {[
-              { num:"52K+", label:"Active learners" },
-              { num:"800+", label:"Lessons" },
-              { num:"60+",  label:"Projects" },
-              { num:"8",    label:"Paths" },
-              { num:"94%",  label:"Completion" },
+              { num:"72",   label:"Courses" },
+              { num:"10",   label:"Learning paths" },
+              { num:"Projects", label:"In every course" },
+              { num:"Free", label:"To start" },
             ].map((s) => (
               <div key={s.label} className="hero-stat">
                 <span className="hero-stat-num">{s.num}</span>
@@ -183,8 +179,8 @@ export default function HomePage() {
       {/* ── TRUSTED BY ─────────────────────────────────────── */}
       <div style={{ borderTop:"1px solid var(--border)", borderBottom:"1px solid var(--border)", padding:"1.5rem", background:"var(--bg2)" }}>
         <div style={{ maxWidth:1120, margin:"0 auto", display:"flex", alignItems:"center", gap:"clamp(1.5rem,4vw,2.5rem)", flexWrap:"wrap", justifyContent:"center" }}>
-          <span style={{ fontSize:"0.68rem", color:"var(--text-mute)", fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", flexShrink:0 }}>Graduates work at</span>
-          {COMPANIES.map((c) => (
+          <span style={{ fontSize:"0.68rem", color:"var(--text-mute)", fontWeight:700, letterSpacing:"0.12em", textTransform:"uppercase", flexShrink:0 }}>Tools covered across the courses</span>
+          {TOOLS_COVERED.map((c) => (
             <span key={c} style={{ fontFamily:"'Fira Code',monospace", fontSize:"0.85rem", color:"var(--text-mute)", fontWeight:600, letterSpacing:"0.04em" }}>{c}</span>
           ))}
         </div>
@@ -195,7 +191,7 @@ export default function HomePage() {
         <div className="reveal">
           <div className="section-tag tag-cyan">Learning Paths</div>
           <h2 className="section-title">Every skill you need<br/>in one place</h2>
-          <p className="section-sub">Six structured paths — from AI power user to machine learning engineer. Each takes you from zero to job-ready with real projects.</p>
+          <p className="section-sub">Ten structured paths — from AI power user to machine learning engineer. Each takes you from the basics to job-ready with real projects.</p>
         </div>
         <div className="tracks-grid">
           {TRACKS.map((t, i) => (
@@ -217,7 +213,7 @@ export default function HomePage() {
               <div className="section-tag tag-orange">Most popular</div>
               <h2 className="section-title" style={{ marginBottom:0 }}>Top courses this month</h2>
             </div>
-            <Link href="/courses" className="btn-ghost">See all 80+ courses →</Link>
+            <Link href="/courses" className="btn-ghost">See all courses →</Link>
           </div>
           <div className="course-grid">
             {COURSES_PREVIEW.map((c, i) => (
@@ -329,21 +325,15 @@ export default function HomePage() {
       {/* ── TESTIMONIALS ───────────────────────────────────── */}
       <section className="section">
         <div className="reveal" style={{ textAlign:"center", marginBottom:"3rem" }}>
-          <div className="section-tag tag-cyan" style={{ margin:"0 auto 1rem" }}>What learners say</div>
-          <h2 className="section-title">Real people, real outcomes</h2>
+          <div className="section-tag tag-cyan" style={{ margin:"0 auto 1rem" }}>How it works</div>
+          <h2 className="section-title">Learn it. Build it. Remember it.</h2>
         </div>
-        <div className="testi-grid">
-          {TESTIMONIALS.map((t, i) => (
-            <div key={t.name} className="testi-card reveal" style={{ transitionDelay:`${i*0.07}s` }}>
-              <div className="testi-stars">★★★★★</div>
-              <div className="testi-quote">&ldquo;{t.text}&rdquo;</div>
-              <div className="testi-author">
-                <div className="testi-avatar" style={{ background:`linear-gradient(135deg,${t.color},${t.color}cc)` }}>{t.init}</div>
-                <div>
-                  <div className="testi-name">{t.name}</div>
-                  <div className="testi-role">{t.role}</div>
-                </div>
-              </div>
+        <div className="feature-grid">
+          {HOW_IT_WORKS.map((h, i) => (
+            <div key={h.title} className="feature-card fc-cyan reveal" style={{ transitionDelay:`${i*0.07}s` }}>
+              <div className="feature-icon">{h.icon}</div>
+              <div className="feature-title">{h.title}</div>
+              <div className="feature-desc">{h.desc}</div>
             </div>
           ))}
         </div>
@@ -360,7 +350,7 @@ export default function HomePage() {
           <div className="price-grid">
             {[
               { tier:"Free", amount:"$0", desc:"Start learning with no credit card required.", cta:"Start free →", featured:false, list:["10 free starter courses","AI tools intro module","Community access","Basic certificates","Mobile app access"] },
-              { tier:"Pro", amount:"$16", desc:"Everything you need to go from curious to career-ready.", cta:"Start 7-day trial →", featured:true, list:["80+ courses unlocked","All 6 learning paths","AI learning assistant","Project feedback & review","Verified certificates","Career portal & job board","Offline downloads","Priority community support"] },
+              { tier:"Pro", amount:"$16", desc:"Everything you need to go from curious to career-ready.", cta:"Start 7-day trial →", featured:true, list:["Full course library unlocked","All 10 learning paths","AI learning assistant","Project feedback & review","Verified certificates","Career portal & job board","Offline downloads","Priority community support"] },
               { tier:"Team", amount:"$12", desc:"For companies upskilling their people in AI and tech.", cta:"Contact sales →", featured:false, list:["Everything in Pro","Team dashboard & analytics","Manager progress reports","Custom learning paths","Onboarding support","Volume pricing available"] },
             ].map((p) => (
               <div key={p.tier} className={`price-card ${p.featured?"featured":""}`}>
@@ -386,7 +376,7 @@ export default function HomePage() {
             The future belongs to people<br/>who keep <span className="cyan-text">learning</span>
           </h2>
           <p className="reveal" style={{ color:"var(--text-dim)", fontSize:"1.05rem", marginBottom:"2.5rem", lineHeight:1.8 }}>
-            52,000 people are already learning on DigiLearn. Don&apos;t let the AI revolution pass you by.
+            The AI revolution rewards people who keep learning. Start today — the first courses are free.
           </p>
           <div className="reveal" style={{ display:"flex", gap:"1rem", justifyContent:"center", flexWrap:"wrap" }}>
             <Link href="/auth?mode=signup" className="btn-primary" style={{ fontSize:"1rem" }}>Create free account →</Link>

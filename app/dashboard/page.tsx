@@ -380,7 +380,7 @@ export default function Dashboard() {
                 </div>
                 <p style={{ fontSize:"0.875rem", color:"var(--text-dim)", marginBottom:"1.5rem", lineHeight:1.6 }}>
                   {user.plan === "pro"
-                    ? "Full access to 800+ lessons, certificates, AI assistant, and all Pro features."
+                    ? "Full access to every course, certificates, the AI assistant, and all Pro features."
                     : "Access to 5 starter courses. Upgrade to Pro to unlock everything."}
                 </p>
                 {user.plan === "free" && (
@@ -425,11 +425,11 @@ export default function Dashboard() {
               <div style={{ fontWeight:700, fontSize:"0.95rem", marginBottom:"1.25rem" }}>What Pro unlocks</div>
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,220px),1fr))", gap:"0.875rem" }}>
                 {[
-                  { icon:"📚", title:"800+ lessons", desc:"Every course and track unlocked" },
+                  { icon:"📚", title:"Full library", desc:"Every course and track unlocked" },
                   { icon:"🤖", title:"AI study assistant", desc:"Unlimited queries, 24/7" },
                   { icon:"📜", title:"Certificates", desc:"Verifiable on LinkedIn" },
                   { icon:"📲", title:"Offline access", desc:"Download lessons to your phone" },
-                  { icon:"💼", title:"Job board", desc:"100+ AI & tech roles" },
+                  { icon:"💼", title:"Job board", desc:"Curated AI & tech job links" },
                   { icon:"🙋", title:"Ask the instructor", desc:"Direct Q&A on any lesson" },
                 ].map(f => (
                   <div key={f.title} style={{ display:"flex", gap:12, padding:"0.875rem", borderRadius:10, background:"var(--bg2)", border:"1px solid var(--border)" }}>
