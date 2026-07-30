@@ -105,6 +105,7 @@ export default function HomePage() {
         </Link>
         <div className="nav-links">
           <Link href="/courses" className="nav-link">Courses</Link>
+          <Link href="/practice" className="nav-link">Practice</Link>
           <Link href="/#tracks" className="nav-link">Paths</Link>
           <Link href="/#pricing" className="nav-link">Pricing</Link>
           <Link href="/auth" className="nav-link">Sign in</Link>
@@ -117,7 +118,7 @@ export default function HomePage() {
         </button>
       </nav>
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
-        {[["Courses","/courses"],["Learning Paths","/#tracks"],["Pricing","/#pricing"],["Sign in","/auth"]].map(([l,h]) => (
+        {[["Courses","/courses"],["Practice","/practice"],["Learning Paths","/#tracks"],["Pricing","/#pricing"],["Sign in","/auth"]].map(([l,h]) => (
           <Link key={l} href={h} className="mobile-nav-link" onClick={() => setMenuOpen(false)}>{l}</Link>
         ))}
         <Link href="/auth?mode=signup" className="btn-primary" style={{ marginTop:"0.5rem", justifyContent:"center" }} onClick={() => setMenuOpen(false)}>Start free →</Link>

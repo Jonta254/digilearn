@@ -125,6 +125,10 @@ export default function Dashboard() {
             {v.label}
           </button>
         ))}
+        <Link href="/practice" className="dash-nav-item">
+          <span style={{ fontSize:"1rem", width:20, textAlign:"center" }}>🎴</span>
+          Practice
+        </Link>
         <div style={{ flex:1 }} />
         <div style={{ padding:"1rem", background:"var(--surface)", borderRadius:10, marginBottom:"0.75rem" }}>
           <div style={{ fontSize:"0.68rem", color:"var(--text-mute)", textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:"0.4rem" }}>Plan</div>
@@ -170,6 +174,18 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+
+            {/* Practice CTA */}
+            <Link href="/practice" style={{ textDecoration:"none", color:"inherit", display:"block", marginBottom:"2rem" }}>
+              <div className="dash-card" style={{ display:"flex", alignItems:"center", gap:16, flexWrap:"wrap", background:"linear-gradient(135deg,rgba(var(--violet-rgb),0.08),rgba(var(--cyan-rgb),0.05))", borderColor:"rgba(var(--violet-rgb),0.2)" }}>
+                <span style={{ fontSize:"2rem", flexShrink:0 }}>🎴</span>
+                <div style={{ flex:1, minWidth:200 }}>
+                  <div style={{ fontWeight:800, fontSize:"0.95rem" }}>Sharpen your recall with flashcards</div>
+                  <div style={{ fontSize:"0.8rem", color:"var(--text-dim)", marginTop:2 }}>Spaced-repetition drills across Prompt Engineering, Python, JavaScript, Security &amp; AI foundations.</div>
+                </div>
+                <span className="btn-primary" style={{ padding:"0.55rem 1.25rem", fontSize:"0.825rem", boxShadow:"none" }}>Practice now →</span>
+              </div>
+            </Link>
 
             {/* Announcements */}
             <div className="dash-card" style={{ marginBottom:"2rem" }}>

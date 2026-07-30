@@ -6,41 +6,41 @@ import Link from "next/link";
 // ── Data ────────────────────────────────────────────────────────────────────
 
 type Course = {
-  id: string; title: string; author: string; icon: string; thumb: string;
-  lessons: number; hours: number; rating: number; reviews: number; level: string;
-  topic: string; tags: string[]; badge: string; free: boolean;
+  id: string; title: string; icon: string; thumb: string;
+  lessons: number; hours: number; level: string;
+  topic: string; tags: string[]; free: boolean;
 };
 
 const ALL_COURSES: Course[] = [
-  { id:"chatgpt-mastery",    title:"ChatGPT & GPT-4o Mastery",           author:"Nadia Osei",   icon:"🤖", thumb:"linear-gradient(135deg,#0A0F2E,#1A1060)", lessons:38, hours:20, rating:4.9, reviews:8200,  level:"Beginner",     topic:"ai-tools",   tags:["ChatGPT","GPT-4o","Custom GPTs"],             badge:"bestseller",   free:true  },
-  { id:"claude-mastery",     title:"Claude — Advanced AI Workflows",       author:"Marcus Chen",  icon:"🧬", thumb:"linear-gradient(135deg,#0D0A1A,#2D0A5A)", lessons:34, hours:18, rating:5.0, reviews:3100,  level:"Intermediate", topic:"ai-tools",   tags:["Claude","Long-context","API"],                badge:"new",          free:false },
-  { id:"prompt-engineering", title:"Prompt Engineering Pro",               author:"Yuki Tanaka",  icon:"🧠", thumb:"linear-gradient(135deg,#0D001A,#6600CC)", lessons:44, hours:24, rating:5.0, reviews:5600,  level:"Intermediate", topic:"ai-tools",   tags:["Prompting","Chain-of-thought","RAG"],          badge:"hot",          free:false },
-  { id:"midjourney",         title:"Midjourney & AI Image Generation",     author:"Sofia Reyes",  icon:"🎨", thumb:"linear-gradient(135deg,#1A0010,#800040)", lessons:32, hours:16, rating:4.8, reviews:4100,  level:"Beginner",     topic:"ai-tools",   tags:["Midjourney","DALL·E 3","Stable Diffusion"],   badge:"",             free:false },
-  { id:"copilot-dev",        title:"GitHub Copilot for Developers",        author:"Leon Bauer",   icon:"🤝", thumb:"linear-gradient(135deg,#0A1000,#1A3300)", lessons:28, hours:14, rating:4.7, reviews:2890,  level:"Intermediate", topic:"ai-tools",   tags:["Copilot","AI coding","Code review"],           badge:"",             free:false },
-  { id:"perplexity-gemini",  title:"AI Research: Perplexity & Gemini",    author:"Amara Diallo", icon:"🔍", thumb:"linear-gradient(135deg,#001A10,#003322)", lessons:24, hours:12, rating:4.7, reviews:1800,  level:"Beginner",     topic:"ai-tools",   tags:["Perplexity","Gemini","AI search"],             badge:"new",          free:true  },
-  { id:"ai-writing",         title:"AI Writing & Content Creation",        author:"Nadia Osei",   icon:"✍️", thumb:"linear-gradient(135deg,#0A0510,#330050)", lessons:30, hours:14, rating:4.6, reviews:3300,  level:"Beginner",     topic:"ai-tools",   tags:["AI writing","Jasper","Copy.ai"],               badge:"",             free:false },
-  { id:"sora-video",         title:"AI Video: Sora & RunwayML",            author:"Marcus Chen",  icon:"🎬", thumb:"linear-gradient(135deg,#1A0500,#660020)", lessons:26, hours:13, rating:4.8, reviews:2200,  level:"Beginner",     topic:"ai-tools",   tags:["Sora","RunwayML","HeyGen"],                   badge:"new",          free:false },
-  { id:"ai-productivity",    title:"AI Productivity System",               author:"Yuki Tanaka",  icon:"⚡", thumb:"linear-gradient(135deg,#001520,#003355)", lessons:22, hours:10, rating:4.9, reviews:6700,  level:"Beginner",     topic:"ai-tools",   tags:["Notion AI","Copilot 365","AI workflow"],       badge:"bestseller",   free:true  },
-  { id:"llm-agents",         title:"Building AI Agents & LLM Apps",        author:"Leon Bauer",   icon:"🤖", thumb:"linear-gradient(135deg,#0A0020,#200055)", lessons:48, hours:26, rating:4.8, reviews:1900,  level:"Advanced",     topic:"ai-tools",   tags:["LangChain","AutoGPT","Agents"],                badge:"hot",          free:false },
-  { id:"html-css",           title:"HTML & CSS Mastery",                   author:"Elena Torres", icon:"🌐", thumb:"linear-gradient(135deg,#001A33,#003366)", lessons:48, hours:24, rating:4.9, reviews:9100,  level:"Beginner",     topic:"webdev",     tags:["HTML","CSS","Flexbox","Grid"],                 badge:"most enrolled",free:true  },
-  { id:"javascript",         title:"JavaScript: Zero to Pro",              author:"James Okafor", icon:"⚡", thumb:"linear-gradient(135deg,#1A0D00,#CC6200)", lessons:62, hours:36, rating:4.8, reviews:7800,  level:"Beginner",     topic:"webdev",     tags:["JS","ES2024","Async","DOM"],                   badge:"",             free:false },
-  { id:"react-nextjs",       title:"React & Next.js 16",                  author:"Priya Nair",   icon:"⚛️", thumb:"linear-gradient(135deg,#001520,#006080)", lessons:54, hours:32, rating:4.9, reviews:6200,  level:"Intermediate", topic:"webdev",     tags:["React","Next.js","App Router"],                badge:"hot",          free:false },
-  { id:"typescript",         title:"TypeScript Deep Dive",                 author:"Leon Bauer",   icon:"🔷", thumb:"linear-gradient(135deg,#0A0530,#2A1590)", lessons:38, hours:20, rating:4.7, reviews:2900,  level:"Intermediate", topic:"webdev",     tags:["TypeScript","Generics","Utility Types"],       badge:"",             free:false },
-  { id:"tailwind",           title:"Tailwind CSS v4 Complete",             author:"Sofia Reyes",  icon:"🌊", thumb:"linear-gradient(135deg,#001520,#004455)", lessons:32, hours:16, rating:4.8, reviews:3400,  level:"Beginner",     topic:"webdev",     tags:["Tailwind","Components","UI"],                  badge:"",             free:true  },
-  { id:"node-api",           title:"Node.js & REST APIs",                  author:"James Okafor", icon:"🟢", thumb:"linear-gradient(135deg,#0A2B12,#1A6628)", lessons:44, hours:26, rating:4.8, reviews:4100,  level:"Intermediate", topic:"webdev",     tags:["Node","Express","REST","JWT"],                 badge:"",             free:false },
-  { id:"fullstack",          title:"Fullstack: Next.js + Supabase",        author:"Priya Nair",   icon:"🚀", thumb:"linear-gradient(135deg,#001000,#003300)", lessons:60, hours:40, rating:4.9, reviews:3800,  level:"Intermediate", topic:"webdev",     tags:["Next.js","Supabase","Auth","Edge"],            badge:"new",          free:false },
-  { id:"react-native",       title:"React Native — Mobile Apps",           author:"Elena Torres", icon:"📱", thumb:"linear-gradient(135deg,#001A33,#005588)", lessons:46, hours:28, rating:4.7, reviews:2400,  level:"Intermediate", topic:"webdev",     tags:["React Native","Expo","iOS","Android"],         badge:"",             free:false },
-  { id:"python-fund",        title:"Python Fundamentals",                  author:"Aisha Bashir", icon:"🐍", thumb:"linear-gradient(135deg,#0A1A05,#1A5C0A)", lessons:52, hours:30, rating:4.9, reviews:11000, level:"Beginner",     topic:"data",       tags:["Python","OOP","File I/O"],                     badge:"most enrolled",free:true  },
-  { id:"python-ai",          title:"Python for AI & Data Science",         author:"Kevin Park",   icon:"🤖", thumb:"linear-gradient(135deg,#001800,#004400)", lessons:58, hours:34, rating:4.9, reviews:5200,  level:"Beginner",     topic:"data",       tags:["Python","NumPy","Pandas","Matplotlib"],        badge:"hot",          free:true  },
-  { id:"machine-learning",   title:"Machine Learning A-Z",                 author:"Aisha Bashir", icon:"⚙️", thumb:"linear-gradient(135deg,#0A0500,#331A00)", lessons:68, hours:44, rating:4.9, reviews:8900,  level:"Intermediate", topic:"data",       tags:["Scikit-learn","Regression","Classification"],   badge:"bestseller",   free:false },
-  { id:"deep-learning",      title:"Deep Learning & Neural Networks",      author:"Kevin Park",   icon:"🧬", thumb:"linear-gradient(135deg,#0A0020,#1A0040)", lessons:62, hours:38, rating:4.8, reviews:4400,  level:"Advanced",     topic:"data",       tags:["PyTorch","TensorFlow","CNN","Transformers"],   badge:"",             free:false },
-  { id:"nlp",                title:"Natural Language Processing",          author:"Yuki Tanaka",  icon:"💬", thumb:"linear-gradient(135deg,#001A00,#003300)", lessons:44, hours:26, rating:4.8, reviews:2200,  level:"Advanced",     topic:"data",       tags:["NLP","Transformers","BERT","LLMs"],            badge:"new",          free:false },
-  { id:"sql",                title:"SQL for Data Analysis",                author:"Elena Torres", icon:"🗄️", thumb:"linear-gradient(135deg,#0A0500,#442200)", lessons:36, hours:18, rating:4.7, reviews:5600,  level:"Beginner",     topic:"data",       tags:["SQL","PostgreSQL","Analytics","Joins"],        badge:"",             free:true  },
-  { id:"ethical-hacking",    title:"Ethical Hacking & Penetration Testing",author:"Rafael Méndez",icon:"🧑‍💻",thumb:"linear-gradient(135deg,#0A0010,#220033)", lessons:60, hours:38, rating:4.9, reviews:4200,  level:"Advanced",     topic:"security",   tags:["Ethical hacking","Kali Linux","OWASP","CTF"],  badge:"hot",          free:false },
-  { id:"digital-biz",        title:"Build a Digital Business from Scratch",author:"Fatou Ndiaye", icon:"🏪", thumb:"linear-gradient(135deg,#1A0A00,#5C2200)", lessons:48, hours:28, rating:4.9, reviews:4800,  level:"Beginner",     topic:"business",   tags:["Business","Freelancing","SaaS","Revenue"],     badge:"hot",          free:false },
-  { id:"sql-fundamentals",   title:"SQL & Relational Databases",           author:"Elena Torres", icon:"🗄️", thumb:"linear-gradient(135deg,#0A1520,#1A3A5C)", lessons:42, hours:22, rating:4.8, reviews:6200,  level:"Beginner",     topic:"databases",  tags:["SQL","PostgreSQL","MySQL","Joins","Indexing"],  badge:"most enrolled",free:true  },
-  { id:"ai-ethics-fundamentals",title:"AI Ethics: Principles & Practice", author:"Amara Diallo", icon:"⚖️", thumb:"linear-gradient(135deg,#1A1200,#553C00)", lessons:36, hours:18, rating:4.8, reviews:3100,  level:"Beginner",     topic:"ethics",     tags:["AI Ethics","Bias","Fairness","Transparency"],  badge:"most enrolled",free:true  },
-  { id:"fintech-fundamentals",title:"Fintech Fundamentals",                author:"Rafael Méndez",icon:"💳", thumb:"linear-gradient(135deg,#001A0A,#004D25)", lessons:38, hours:20, rating:4.8, reviews:2800,  level:"Beginner",     topic:"finance",    tags:["Fintech","Payments","Banking","Open Banking"],  badge:"hot",          free:true  },
+  { id:"chatgpt-mastery",    title:"ChatGPT & GPT-4o Mastery",           icon:"🤖", thumb:"linear-gradient(135deg,#0A0F2E,#1A1060)", lessons:38, hours:20, level:"Beginner",     topic:"ai-tools",   tags:["ChatGPT","GPT-4o","Custom GPTs"],             free:true  },
+  { id:"claude-mastery",     title:"Claude — Advanced AI Workflows",       icon:"🧬", thumb:"linear-gradient(135deg,#0D0A1A,#2D0A5A)", lessons:34, hours:18, level:"Intermediate", topic:"ai-tools",   tags:["Claude","Long-context","API"],                free:false },
+  { id:"prompt-engineering", title:"Prompt Engineering Pro",               icon:"🧠", thumb:"linear-gradient(135deg,#0D001A,#6600CC)", lessons:44, hours:24, level:"Intermediate", topic:"ai-tools",   tags:["Prompting","Chain-of-thought","RAG"],          free:false },
+  { id:"midjourney",         title:"Midjourney & AI Image Generation",     icon:"🎨", thumb:"linear-gradient(135deg,#1A0010,#800040)", lessons:32, hours:16, level:"Beginner",     topic:"ai-tools",   tags:["Midjourney","DALL·E 3","Stable Diffusion"],   free:false },
+  { id:"copilot-dev",        title:"GitHub Copilot for Developers",        icon:"🤝", thumb:"linear-gradient(135deg,#0A1000,#1A3300)", lessons:28, hours:14, level:"Intermediate", topic:"ai-tools",   tags:["Copilot","AI coding","Code review"],           free:false },
+  { id:"perplexity-gemini",  title:"AI Research: Perplexity & Gemini",    icon:"🔍", thumb:"linear-gradient(135deg,#001A10,#003322)", lessons:24, hours:12, level:"Beginner",     topic:"ai-tools",   tags:["Perplexity","Gemini","AI search"],             free:true  },
+  { id:"ai-writing",         title:"AI Writing & Content Creation",        icon:"✍️", thumb:"linear-gradient(135deg,#0A0510,#330050)", lessons:30, hours:14, level:"Beginner",     topic:"ai-tools",   tags:["AI writing","Jasper","Copy.ai"],               free:false },
+  { id:"sora-video",         title:"AI Video: Sora & RunwayML",            icon:"🎬", thumb:"linear-gradient(135deg,#1A0500,#660020)", lessons:26, hours:13, level:"Beginner",     topic:"ai-tools",   tags:["Sora","RunwayML","HeyGen"],                   free:false },
+  { id:"ai-productivity",    title:"AI Productivity System",               icon:"⚡", thumb:"linear-gradient(135deg,#001520,#003355)", lessons:22, hours:10, level:"Beginner",     topic:"ai-tools",   tags:["Notion AI","Copilot 365","AI workflow"],       free:true  },
+  { id:"llm-agents",         title:"Building AI Agents & LLM Apps",        icon:"🤖", thumb:"linear-gradient(135deg,#0A0020,#200055)", lessons:48, hours:26, level:"Advanced",     topic:"ai-tools",   tags:["LangChain","AutoGPT","Agents"],                free:false },
+  { id:"html-css",           title:"HTML & CSS Mastery",                   icon:"🌐", thumb:"linear-gradient(135deg,#001A33,#003366)", lessons:48, hours:24, level:"Beginner",     topic:"webdev",     tags:["HTML","CSS","Flexbox","Grid"],                 free:true  },
+  { id:"javascript",         title:"JavaScript: Zero to Pro",              icon:"⚡", thumb:"linear-gradient(135deg,#1A0D00,#CC6200)", lessons:62, hours:36, level:"Beginner",     topic:"webdev",     tags:["JS","ES2024","Async","DOM"],                   free:false },
+  { id:"react-nextjs",       title:"React & Next.js 16",                  icon:"⚛️", thumb:"linear-gradient(135deg,#001520,#006080)", lessons:54, hours:32, level:"Intermediate", topic:"webdev",     tags:["React","Next.js","App Router"],                free:false },
+  { id:"typescript",         title:"TypeScript Deep Dive",                 icon:"🔷", thumb:"linear-gradient(135deg,#0A0530,#2A1590)", lessons:38, hours:20, level:"Intermediate", topic:"webdev",     tags:["TypeScript","Generics","Utility Types"],       free:false },
+  { id:"tailwind",           title:"Tailwind CSS v4 Complete",             icon:"🌊", thumb:"linear-gradient(135deg,#001520,#004455)", lessons:32, hours:16, level:"Beginner",     topic:"webdev",     tags:["Tailwind","Components","UI"],                  free:true  },
+  { id:"node-api",           title:"Node.js & REST APIs",                  icon:"🟢", thumb:"linear-gradient(135deg,#0A2B12,#1A6628)", lessons:44, hours:26, level:"Intermediate", topic:"webdev",     tags:["Node","Express","REST","JWT"],                 free:false },
+  { id:"fullstack",          title:"Fullstack: Next.js + Supabase",        icon:"🚀", thumb:"linear-gradient(135deg,#001000,#003300)", lessons:60, hours:40, level:"Intermediate", topic:"webdev",     tags:["Next.js","Supabase","Auth","Edge"],            free:false },
+  { id:"react-native",       title:"React Native — Mobile Apps",           icon:"📱", thumb:"linear-gradient(135deg,#001A33,#005588)", lessons:46, hours:28, level:"Intermediate", topic:"webdev",     tags:["React Native","Expo","iOS","Android"],         free:false },
+  { id:"python-fund",        title:"Python Fundamentals",                  icon:"🐍", thumb:"linear-gradient(135deg,#0A1A05,#1A5C0A)", lessons:52, hours:30, level:"Beginner",     topic:"data",       tags:["Python","OOP","File I/O"],                     free:true  },
+  { id:"python-ai",          title:"Python for AI & Data Science",         icon:"🤖", thumb:"linear-gradient(135deg,#001800,#004400)", lessons:58, hours:34, level:"Beginner",     topic:"data",       tags:["Python","NumPy","Pandas","Matplotlib"],        free:true  },
+  { id:"machine-learning",   title:"Machine Learning A-Z",                 icon:"⚙️", thumb:"linear-gradient(135deg,#0A0500,#331A00)", lessons:68, hours:44, level:"Intermediate", topic:"data",       tags:["Scikit-learn","Regression","Classification"],   free:false },
+  { id:"deep-learning",      title:"Deep Learning & Neural Networks",      icon:"🧬", thumb:"linear-gradient(135deg,#0A0020,#1A0040)", lessons:62, hours:38, level:"Advanced",     topic:"data",       tags:["PyTorch","TensorFlow","CNN","Transformers"],   free:false },
+  { id:"nlp",                title:"Natural Language Processing",          icon:"💬", thumb:"linear-gradient(135deg,#001A00,#003300)", lessons:44, hours:26, level:"Advanced",     topic:"data",       tags:["NLP","Transformers","BERT","LLMs"],            free:false },
+  { id:"sql",                title:"SQL for Data Analysis",                icon:"🗄️", thumb:"linear-gradient(135deg,#0A0500,#442200)", lessons:36, hours:18, level:"Beginner",     topic:"data",       tags:["SQL","PostgreSQL","Analytics","Joins"],        free:true  },
+  { id:"ethical-hacking",    title:"Ethical Hacking & Penetration Testing",icon:"🧑‍💻",thumb:"linear-gradient(135deg,#0A0010,#220033)", lessons:60, hours:38, level:"Advanced",     topic:"security",   tags:["Ethical hacking","Kali Linux","OWASP","CTF"],  free:false },
+  { id:"digital-biz",        title:"Build a Digital Business from Scratch",icon:"🏪", thumb:"linear-gradient(135deg,#1A0A00,#5C2200)", lessons:48, hours:28, level:"Beginner",     topic:"business",   tags:["Business","Freelancing","SaaS","Revenue"],     free:false },
+  { id:"sql-fundamentals",   title:"SQL & Relational Databases",           icon:"🗄️", thumb:"linear-gradient(135deg,#0A1520,#1A3A5C)", lessons:42, hours:22, level:"Beginner",     topic:"databases",  tags:["SQL","PostgreSQL","MySQL","Joins","Indexing"],  free:true  },
+  { id:"ai-ethics-fundamentals",title:"AI Ethics: Principles & Practice", icon:"⚖️", thumb:"linear-gradient(135deg,#1A1200,#553C00)", lessons:36, hours:18, level:"Beginner",     topic:"ethics",     tags:["AI Ethics","Bias","Fairness","Transparency"],  free:true  },
+  { id:"fintech-fundamentals",title:"Fintech Fundamentals",                icon:"💳", thumb:"linear-gradient(135deg,#001A0A,#004D25)", lessons:38, hours:20, level:"Beginner",     topic:"finance",    tags:["Fintech","Payments","Banking","Open Banking"],  free:true  },
 ];
 
 type Section = { title: string; lessons: string[] };
@@ -202,11 +202,6 @@ export default function CoursePage() {
   const totalLessons = content.sections.reduce((s, sec) => s + sec.lessons.length, 0);
   const related = ALL_COURSES.filter((c) => c.topic === course.topic && c.id !== course.id).slice(0, 3);
 
-  const badgeBg = course.badge === "bestseller" || course.badge === "most enrolled"
-    ? "rgba(251,191,36,0.9)" : course.badge === "hot" ? "rgba(244,63,94,0.9)"
-    : course.badge ? "rgba(0,212,255,0.9)" : "transparent";
-  const badgeColor = course.badge === "hot" ? "#fff" : "#000";
-
   const levelColor = course.level === "Beginner" ? "#16A34A" : course.level === "Intermediate" ? "#0284C7" : "#7C3AED";
 
   return (
@@ -232,6 +227,7 @@ export default function CoursePage() {
         </Link>
         <div style={{ display:"flex", gap:24, alignItems:"center" }}>
           <Link href="/courses" style={{ fontSize:"0.82rem", color:"#475569" }}>← All Courses</Link>
+          <Link href="/practice" style={{ fontSize:"0.82rem", color:"#475569" }}>Practice</Link>
           <Link href="/dashboard" style={{ fontSize:"0.82rem", color:"#475569" }}>Dashboard</Link>
           <Link href="/auth?mode=signup" style={{ background:"#0284C7", color:"#fff", padding:"7px 18px", borderRadius:8, fontSize:"0.82rem", fontWeight:700 }}>
             {course.free ? "Start Free" : "Enroll Now"}
@@ -252,9 +248,6 @@ export default function CoursePage() {
           </div>
 
           <div style={{ display:"flex", gap:10, marginBottom:16, flexWrap:"wrap", alignItems:"center" }}>
-            {course.badge && (
-              <span style={{ padding:"3px 10px", borderRadius:6, fontSize:"0.65rem", fontWeight:800, textTransform:"uppercase", background:badgeBg, color:badgeColor }}>{course.badge}</span>
-            )}
             {course.free && <span style={{ padding:"3px 10px", borderRadius:6, fontSize:"0.65rem", fontWeight:800, background:"rgba(34,197,94,0.9)", color:"#fff", textTransform:"uppercase" }}>FREE</span>}
             <span style={{ padding:"3px 10px", borderRadius:6, fontSize:"0.65rem", fontWeight:700, background:"rgba(255,255,255,0.15)", color:"#fff", textTransform:"uppercase" }}>{course.topic.replace("-"," ")}</span>
           </div>
@@ -268,18 +261,11 @@ export default function CoursePage() {
           </p>
 
           <div style={{ display:"flex", gap:20, flexWrap:"wrap", alignItems:"center", color:"rgba(255,255,255,0.8)", fontSize:"0.85rem" }}>
-            <span style={{ color:"#FDE68A", fontWeight:700 }}>★ {course.rating}</span>
-            <span>({course.reviews.toLocaleString()} reviews)</span>
-            <span>·</span>
             <span>📚 {course.lessons} lessons</span>
             <span>·</span>
             <span>⏱ {course.hours} hours</span>
             <span>·</span>
             <span style={{ color:levelColor === "#16A34A" ? "#86EFAC" : levelColor === "#0284C7" ? "#7DD3FC" : "#C4B5FD" }}>{course.level}</span>
-          </div>
-
-          <div style={{ marginTop:14, fontSize:"0.85rem", color:"rgba(255,255,255,0.6)" }}>
-            Instructor: <span style={{ color:"rgba(255,255,255,0.9)", fontWeight:600 }}>{course.author}</span>
           </div>
         </div>
       </div>
@@ -336,7 +322,6 @@ export default function CoursePage() {
                               <span style={{ fontSize:"0.55rem", color:"#0284C7" }}>▶</span>
                             </div>
                             <span style={{ fontSize:"0.85rem", color:"#334155" }}>{lesson}</span>
-                            <span style={{ marginLeft:"auto", fontSize:"0.72rem", color:"#94A3B8" }}>{Math.floor(Math.random() * 12 + 4)}:{String(Math.floor(Math.random() * 60)).padStart(2,"0")}</span>
                           </div>
                         ))}
                       </div>
@@ -344,45 +329,6 @@ export default function CoursePage() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Instructor */}
-            <div style={{ border:"1px solid rgba(15,23,42,0.1)", borderRadius:14, padding:"1.5rem", marginBottom:32 }}>
-              <h2 style={{ fontSize:"1.1rem", fontWeight:800, marginBottom:14 }}>Your Instructor</h2>
-              <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
-                <div style={{ width:56, height:56, borderRadius:"50%", background:`linear-gradient(135deg,#0284C7,#7C3AED)`, display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:900, fontSize:"1.1rem", flexShrink:0 }}>
-                  {course.author.split(" ").map(n=>n[0]).join("")}
-                </div>
-                <div>
-                  <div style={{ fontWeight:700, fontSize:"1rem", marginBottom:4 }}>{course.author}</div>
-                  <div style={{ fontSize:"0.82rem", color:"#64748B", marginBottom:8 }}>Senior Instructor · DigiLearn</div>
-                  <p style={{ fontSize:"0.875rem", color:"#475569", lineHeight:1.65 }}>
-                    {course.author.split(" ")[0]} is an industry practitioner with 10+ years of experience in {course.tags.slice(0,2).join(" and ")}. They&apos;ve taught over {(course.reviews / 10).toFixed(0)} students through real-world, project-based courses.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Reviews */}
-            <div style={{ marginBottom:32 }}>
-              <h2 style={{ fontSize:"1.1rem", fontWeight:800, marginBottom:16 }}>Student Reviews</h2>
-              {[
-                { name:"Alex T.",      text:`This course is exactly what I needed. ${course.author}'s teaching style made complex concepts click instantly.`, stars:5, date:"Jun 2026" },
-                { name:"Priya M.",     text:`Best ${course.tags[0]} course I've taken. The hands-on projects are genuinely useful, not just toy examples.`, stars:5, date:"May 2026" },
-                { name:"James O.",     text:"Clear, concise, and up-to-date. I applied what I learned on day one of the next section.", stars:4, date:"Apr 2026" },
-              ].map((r) => (
-                <div key={r.name} style={{ padding:"1.25rem 0", borderBottom:"1px solid rgba(15,23,42,0.07)" }}>
-                  <div style={{ display:"flex", gap:10, alignItems:"center", marginBottom:8 }}>
-                    <div style={{ width:36, height:36, borderRadius:"50%", background:"#E2E8F0", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:"0.82rem", color:"#475569" }}>{r.name[0]}</div>
-                    <div>
-                      <div style={{ fontWeight:700, fontSize:"0.875rem" }}>{r.name}</div>
-                      <div style={{ fontSize:"0.72rem", color:"#94A3B8" }}>{r.date}</div>
-                    </div>
-                    <div style={{ marginLeft:"auto", color:"#FBBF24" }}>{"★".repeat(r.stars)}</div>
-                  </div>
-                  <p style={{ fontSize:"0.875rem", color:"#475569", lineHeight:1.65 }}>{r.text}</p>
-                </div>
-              ))}
             </div>
 
             {/* Related courses */}
@@ -395,7 +341,7 @@ export default function CoursePage() {
                       <div style={{ background:r.thumb, height:90, display:"flex", alignItems:"center", justifyContent:"center", fontSize:"2rem" }}>{r.icon}</div>
                       <div style={{ padding:"12px" }}>
                         <div style={{ fontWeight:700, fontSize:"0.82rem", marginBottom:4, lineHeight:1.3 }}>{r.title}</div>
-                        <div style={{ fontSize:"0.72rem", color:"#64748B" }}>★ {r.rating} · {r.lessons} lessons</div>
+                        <div style={{ fontSize:"0.72rem", color:"#64748B" }}>{r.lessons} lessons · {r.level}</div>
                       </div>
                     </Link>
                   ))}
