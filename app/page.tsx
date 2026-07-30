@@ -39,14 +39,14 @@ function DigiLearnLogo({ size = 32 }: { size?: number }) {
 }
 
 const COURSES_PREVIEW = [
-  { icon:"🤖", title:"ChatGPT & Claude Mastery",  level:"Beginner", thumb:"linear-gradient(135deg,#0C4A6E,#0369A1)", tag:"AI Tools",   lessons:38, rating:"4.9", free:true },
-  { icon:"⚡", title:"JavaScript: Zero to Pro",    level:"Beginner", thumb:"linear-gradient(135deg,#7C2D12,#EA580C)", tag:"Dev",        lessons:62, rating:"4.8", free:false },
-  { icon:"🧠", title:"Prompt Engineering Pro",     level:"Inter",    thumb:"linear-gradient(135deg,#4C1D95,#7C3AED)", tag:"AI",         lessons:44, rating:"5.0", free:false },
-  { icon:"🐍", title:"Python for AI & Data",       level:"Beginner", thumb:"linear-gradient(135deg,#14532D,#16A34A)", tag:"Data",       lessons:58, rating:"4.9", free:true },
-  { icon:"⚛️", title:"React & Next.js 16",         level:"Inter",    thumb:"linear-gradient(135deg,#164E63,#0891B2)", tag:"Dev",        lessons:54, rating:"4.9", free:false },
-  { icon:"🔐", title:"Cybersecurity Fundamentals", level:"Beginner", thumb:"linear-gradient(135deg,#881337,#E11D48)", tag:"Security",   lessons:46, rating:"4.7", free:false },
-  { icon:"⚙️", title:"Automation with Make & n8n", level:"Inter",    thumb:"linear-gradient(135deg,#064E3B,#059669)", tag:"Automation", lessons:34, rating:"4.8", free:false },
-  { icon:"📊", title:"Data Science with Python",   level:"Inter",    thumb:"linear-gradient(135deg,#431407,#B45309)", tag:"Data",       lessons:52, rating:"4.8", free:false },
+  { icon:"🤖", title:"ChatGPT & Claude Mastery",  level:"Beginner", thumb:"linear-gradient(135deg,#0C4A6E,#0369A1)", tag:"AI Tools",   lessons:38, free:true },
+  { icon:"⚡", title:"JavaScript: Zero to Pro",    level:"Beginner", thumb:"linear-gradient(135deg,#7C2D12,#EA580C)", tag:"Dev",        lessons:62, free:false },
+  { icon:"🧠", title:"Prompt Engineering Pro",     level:"Inter",    thumb:"linear-gradient(135deg,#4C1D95,#7C3AED)", tag:"AI",         lessons:44, free:false },
+  { icon:"🐍", title:"Python for AI & Data",       level:"Beginner", thumb:"linear-gradient(135deg,#14532D,#16A34A)", tag:"Data",       lessons:58, free:true },
+  { icon:"⚛️", title:"React & Next.js 16",         level:"Inter",    thumb:"linear-gradient(135deg,#164E63,#0891B2)", tag:"Dev",        lessons:54, free:false },
+  { icon:"🔐", title:"Cybersecurity Fundamentals", level:"Beginner", thumb:"linear-gradient(135deg,#881337,#E11D48)", tag:"Security",   lessons:46, free:false },
+  { icon:"⚙️", title:"Automation with Make & n8n", level:"Inter",    thumb:"linear-gradient(135deg,#064E3B,#059669)", tag:"Automation", lessons:34, free:false },
+  { icon:"📊", title:"Data Science with Python",   level:"Inter",    thumb:"linear-gradient(135deg,#431407,#B45309)", tag:"Data",       lessons:52, free:false },
 ];
 
 const TRACKS = [
@@ -228,10 +228,7 @@ export default function HomePage() {
                 </div>
                 <div className="course-body">
                   <span className={`level-pill ${c.level==="Beginner"?"level-begin":c.level==="Inter"?"level-inter":"level-adv"}`}>{c.level==="Inter"?"Intermediate":c.level}</span>
-                  <div className="course-title">{c.title}</div>
-                  <div style={{ color:"#D97706", fontSize:"0.8rem", marginBottom:"0.5rem" }}>
-                    {"★".repeat(5)} <span style={{ color:"var(--text-mute)", fontWeight:400 }}>{c.rating}</span>
-                  </div>
+                  <div className="course-title" style={{ marginBottom:"0.75rem" }}>{c.title}</div>
                   <div className="course-meta">
                     <span className="course-meta-item">📚 {c.lessons} lessons</span>
                     <span style={{ marginLeft:"auto", fontSize:"0.75rem", fontWeight:700, color:c.free?"var(--green)":"var(--text-dim)" }}>

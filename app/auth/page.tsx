@@ -10,6 +10,17 @@ interface DLUser {
   streak: number; hoursLearned: number;
 }
 
+// Accounts registry (all sign-ups) vs. the active session. Keeping them
+// separate is what lets more than one account exist and sign in later.
+const ACCOUNTS_KEY = "digilearn_accounts";
+const SESSION_KEY = "digilearn_user";
+
+const loadAccounts = (): DLUser[] => {
+  try { const v = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || "[]"); return Array.isArray(v) ? v : []; }
+  catch { return []; }
+};
+const saveAccounts = (list: DLUser[]) => localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list));
+
 function DigiLearnLogo({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
@@ -46,41 +57,78 @@ function AuthContent() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("digilearn_user")) router.replace("/dashboard");
+    const session = localStorage.getItem(SESSION_KEY);
+    if (session) {
+      // Migrate a legacy single-user session into the accounts registry so it
+      // can still be signed into after a future logout.
+      try {
+        const u = JSON.parse(session) as DLUser;
+        const accounts = loadAccounts();
+        if (u?.email && !accounts.some(a => a.email.toLowerCase() === u.email.toLowerCase())) {
+          saveAccounts([...accounts, u]);
+        }
+      } catch { /* ignore corrupt session */ }
+      router.replace("/dashboard");
+    }
   }, [router]);
 
   const handleSignup = () => {
-    if (!form.name.trim())           return setError("Enter your full name.");
-    if (!form.email.includes("@"))   return setError("Enter a valid email.");
-    if (form.password.length < 6)    return setError("Password must be at least 6 characters.");
+    const name = form.name.trim();
+    const email = form.email.trim().toLowerCase();
+    if (!name)                          return setError("Enter your full name.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setError("Enter a valid email address.");
+    if (form.password.length < 6)       return setError("Password must be at least 6 characters.");
     if (form.password !== form.confirm) return setError("Passwords do not match.");
-    const existing = localStorage.getItem("digilearn_user");
-    if (existing && (JSON.parse(existing) as DLUser).email === form.email)
+    const accounts = loadAccounts();
+    if (accounts.some(a => a.email.toLowerCase() === email))
       return setError("An account with this email already exists. Try signing in.");
     const user: DLUser = {
-      id: crypto.randomUUID(), name: form.name, email: form.email,
+      id: crypto.randomUUID(), name, email,
       password: btoa(form.password), joinedAt: new Date().toISOString(),
       plan: "free", coursesEnrolled: ["chatgpt-mastery","python-fund"], progress: { "chatgpt-mastery":0, "python-fund":0 },
       streak: 0, hoursLearned: 0,
     };
-    localStorage.setItem("digilearn_user", JSON.stringify(user));
+    saveAccounts([...accounts, user]);
+    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
     router.push("/dashboard");
   };
 
   const handleLogin = () => {
-    if (!form.email)    return setError("Enter your email.");
+    const email = form.email.trim().toLowerCase();
+    if (!email)         return setError("Enter your email.");
     if (!form.password) return setError("Enter your password.");
-    const stored = localStorage.getItem("digilearn_user");
-    if (!stored) return setError("No account found. Sign up first.");
-    const u: DLUser = JSON.parse(stored);
-    if (u.email !== form.email)            return setError("Email not found.");
-    if (u.password !== btoa(form.password)) return setError("Incorrect password.");
+    const account = loadAccounts().find(a => a.email.toLowerCase() === email);
+    if (!account)                              return setError("No account found with that email. Sign up first.");
+    if (account.password !== btoa(form.password)) return setError("Incorrect password. Try again.");
+    localStorage.setItem(SESSION_KEY, JSON.stringify(account));
     router.push("/dashboard");
+  };
+
+  // A real, working way in without a backend: a self-contained demo account.
+  const handleDemo = () => {
+    setError(""); setLoading(true);
+    setTimeout(() => {
+      const accounts = loadAccounts();
+      let demo = accounts.find(a => a.email === "demo@digilearn.app");
+      if (!demo) {
+        demo = {
+          id: crypto.randomUUID(), name: "Demo Learner", email: "demo@digilearn.app",
+          password: btoa("demo-account"), joinedAt: new Date().toISOString(),
+          plan: "free",
+          coursesEnrolled: ["chatgpt-mastery","python-fund","javascript"],
+          progress: { "chatgpt-mastery": 40, "python-fund": 15, "javascript": 0 },
+          streak: 2, hoursLearned: 5,
+        };
+        saveAccounts([...accounts, demo]);
+      }
+      localStorage.setItem(SESSION_KEY, JSON.stringify(demo));
+      router.push("/dashboard");
+    }, 400);
   };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); setError(""); setLoading(true);
-    setTimeout(() => { mode==="signup" ? handleSignup() : handleLogin(); setLoading(false); }, 600);
+    setTimeout(() => { if (mode==="signup") handleSignup(); else handleLogin(); setLoading(false); }, 600);
   };
 
   return (
@@ -122,20 +170,14 @@ function AuthContent() {
           </button>
         </form>
 
-        <div className="auth-or"><span>or continue with</span></div>
-        <button className="social-btn" onClick={()=>setError("Google OAuth coming soon — use email signup for now")}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          Continue with Google
+        <div className="auth-or"><span>or</span></div>
+        <button type="button" className="social-btn" onClick={handleDemo} disabled={loading}>
+          <span style={{ fontSize:"1.05rem" }}>🚀</span>
+          Explore with a demo account
         </button>
-        <button className="social-btn" onClick={()=>setError("GitHub OAuth coming soon — use email signup")}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          Continue with GitHub
-        </button>
+        <p style={{ fontSize:"0.72rem", color:"var(--text-mute)", textAlign:"center", marginTop:"0.5rem", lineHeight:1.5 }}>
+          No sign-up needed — jumps straight into a sample dashboard.
+        </p>
 
         <p style={{ fontSize:"0.75rem", color:"var(--text-mute)", textAlign:"center", marginTop:"1.25rem", lineHeight:1.6 }}>
           {mode==="signup"

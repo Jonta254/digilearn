@@ -2,46 +2,11 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { COURSES } from "../courses";
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
-type Course = {
-  id: string; title: string; icon: string; thumb: string;
-  lessons: number; hours: number; level: string;
-  topic: string; tags: string[]; free: boolean;
-};
-
-const ALL_COURSES: Course[] = [
-  { id:"chatgpt-mastery",    title:"ChatGPT & GPT-4o Mastery",           icon:"🤖", thumb:"linear-gradient(135deg,#0A0F2E,#1A1060)", lessons:38, hours:20, level:"Beginner",     topic:"ai-tools",   tags:["ChatGPT","GPT-4o","Custom GPTs"],             free:true  },
-  { id:"claude-mastery",     title:"Claude — Advanced AI Workflows",       icon:"🧬", thumb:"linear-gradient(135deg,#0D0A1A,#2D0A5A)", lessons:34, hours:18, level:"Intermediate", topic:"ai-tools",   tags:["Claude","Long-context","API"],                free:false },
-  { id:"prompt-engineering", title:"Prompt Engineering Pro",               icon:"🧠", thumb:"linear-gradient(135deg,#0D001A,#6600CC)", lessons:44, hours:24, level:"Intermediate", topic:"ai-tools",   tags:["Prompting","Chain-of-thought","RAG"],          free:false },
-  { id:"midjourney",         title:"Midjourney & AI Image Generation",     icon:"🎨", thumb:"linear-gradient(135deg,#1A0010,#800040)", lessons:32, hours:16, level:"Beginner",     topic:"ai-tools",   tags:["Midjourney","DALL·E 3","Stable Diffusion"],   free:false },
-  { id:"copilot-dev",        title:"GitHub Copilot for Developers",        icon:"🤝", thumb:"linear-gradient(135deg,#0A1000,#1A3300)", lessons:28, hours:14, level:"Intermediate", topic:"ai-tools",   tags:["Copilot","AI coding","Code review"],           free:false },
-  { id:"perplexity-gemini",  title:"AI Research: Perplexity & Gemini",    icon:"🔍", thumb:"linear-gradient(135deg,#001A10,#003322)", lessons:24, hours:12, level:"Beginner",     topic:"ai-tools",   tags:["Perplexity","Gemini","AI search"],             free:true  },
-  { id:"ai-writing",         title:"AI Writing & Content Creation",        icon:"✍️", thumb:"linear-gradient(135deg,#0A0510,#330050)", lessons:30, hours:14, level:"Beginner",     topic:"ai-tools",   tags:["AI writing","Jasper","Copy.ai"],               free:false },
-  { id:"sora-video",         title:"AI Video: Sora & RunwayML",            icon:"🎬", thumb:"linear-gradient(135deg,#1A0500,#660020)", lessons:26, hours:13, level:"Beginner",     topic:"ai-tools",   tags:["Sora","RunwayML","HeyGen"],                   free:false },
-  { id:"ai-productivity",    title:"AI Productivity System",               icon:"⚡", thumb:"linear-gradient(135deg,#001520,#003355)", lessons:22, hours:10, level:"Beginner",     topic:"ai-tools",   tags:["Notion AI","Copilot 365","AI workflow"],       free:true  },
-  { id:"llm-agents",         title:"Building AI Agents & LLM Apps",        icon:"🤖", thumb:"linear-gradient(135deg,#0A0020,#200055)", lessons:48, hours:26, level:"Advanced",     topic:"ai-tools",   tags:["LangChain","AutoGPT","Agents"],                free:false },
-  { id:"html-css",           title:"HTML & CSS Mastery",                   icon:"🌐", thumb:"linear-gradient(135deg,#001A33,#003366)", lessons:48, hours:24, level:"Beginner",     topic:"webdev",     tags:["HTML","CSS","Flexbox","Grid"],                 free:true  },
-  { id:"javascript",         title:"JavaScript: Zero to Pro",              icon:"⚡", thumb:"linear-gradient(135deg,#1A0D00,#CC6200)", lessons:62, hours:36, level:"Beginner",     topic:"webdev",     tags:["JS","ES2024","Async","DOM"],                   free:false },
-  { id:"react-nextjs",       title:"React & Next.js 16",                  icon:"⚛️", thumb:"linear-gradient(135deg,#001520,#006080)", lessons:54, hours:32, level:"Intermediate", topic:"webdev",     tags:["React","Next.js","App Router"],                free:false },
-  { id:"typescript",         title:"TypeScript Deep Dive",                 icon:"🔷", thumb:"linear-gradient(135deg,#0A0530,#2A1590)", lessons:38, hours:20, level:"Intermediate", topic:"webdev",     tags:["TypeScript","Generics","Utility Types"],       free:false },
-  { id:"tailwind",           title:"Tailwind CSS v4 Complete",             icon:"🌊", thumb:"linear-gradient(135deg,#001520,#004455)", lessons:32, hours:16, level:"Beginner",     topic:"webdev",     tags:["Tailwind","Components","UI"],                  free:true  },
-  { id:"node-api",           title:"Node.js & REST APIs",                  icon:"🟢", thumb:"linear-gradient(135deg,#0A2B12,#1A6628)", lessons:44, hours:26, level:"Intermediate", topic:"webdev",     tags:["Node","Express","REST","JWT"],                 free:false },
-  { id:"fullstack",          title:"Fullstack: Next.js + Supabase",        icon:"🚀", thumb:"linear-gradient(135deg,#001000,#003300)", lessons:60, hours:40, level:"Intermediate", topic:"webdev",     tags:["Next.js","Supabase","Auth","Edge"],            free:false },
-  { id:"react-native",       title:"React Native — Mobile Apps",           icon:"📱", thumb:"linear-gradient(135deg,#001A33,#005588)", lessons:46, hours:28, level:"Intermediate", topic:"webdev",     tags:["React Native","Expo","iOS","Android"],         free:false },
-  { id:"python-fund",        title:"Python Fundamentals",                  icon:"🐍", thumb:"linear-gradient(135deg,#0A1A05,#1A5C0A)", lessons:52, hours:30, level:"Beginner",     topic:"data",       tags:["Python","OOP","File I/O"],                     free:true  },
-  { id:"python-ai",          title:"Python for AI & Data Science",         icon:"🤖", thumb:"linear-gradient(135deg,#001800,#004400)", lessons:58, hours:34, level:"Beginner",     topic:"data",       tags:["Python","NumPy","Pandas","Matplotlib"],        free:true  },
-  { id:"machine-learning",   title:"Machine Learning A-Z",                 icon:"⚙️", thumb:"linear-gradient(135deg,#0A0500,#331A00)", lessons:68, hours:44, level:"Intermediate", topic:"data",       tags:["Scikit-learn","Regression","Classification"],   free:false },
-  { id:"deep-learning",      title:"Deep Learning & Neural Networks",      icon:"🧬", thumb:"linear-gradient(135deg,#0A0020,#1A0040)", lessons:62, hours:38, level:"Advanced",     topic:"data",       tags:["PyTorch","TensorFlow","CNN","Transformers"],   free:false },
-  { id:"nlp",                title:"Natural Language Processing",          icon:"💬", thumb:"linear-gradient(135deg,#001A00,#003300)", lessons:44, hours:26, level:"Advanced",     topic:"data",       tags:["NLP","Transformers","BERT","LLMs"],            free:false },
-  { id:"sql",                title:"SQL for Data Analysis",                icon:"🗄️", thumb:"linear-gradient(135deg,#0A0500,#442200)", lessons:36, hours:18, level:"Beginner",     topic:"data",       tags:["SQL","PostgreSQL","Analytics","Joins"],        free:true  },
-  { id:"ethical-hacking",    title:"Ethical Hacking & Penetration Testing",icon:"🧑‍💻",thumb:"linear-gradient(135deg,#0A0010,#220033)", lessons:60, hours:38, level:"Advanced",     topic:"security",   tags:["Ethical hacking","Kali Linux","OWASP","CTF"],  free:false },
-  { id:"digital-biz",        title:"Build a Digital Business from Scratch",icon:"🏪", thumb:"linear-gradient(135deg,#1A0A00,#5C2200)", lessons:48, hours:28, level:"Beginner",     topic:"business",   tags:["Business","Freelancing","SaaS","Revenue"],     free:false },
-  { id:"sql-fundamentals",   title:"SQL & Relational Databases",           icon:"🗄️", thumb:"linear-gradient(135deg,#0A1520,#1A3A5C)", lessons:42, hours:22, level:"Beginner",     topic:"databases",  tags:["SQL","PostgreSQL","MySQL","Joins","Indexing"],  free:true  },
-  { id:"ai-ethics-fundamentals",title:"AI Ethics: Principles & Practice", icon:"⚖️", thumb:"linear-gradient(135deg,#1A1200,#553C00)", lessons:36, hours:18, level:"Beginner",     topic:"ethics",     tags:["AI Ethics","Bias","Fairness","Transparency"],  free:true  },
-  { id:"fintech-fundamentals",title:"Fintech Fundamentals",                icon:"💳", thumb:"linear-gradient(135deg,#001A0A,#004D25)", lessons:38, hours:20, level:"Beginner",     topic:"finance",    tags:["Fintech","Payments","Banking","Open Banking"],  free:true  },
-];
+const ALL_COURSES = COURSES;
 
 type Section = { title: string; lessons: string[] };
 

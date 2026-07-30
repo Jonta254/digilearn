@@ -78,20 +78,28 @@ export default function Dashboard() {
 
   const logout = () => { localStorage.removeItem("digilearn_user"); router.push("/"); };
 
+  // Persist to the active session AND the matching accounts-registry entry, so
+  // progress is still there after signing out and back in.
+  const persistUser = (updated: DLUser) => {
+    localStorage.setItem("digilearn_user", JSON.stringify(updated));
+    try {
+      const accounts: DLUser[] = JSON.parse(localStorage.getItem("digilearn_accounts") || "[]");
+      const i = accounts.findIndex((a) => a.id === updated.id);
+      if (i >= 0) { accounts[i] = updated; localStorage.setItem("digilearn_accounts", JSON.stringify(accounts)); }
+    } catch { /* registry sync is best-effort */ }
+    setUser(updated);
+  };
+
   const enroll = (id: string) => {
     if (!user || user.coursesEnrolled.includes(id)) return;
-    const updated = { ...user, coursesEnrolled:[...user.coursesEnrolled,id], progress:{...user.progress,[id]:0} };
-    localStorage.setItem("digilearn_user", JSON.stringify(updated));
-    setUser(updated);
+    persistUser({ ...user, coursesEnrolled:[...user.coursesEnrolled,id], progress:{...user.progress,[id]:0} });
   };
 
   const advanceProgress = (id: string) => {
     if (!user) return;
     const cur = user.progress[id] ?? 0;
     const next = Math.min(cur + Math.floor(Math.random()*14)+6, 100);
-    const updated = { ...user, progress:{...user.progress,[id]:next}, hoursLearned:user.hoursLearned+1, streak: Math.max(user.streak, 1) };
-    localStorage.setItem("digilearn_user", JSON.stringify(updated));
-    setUser(updated);
+    persistUser({ ...user, progress:{...user.progress,[id]:next}, hoursLearned:user.hoursLearned+1, streak: Math.max(user.streak, 1) });
   };
 
   const greet = () => {
