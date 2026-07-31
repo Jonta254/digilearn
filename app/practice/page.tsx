@@ -392,6 +392,45 @@ export default function PracticePage() {
                 );
               })}
             </div>
+
+            {/* How it works — a plain explanation of the method */}
+            <div style={{ marginTop: "3.5rem", paddingTop: "2.5rem", borderTop: "1px solid var(--border)" }}>
+              <h2 style={{ fontSize: "1.15rem", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: "0.4rem" }}>How this works</h2>
+              <p style={{ color: "var(--text-dim)", fontSize: "0.9rem", lineHeight: 1.75, maxWidth: 620, marginBottom: "1.75rem" }}>
+                This is the <strong>Leitner system</strong> — a proven, low-effort way to remember more by reviewing at the right moment. You grade yourself honestly, and each card&apos;s next review is scheduled for you.
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))", gap: "1rem", marginBottom: "1.75rem" }}>
+                {[
+                  { n: "1", title: "Answer, then self-grade", body: "Read the front, recall the answer, flip the card, then tell it the truth: Got it, Almost, or Missed. Honest grading is what makes the schedule work." },
+                  { n: "2", title: "Five boxes space it out", body: "Every card lives in a box from 1 to 5. Get it right and it moves up a box, so you see it less often. Miss it and it drops to box 1 to be relearned." },
+                  { n: "3", title: "Come back when it's due", body: "Higher boxes wait longer between reviews — roughly 1, 3, 7, then 16 days. You only study what's due, so effort goes where memory is weakest." },
+                ].map((s) => (
+                  <div key={s.n} className="dash-card" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", color: "var(--violet)", background: "var(--violet-light)" }}>{s.n}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.9rem" }}>{s.title}</div>
+                    <div style={{ fontSize: "0.82rem", color: "var(--text-dim)", lineHeight: 1.6 }}>{s.body}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                <span style={{ fontSize: "0.78rem", color: "var(--text-mute)", marginRight: 4 }}>Box → review after:</span>
+                {[
+                  { box: "1", when: "same session", c: BOX_COLORS[0] },
+                  { box: "2", when: "~1 day", c: BOX_COLORS[1] },
+                  { box: "3", when: "~3 days", c: BOX_COLORS[2] },
+                  { box: "4", when: "~7 days", c: BOX_COLORS[3] },
+                  { box: "5", when: "~16 days", c: BOX_COLORS[4] },
+                ].map((b) => (
+                  <span key={b.box} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.72rem", fontWeight: 600, color: "var(--text-dim)", background: "var(--bg3)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: 100 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: b.c }} />
+                    Box {b.box} · {b.when}
+                  </span>
+                ))}
+              </div>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-mute)", marginTop: "1.5rem", lineHeight: 1.6 }}>
+                Your progress is stored only in this browser (localStorage) — nothing is uploaded, and there are no accounts to create.
+              </p>
+            </div>
           </>
         )}
 

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { COURSES } from "../courses";
+import { COURSES, type Course } from "../courses";
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -113,21 +113,134 @@ const CURRICULUM: Record<string, { overview: string[]; sections: Section[] }> = 
   },
 };
 
-function genericCurriculum(title: string): { overview: string[]; sections: Section[] } {
+// Domain-tailored fallback curricula. Courses without a hand-written entry
+// above still get a real, relevant outline for their topic — not a generic
+// placeholder. Overviews weave in the course's own title and tags.
+const TOPIC_SECTIONS: Record<string, Section[]> = {
+  "ai-tools": [
+    { title:"Getting Started",      lessons:["How modern AI tools actually work","Choosing the right model for the task","Prompts, context, and iteration basics","Setting up your AI toolkit"] },
+    { title:"Core Techniques",      lessons:["Structuring an effective prompt","Giving the model context and constraints","Refining output through iteration","Combining several tools in one workflow"] },
+    { title:"Practical Workflows",  lessons:["Research and summarisation","Drafting, editing, and rewriting","Automating repetitive steps","Fact-checking and verifying output"] },
+    { title:"Advanced Use",         lessons:["Custom instructions and personas","Connecting tools via APIs and plugins","Cost, rate limits, and privacy","Avoiding hallucinations and errors"] },
+    { title:"Capstone Project",     lessons:["Scoping a real workflow to automate","Building it step by step","Testing and refining the results","Packaging it to reuse and share"] },
+  ],
+  "webdev": [
+    { title:"Foundations",          lessons:["How the web works: client, server, HTTP","Setting up your dev environment","Core syntax and project structure","Building your first working page"] },
+    { title:"Building Blocks",      lessons:["Structure, styling, and layout","State and interactivity","Reusable components and patterns","Handling user input and forms"] },
+    { title:"Data & APIs",          lessons:["Fetching and displaying remote data","Working with JSON and REST APIs","Async patterns and error handling","Basic auth and protected routes"] },
+    { title:"Quality & Tooling",    lessons:["Debugging with browser dev tools","Responsive and accessible design","Testing the essentials","Version control with Git"] },
+    { title:"Ship It",              lessons:["Preparing a production build","Deploying to the web","Performance and best practices","Capstone: build and deploy a real app"] },
+  ],
+  "data": [
+    { title:"Foundations",          lessons:["The data workflow end to end","Setting up Python, notebooks, and libraries","Loading and inspecting datasets","Types, missing values, and cleaning"] },
+    { title:"Wrangling & Analysis", lessons:["Filtering, grouping, and aggregating","Joining and reshaping data","Descriptive statistics that matter","Spotting patterns and outliers"] },
+    { title:"Visualisation",        lessons:["Choosing the right chart","Plotting with matplotlib and seaborn","Telling a story with data","Dashboards and reporting basics"] },
+    { title:"Modelling",            lessons:["Framing a prediction problem","Train/test splits and evaluation","A first model, start to finish","Avoiding overfitting and data leakage"] },
+    { title:"Capstone Project",     lessons:["Picking a real dataset","Cleaning and exploring it","Building and evaluating a model","Presenting your findings"] },
+  ],
+  "automation": [
+    { title:"Automation Foundations", lessons:["What to automate (and what not to)","Triggers, actions, and data flow","Connecting your first two apps","Mapping a manual process"] },
+    { title:"Building Workflows",   lessons:["Multi-step scenarios","Filters, routers, and conditions","Working with variables and data","Error handling and retries"] },
+    { title:"Working with APIs",    lessons:["Webhooks explained","Calling a REST API from a workflow","Authentication and tokens","Parsing and transforming responses"] },
+    { title:"Reliability & Scale",  lessons:["Testing and debugging runs","Rate limits and cost control","Logging and monitoring","Keeping automations maintainable"] },
+    { title:"Capstone Project",     lessons:["Designing an end-to-end automation","Building it step by step","Testing the edge cases","Documenting and handing it off"] },
+  ],
+  "security": [
+    { title:"Security Foundations", lessons:["The CIA triad and threat modelling","How attackers think","Common vulnerability classes","Setting up a safe practice lab"] },
+    { title:"Core Defences",        lessons:["Authentication and access control","Encryption in transit and at rest","Secure configuration and hardening","Logging, monitoring, and alerting"] },
+    { title:"Offensive Basics (Ethical)", lessons:["Reconnaissance and scanning","Exploiting common weaknesses safely","Web app risks: the OWASP Top 10","Reporting findings responsibly"] },
+    { title:"Operations",           lessons:["Incident response fundamentals","Patch and vulnerability management","Least privilege in practice","Phishing and security awareness"] },
+    { title:"Capstone Project",     lessons:["Assessing a sample system","Documenting risks and fixes","Hardening it step by step","Writing a clear security report"] },
+  ],
+  "business": [
+    { title:"Foundations",          lessons:["Finding a real problem worth solving","Validating demand before you build","Business models that fit your skills","Setting up lean and inexpensively"] },
+    { title:"Building the Offer",   lessons:["Packaging skills into a clear offer","Pricing without underselling","Creating something people want","Shipping a minimal first version"] },
+    { title:"Getting Customers",    lessons:["Where your first customers are","Content and outreach that works","Landing pages and conversion basics","Selling without being pushy"] },
+    { title:"Running It",           lessons:["Delivering reliably and on time","Simple operations and tools","Money basics: invoices, tax, cashflow","Getting feedback and improving"] },
+    { title:"Capstone Project",     lessons:["Defining your business idea","Building your offer and page","Getting your first conversations","A concrete 90-day action plan"] },
+  ],
+  "databases": [
+    { title:"Relational Foundations", lessons:["Tables, rows, columns, and keys","Data types and constraints","Designing a simple schema","Setting up your database"] },
+    { title:"Querying Data",        lessons:["SELECT, WHERE, and ORDER BY","Joining tables together","Grouping and aggregating","Subqueries and CTEs"] },
+    { title:"Modelling & Integrity", lessons:["Normalisation and relationships","Primary and foreign keys","Transactions and ACID","Preventing bad data"] },
+    { title:"Performance",          lessons:["How indexes work","Reading a query plan","Common performance pitfalls","Caching and scaling basics"] },
+    { title:"Capstone Project",     lessons:["Designing a schema for a real app","Loading and querying data","Optimising the slow queries","Documenting your data model"] },
+  ],
+  "ethics": [
+    { title:"Foundations",          lessons:["Why AI ethics matters now","Fairness, accountability, transparency","Stakeholders and real-world harms","A framework for ethical decisions"] },
+    { title:"Bias & Fairness",      lessons:["Where bias enters an ML system","Measuring fairness","Auditing a model or dataset","Mitigation strategies and trade-offs"] },
+    { title:"Privacy & Rights",     lessons:["Data protection and consent","Privacy-preserving techniques","Surveillance and civil liberties","GDPR and data rights in practice"] },
+    { title:"Governance & Policy",  lessons:["The EU AI Act and global rules","Risk tiers and compliance","Documentation and model cards","Responsible deployment practices"] },
+    { title:"Capstone Project",     lessons:["Choosing a real AI system to assess","Identifying risks and impacts","Proposing concrete safeguards","Writing an ethics review"] },
+  ],
+  "finance": [
+    { title:"Foundations",          lessons:["How the financial system fits together","Key instruments and markets","Risk and return basics","Setting up your tools"] },
+    { title:"Data & Analysis",      lessons:["Working with financial data","Returns, volatility, and metrics","Time-series basics","Backtesting an idea carefully"] },
+    { title:"Core Topics",          lessons:["Valuation fundamentals","Portfolios and diversification","Payments and modern fintech rails","Where blockchain does (and doesn't) help"] },
+    { title:"Risk & Judgement",     lessons:["Managing downside risk","Fees, taxes, and real costs","Common mistakes and biases","Non-hype, evidence-based thinking"] },
+    { title:"Capstone Project",     lessons:["Framing a finance question","Gathering and cleaning data","Analysing and testing it","Presenting your conclusions"] },
+  ],
+  "healthcare": [
+    { title:"Foundations",          lessons:["Digital health and the care journey","Health data types and standards","Key systems: EHR, imaging, devices","Setting up a safe, compliant workflow"] },
+    { title:"Health Data",          lessons:["Interoperability: FHIR and HL7","Working with clinical data","Privacy, HIPAA, and de-identification","Data quality in healthcare"] },
+    { title:"AI in Health",         lessons:["Where AI helps in diagnostics","Evaluating clinical models carefully","Bias and safety in medical AI","Regulation and validation"] },
+    { title:"Responsible Practice", lessons:["Building a small health-data pipeline","Visualising patient-level data","Guardrails and human oversight","The ethics of health technology"] },
+    { title:"Capstone Project",     lessons:["Choosing a realistic use case","Handling data responsibly","Building and evaluating your solution","Communicating results to clinicians"] },
+  ],
+  "policy": [
+    { title:"Foundations",          lessons:["Technology, policy, and public good","How open data creates value","Key institutions and processes","Framing a policy question"] },
+    { title:"Working with Data",    lessons:["Finding trustworthy open datasets","Cleaning and analysing public data","Visualising for decision-makers","Communicating uncertainty honestly"] },
+    { title:"Governance & Regulation", lessons:["How rules and regulation are made","AI governance frameworks","Digital rights and accountability","Comparing approaches across regions"] },
+    { title:"Civic Practice",       lessons:["Designing citizen-facing services","Transparency and participation","Data journalism techniques","Measuring real-world impact"] },
+    { title:"Capstone Project",     lessons:["Choosing a public-interest problem","Gathering evidence and data","Proposing a concrete intervention","Presenting to a non-technical audience"] },
+  ],
+};
+
+const DEFAULT_SECTIONS: Section[] = [
+  { title:"Foundations",         lessons:["Core concepts and vocabulary","Setting up your environment","How the pieces fit together","Your first hands-on exercise"] },
+  { title:"Core Skills",         lessons:["The fundamentals in depth","Working through real examples","Common patterns and pitfalls","Practice and self-assessment"] },
+  { title:"Going Deeper",        lessons:["Intermediate techniques","Integrating with other tools","Real-world use cases","A guided mini-project"] },
+  { title:"Applied Practice",    lessons:["Advanced patterns","Quality, testing, and reliability","Performance and trade-offs","A case-study walkthrough"] },
+  { title:"Capstone Project",    lessons:["Project brief and requirements","Building it step by step","Review and refinement","Sharing your finished work"] },
+];
+
+const TOPIC_LEADS: Record<string, [string, string]> = {
+  "ai-tools":   ["Use {title} confidently through hands-on, practical workflows", "Turn {t0} and {t1} into real everyday productivity"],
+  "webdev":     ["Build real, working software with {title}", "Get comfortable with {t0}, {t1}, and modern tooling"],
+  "data":       ["Work with real data using {title}", "Apply {t0} and {t1} to genuine datasets"],
+  "automation": ["Automate real work with {title}", "Connect {t0}, {t1}, and the apps you already use"],
+  "security":   ["Build practical security skills with {title}", "Understand {t0} and {t1} the way defenders do"],
+  "business":   ["Turn skills into income with {title}", "Apply {t0} and {t1} to a real venture"],
+  "databases":  ["Design and query databases with {title}", "Master {t0}, {t1}, and solid data modelling"],
+  "ethics":     ["Think clearly about AI's impact with {title}", "Explore {t0}, {t1}, and responsible practice"],
+  "finance":    ["Understand finance and fintech with {title}", "Work through {t0}, {t1}, and real data — no hype"],
+  "healthcare": ["Explore digital health with {title}", "Handle {t0}, {t1}, and clinical data responsibly"],
+  "policy":     ["Use technology for public good with {title}", "Apply {t0}, {t1}, and open data to real questions"],
+};
+
+const TOPIC_OUTCOMES: Record<string, [string, string]> = {
+  "ai-tools":   ["Build reusable prompt and automation patterns", "Finish with a project you built yourself"],
+  "webdev":     ["Write clean, responsive, accessible code", "Ship a project to the web you can show off"],
+  "data":       ["Clean, analyse, and visualise with confidence", "Complete an end-to-end data project"],
+  "automation": ["Design reliable, maintainable workflows", "Ship an automation that saves you hours"],
+  "security":   ["Practise safely in a controlled lab", "Assess and harden a realistic system"],
+  "business":   ["Validate, package, price, and sell", "Leave with a concrete 90-day plan"],
+  "databases":  ["Write correct, performant queries", "Model the data for a real application"],
+  "ethics":     ["Audit systems for bias and risk", "Write a real, structured ethics review"],
+  "finance":    ["Reason about risk without the hype", "Complete a hands-on analysis project"],
+  "healthcare": ["Respect privacy, safety, and regulation", "Build a realistic health-tech project"],
+  "policy":     ["Turn evidence into clear recommendations", "Present findings to a non-technical audience"],
+};
+
+function fallbackCurriculum(course: Course): { overview: string[]; sections: Section[] } {
+  const t0 = course.tags[0] ?? "the core skills";
+  const t1 = course.tags[1] ?? "real projects";
+  const fill = (s: string) => s.replace("{title}", course.title).replace("{t0}", t0).replace("{t1}", t1);
+  const lead = TOPIC_LEADS[course.topic] ?? ["Build real, practical skills with {title}", "Learn {t0} and {t1} through worked examples"];
+  const outcome = TOPIC_OUTCOMES[course.topic] ?? ["Practise with hands-on exercises throughout", "Finish with a project you built yourself"];
   return {
-    overview:[
-      `Build real skills in ${title} from the ground up`,
-      "Hands-on projects throughout every module",
-      "Learn at your own pace — no deadlines",
-      "Certificate of completion included",
-    ],
-    sections:[
-      { title:"Introduction & Setup",     lessons:["Welcome to the course","Setting up your environment","Core concepts overview","Your first hands-on exercise"] },
-      { title:"Core Skills",             lessons:["Fundamentals deep dive","Working with real examples","Common patterns and best practices","Exercises and self-assessment"] },
-      { title:"Intermediate Topics",     lessons:["Going deeper — intermediate concepts","Real-world use cases","Integrating with other tools","Mini-project"] },
-      { title:"Advanced Applications",   lessons:["Advanced patterns and architectures","Performance and optimisation","Security considerations","Case study walkthrough"] },
-      { title:"Capstone Project",        lessons:["Project brief and requirements","Building the project step by step","Review and refactoring","Deploying and sharing your work"] },
-    ],
+    overview: [fill(lead[0]), fill(lead[1]), outcome[0], outcome[1]],
+    sections: TOPIC_SECTIONS[course.topic] ?? DEFAULT_SECTIONS,
   };
 }
 
@@ -163,7 +276,7 @@ export default function CoursePage() {
     );
   }
 
-  const content = CURRICULUM[course.id] ?? genericCurriculum(course.title);
+  const content = CURRICULUM[course.id] ?? fallbackCurriculum(course);
   const totalLessons = content.sections.reduce((s, sec) => s + sec.lessons.length, 0);
   const related = ALL_COURSES.filter((c) => c.topic === course.topic && c.id !== course.id).slice(0, 3);
 
