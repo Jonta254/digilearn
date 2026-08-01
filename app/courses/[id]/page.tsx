@@ -111,6 +111,36 @@ const CURRICULUM: Record<string, { overview: string[]; sections: Section[] }> = 
       { title:"Analytical SQL",         lessons:["Window functions: ROW_NUMBER, RANK, DENSE_RANK","LAG, LEAD, and running totals","NTILE for percentile analysis","Capstone: cohort retention analysis"] },
     ],
   },
+  "typescript": {
+    overview:["Add static types to JavaScript and catch bugs before they run","Master generics, unions, and the utility types you'll use daily","Type real-world code: APIs, React props, and async data","Configure tsconfig and adopt TypeScript in any project"],
+    sections:[
+      { title:"TypeScript Basics",       lessons:["Why types: catching errors before runtime","Primitives, arrays, and tuples","Type inference vs explicit annotations","tsconfig and the compiler"] },
+      { title:"Shaping Data",            lessons:["Interfaces vs type aliases","Union and intersection types","Literal types and enums","Optional, readonly, and index signatures"] },
+      { title:"Generics",                lessons:["Writing your first generic function","Constraints with extends","Generic interfaces and classes","Reusable, type-safe utilities"] },
+      { title:"Utility & Advanced Types",lessons:["Partial, Pick, Omit, and Record","keyof, typeof, and mapped types","Conditional types and infer","Narrowing and type guards"] },
+      { title:"TypeScript in Practice",  lessons:["Typing React props and hooks","Typing API responses and async code","Declaration files and third-party types","Migrating a JavaScript project"] },
+    ],
+  },
+  "node-api": {
+    overview:["Build production REST APIs with Node.js and Express","Design clean routes, middleware, and error handling","Add JWT authentication and protect your endpoints","Connect a database and deploy your API"],
+    sections:[
+      { title:"Node.js Foundations",     lessons:["The event loop and non-blocking I/O","Modules, npm, and package.json","Environment variables and config","Your first HTTP server"] },
+      { title:"Express Essentials",      lessons:["Routing: GET, POST, PUT, DELETE","Middleware and the request/response cycle","Parsing JSON bodies and query params","Structuring routes and controllers"] },
+      { title:"Designing a REST API",    lessons:["REST principles and resource naming","Choosing the right status codes","Validation and error handling","Pagination, filtering, and sorting"] },
+      { title:"Auth & Security",         lessons:["Hashing passwords with bcrypt","JWT authentication and refresh tokens","Protecting routes with middleware","CORS, rate limiting, and secure headers"] },
+      { title:"Data & Deploy",           lessons:["Connecting a database (SQL or Mongo)","CRUD through a data layer","Testing your endpoints","Deploying the API to the cloud"] },
+    ],
+  },
+  "deep-learning": {
+    overview:["Understand how neural networks actually learn from data","Build and train models with PyTorch and TensorFlow","Master CNNs for images and transformers for sequences","Train, evaluate, and deploy a real deep-learning model"],
+    sections:[
+      { title:"Neural Network Foundations", lessons:["Neurons, weights, and activation functions","The forward pass and the loss function","Backpropagation and gradient descent","Building a small network from scratch"] },
+      { title:"Training Deep Networks",  lessons:["Optimizers: SGD, Adam, learning rate","Overfitting, regularization, and dropout","Batch normalization and initialization","Monitoring training with metrics"] },
+      { title:"Convolutional Networks",  lessons:["Convolutions and feature maps","Pooling and CNN architectures","Image classification end to end","Transfer learning with pretrained models"] },
+      { title:"Sequences & Transformers",lessons:["RNNs and the vanishing-gradient problem","Attention and self-attention","The transformer architecture","Using pretrained language models"] },
+      { title:"From Model to Product",   lessons:["Saving and loading models","Evaluation beyond accuracy","Exporting and serving a model","A complete end-to-end project"] },
+    ],
+  },
 };
 
 // Domain-tailored fallback curricula. Courses without a hand-written entry
