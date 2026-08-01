@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { COURSES, type Course } from "../courses";
+import { COURSE_PRICE_KES, formatKES } from "@/lib/pricing";
+import PaywallModal from "./PaywallModal";
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -293,6 +295,16 @@ export default function CoursePage() {
   const params = useParams<{ id: string }>();
   const course = ALL_COURSES.find((c) => c.id === params.id);
   const [openSection, setOpenSection] = useState<number | null>(0);
+  const [unlocked, setUnlocked] = useState(false);
+  const [payOpen, setPayOpen] = useState(false);
+
+  useEffect(() => {
+    if (!course || course.free) { setUnlocked(Boolean(course?.free)); return; }
+    try {
+      const u = JSON.parse(localStorage.getItem("digilearn_unlocks") || "[]");
+      if (Array.isArray(u) && u.includes(course.id)) setUnlocked(true);
+    } catch { /* ignore corrupt storage */ }
+  }, [course]);
 
   if (!course) {
     return (
@@ -311,6 +323,19 @@ export default function CoursePage() {
   const related = ALL_COURSES.filter((c) => c.topic === course.topic && c.id !== course.id).slice(0, 3);
 
   const levelColor = course.level === "Beginner" ? "#16A34A" : course.level === "Intermediate" ? "#0284C7" : "#7C3AED";
+
+  // Paid courses show the first section as a free preview; the rest unlock
+  // after an M-Pesa payment (persisted per-course in localStorage).
+  const isLocked = !course.free && !unlocked;
+  const persistUnlock = () => {
+    try {
+      const u = JSON.parse(localStorage.getItem("digilearn_unlocks") || "[]");
+      const set = new Set<string>(Array.isArray(u) ? u : []);
+      set.add(course.id);
+      localStorage.setItem("digilearn_unlocks", JSON.stringify([...set]));
+    } catch { /* ignore */ }
+    setUnlocked(true);
+  };
 
   return (
     <div style={{ minHeight:"100vh", background:"#fff", color:"#0F172A", fontFamily:"'Inter',sans-serif", WebkitFontSmoothing:"antialiased" }}>
@@ -412,31 +437,49 @@ export default function CoursePage() {
               </div>
 
               <div style={{ border:"1px solid rgba(15,23,42,0.1)", borderRadius:12, overflow:"hidden" }}>
-                {content.sections.map((sec, si) => (
-                  <div key={si}>
-                    <button className="section-btn" onClick={() => setOpenSection(openSection === si ? null : si)}>
-                      <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                        <span style={{ fontSize:"0.82rem", fontWeight:700, color:"#1E293B" }}>{sec.title}</span>
-                        <span style={{ fontSize:"0.72rem", color:"#94A3B8" }}>{sec.lessons.length} lessons</span>
-                      </div>
-                      <span style={{ color:"#64748B", fontSize:"0.9rem", transition:"transform 200ms", transform:openSection === si ? "rotate(180deg)" : "none" }}>▾</span>
-                    </button>
+                {content.sections.map((sec, si) => {
+                  const locked = isLocked && si > 0;
+                  const open = openSection === si && !locked;
+                  return (
+                    <div key={si}>
+                      <button className="section-btn" onClick={() => locked ? setPayOpen(true) : setOpenSection(openSection === si ? null : si)}>
+                        <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
+                          <span style={{ fontSize:"0.82rem", fontWeight:700, color:locked ? "#94A3B8" : "#1E293B" }}>{sec.title}</span>
+                          <span style={{ fontSize:"0.72rem", color:"#94A3B8" }}>{sec.lessons.length} lessons</span>
+                          {isLocked && si === 0 && <span style={{ fontSize:"0.6rem", fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", color:"#16A34A", background:"#DCFCE7", padding:"2px 7px", borderRadius:100 }}>Free preview</span>}
+                        </div>
+                        {locked
+                          ? <span style={{ color:"#94A3B8", fontSize:"0.85rem" }}>🔒</span>
+                          : <span style={{ color:"#64748B", fontSize:"0.9rem", transition:"transform 200ms", transform:open ? "rotate(180deg)" : "none" }}>▾</span>}
+                      </button>
 
-                    {openSection === si && (
-                      <div style={{ background:"#FAFAFA", borderBottom:"1px solid rgba(15,23,42,0.06)" }}>
-                        {sec.lessons.map((lesson, li) => (
-                          <div key={li} style={{ display:"flex", alignItems:"center", gap:12, padding:"11px 18px", borderBottom: li < sec.lessons.length - 1 ? "1px solid rgba(15,23,42,0.05)" : "none" }}>
-                            <div style={{ width:22, height:22, borderRadius:"50%", border:"1px solid rgba(2,132,199,0.3)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                              <span style={{ fontSize:"0.55rem", color:"#0284C7" }}>▶</span>
+                      {open && (
+                        <div style={{ background:"#FAFAFA", borderBottom:"1px solid rgba(15,23,42,0.06)" }}>
+                          {sec.lessons.map((lesson, li) => (
+                            <div key={li} style={{ display:"flex", alignItems:"center", gap:12, padding:"11px 18px", borderBottom: li < sec.lessons.length - 1 ? "1px solid rgba(15,23,42,0.05)" : "none" }}>
+                              <div style={{ width:22, height:22, borderRadius:"50%", border:"1px solid rgba(2,132,199,0.3)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                                <span style={{ fontSize:"0.55rem", color:"#0284C7" }}>▶</span>
+                              </div>
+                              <span style={{ fontSize:"0.85rem", color:"#334155" }}>{lesson}</span>
                             </div>
-                            <span style={{ fontSize:"0.85rem", color:"#334155" }}>{lesson}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
+
+              {isLocked && (
+                <div style={{ marginTop:14, display:"flex", alignItems:"center", gap:14, flexWrap:"wrap", padding:"1rem 1.25rem", borderRadius:12, background:"linear-gradient(135deg,#EFF6FF,#F0FDF4)", border:"1px solid rgba(2,132,199,0.2)" }}>
+                  <span style={{ fontSize:"1.4rem" }}>🔒</span>
+                  <div style={{ flex:1, minWidth:200 }}>
+                    <div style={{ fontWeight:800, fontSize:"0.9rem" }}>Section 1 is free — unlock the rest</div>
+                    <div style={{ fontSize:"0.8rem", color:"#475569" }}>Get all {totalLessons} lessons for {formatKES(COURSE_PRICE_KES)}, paid once with M-Pesa.</div>
+                  </div>
+                  <button onClick={()=>setPayOpen(true)} className="btn-enroll" style={{ width:"auto", padding:"10px 20px" }}>Unlock with M-Pesa →</button>
+                </div>
+              )}
             </div>
 
             {/* Related courses */}
@@ -464,12 +507,16 @@ export default function CoursePage() {
               <div style={{ background:course.thumb, height:160, display:"flex", alignItems:"center", justifyContent:"center", fontSize:"4rem" }}>{course.icon}</div>
               <div style={{ padding:"1.5rem" }}>
                 <div style={{ fontSize:"1.6rem", fontWeight:900, marginBottom:4, letterSpacing:"-0.02em" }}>
-                  {course.free ? <span style={{ color:"#16A34A" }}>Free</span> : "$49"}
+                  {course.free ? <span style={{ color:"#16A34A" }}>Free</span> : formatKES(COURSE_PRICE_KES)}
                 </div>
-                {!course.free && <div style={{ fontSize:"0.75rem", color:"#94A3B8", marginBottom:14 }}>One-time · Lifetime access</div>}
-                <button className="btn-enroll" style={{ marginBottom:10 }}>
-                  {course.free ? "Start Learning — Free →" : "Enroll Now →"}
-                </button>
+                {!course.free && <div style={{ fontSize:"0.75rem", color:"#94A3B8", marginBottom:14 }}>One-time · pay with M-Pesa · lifetime access</div>}
+                {course.free ? (
+                  <button className="btn-enroll" style={{ marginBottom:10 }}>Start Learning — Free →</button>
+                ) : unlocked ? (
+                  <div style={{ marginBottom:10, padding:"12px", borderRadius:10, background:"#DCFCE7", color:"#16A34A", fontWeight:700, fontSize:"0.9rem", textAlign:"center" }}>✓ Unlocked — enjoy the course</div>
+                ) : (
+                  <button onClick={()=>setPayOpen(true)} className="btn-enroll" style={{ marginBottom:10 }}>Unlock all {course.lessons} lessons →</button>
+                )}
                 <Link href="/auth?mode=signup" style={{ display:"block", textAlign:"center", padding:"10px", borderRadius:10, border:"1px solid rgba(15,23,42,0.12)", fontSize:"0.82rem", color:"#475569", fontWeight:600, transition:"background 160ms" }}>
                   Try Pro — 7 days free
                 </Link>
@@ -502,6 +549,15 @@ export default function CoursePage() {
           </div>
         </div>
       </div>
+
+      {payOpen && (
+        <PaywallModal
+          course={{ id: course.id, title: course.title, lessons: course.lessons }}
+          price={COURSE_PRICE_KES}
+          onClose={() => setPayOpen(false)}
+          onUnlocked={persistUnlock}
+        />
+      )}
     </div>
   );
 }
