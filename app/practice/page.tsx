@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 
 // ── Leitner scheduling ───────────────────────────────────────────────────────
@@ -251,6 +251,18 @@ export default function PracticePage() {
     setSession({ reviewed: 0, got: 0, almost: 0, missed: 0 });
     setView("study");
   }, [allKeys, getState]);
+
+  // Deep link: /practice?deck=<id> jumps straight into that deck (used by the
+  // dashboard recall drills). Runs once, after stored progress has loaded.
+  const autoStartedRef = useRef(false);
+  useEffect(() => {
+    if (!mounted || autoStartedRef.current) return;
+    const deckId = new URLSearchParams(window.location.search).get("deck");
+    if (deckId && DECKS.some((d) => d.id === deckId)) {
+      autoStartedRef.current = true;
+      startSession(deckId, (deckStats[deckId]?.due ?? 0) === 0);
+    }
+  }, [mounted, deckStats, startSession]);
 
   // Kept free of side effects inside state updaters so a StrictMode double-
   // invoke can never double-count a review or double-write storage.

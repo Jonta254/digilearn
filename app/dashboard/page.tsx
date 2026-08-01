@@ -26,15 +26,16 @@ const COURSE_CATALOG: Record<string, { title: string; icon: string; lessons: num
 };
 
 const ANNOUNCEMENTS = [
-  { icon:"🚀", text:"New: Claude Mastery course just launched — 34 in-depth lessons on Claude AI workflows." },
-  { icon:"🤖", text:"AI Agents & LLM Apps added to the AI path — build your first agent today." },
-  { icon:"🏆", text:"July challenge: Complete 3 AI courses for the AI Pioneer badge and 500 XP." },
+  { icon:"🎴", text:"New: Practice — spaced-repetition flashcards across 8 topics (64 hand-written cards)." },
+  { icon:"🌿", text:"Fresh recall decks added: Git & Version Control, SQL, and Web & HTTP." },
+  { icon:"🧠", text:"Every course now has a full, topic-tailored curriculum you can preview before enrolling." },
 ];
 
-const DAILY = [
-  { title:"Write a prompt that returns JSON", topic:"Prompt Engineering", xp:40, diff:"Easy" },
-  { title:"Build a Python data cleaning pipeline", topic:"Python", xp:65, diff:"Medium" },
-  { title:"Create a Make.com automation for Gmail", topic:"Automation", xp:55, diff:"Medium" },
+// Real recall drills that launch the Practice tool for a specific deck.
+const DRILLS = [
+  { deck:"prompt-engineering", label:"Prompt Engineering", icon:"🧠", cards:8 },
+  { deck:"python",             label:"Python",             icon:"🐍", cards:8 },
+  { deck:"javascript",         label:"JavaScript",         icon:"⚡", cards:8 },
 ];
 
 function DigiLearnLogo({ size = 28 }: { size?: number }) {
@@ -59,7 +60,6 @@ const VIEWS = [
   { id:"courses", icon:"📚", label:"My Courses" },
   { id:"paths", icon:"🛣️", label:"Learning Paths" },
   { id:"tools", icon:"🤖", label:"AI Tools Hub" },
-  { id:"challenges", icon:"⚔️", label:"Daily Challenges" },
   { id:"billing", icon:"💳", label:"Billing" },
 ];
 
@@ -240,19 +240,24 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Daily challenges */}
+            {/* Recall drills */}
             <div>
-              <div style={{ fontWeight:800, marginBottom:"1rem", fontSize:"0.95rem" }}>Today&apos;s challenges</div>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"1rem", gap:12, flexWrap:"wrap" }}>
+                <div style={{ fontWeight:800, fontSize:"0.95rem" }}>Sharpen your recall</div>
+                <Link href="/practice" style={{ fontSize:"0.8rem", color:"var(--cyan)", fontWeight:600, textDecoration:"none" }}>All decks →</Link>
+              </div>
               <div style={{ display:"flex", flexDirection:"column", gap:"0.625rem" }}>
-                {DAILY.map((d, i) => (
-                  <div key={i} className="dash-card" style={{ display:"flex", alignItems:"center", gap:16, flexWrap:"wrap" }}>
-                    <div style={{ flex:1 }}>
-                      <div style={{ fontWeight:700, fontSize:"0.9rem" }}>{d.title}</div>
-                      <div style={{ fontSize:"0.75rem", color:"var(--text-mute)", marginTop:3 }}>{d.topic} · {d.diff}</div>
+                {DRILLS.map((d) => (
+                  <Link key={d.deck} href={`/practice?deck=${d.deck}`} style={{ textDecoration:"none", color:"inherit" }}>
+                    <div className="dash-card" style={{ display:"flex", alignItems:"center", gap:16, flexWrap:"wrap" }}>
+                      <span style={{ fontSize:"1.5rem", flexShrink:0 }}>{d.icon}</span>
+                      <div style={{ flex:1, minWidth:160 }}>
+                        <div style={{ fontWeight:700, fontSize:"0.9rem" }}>{d.label} recall</div>
+                        <div style={{ fontSize:"0.75rem", color:"var(--text-mute)", marginTop:3 }}>{d.cards} flashcards · spaced repetition</div>
+                      </div>
+                      <span className="btn-ghost" style={{ padding:"0.4rem 1rem", fontSize:"0.8rem" }}>Practice →</span>
                     </div>
-                    <span style={{ fontSize:"0.75rem", color:"var(--amber)", fontWeight:700 }}>+{d.xp} XP</span>
-                    <button className="btn-ghost" style={{ padding:"0.4rem 1rem", fontSize:"0.8rem" }}>Start</button>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -368,19 +373,6 @@ export default function Dashboard() {
                   </div>
                 </a>
               ))}
-            </div>
-          </div>
-        )}
-
-        {view === "challenges" && (
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:400, textAlign:"center", gap:16 }}>
-            <span style={{ fontSize:"3.5rem" }}>⚔️</span>
-            <h2 style={{ fontWeight:800, fontSize:"1.3rem" }}>Code & AI Challenges</h2>
-            <p style={{ color:"var(--text-mute)", maxWidth:420, lineHeight:1.75, fontSize:"0.875rem" }}>
-              Daily prompt challenges, coding problems, automation puzzles, and project-based assessments. Launching soon — you&apos;ll earn XP and unlock badges.
-            </p>
-            <div style={{ padding:"0.625rem 1.5rem", borderRadius:9, background:"rgba(var(--cyan-rgb),0.08)", border:"1px solid rgba(var(--cyan-rgb),0.2)", color:"var(--cyan)", fontSize:"0.8rem", fontWeight:600 }}>
-              Coming soon — you&apos;ll be first to know
             </div>
           </div>
         )}
