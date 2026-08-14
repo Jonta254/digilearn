@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 function DigiLearnLogo({ size = 32 }: { size?: number }) {
@@ -93,9 +93,9 @@ export default function HomePage() {
   return (
     <>
       {/* ── FLOATING CTA ─────────────────────────────────── */}
-      <a href="/courses" className="float-cta" aria-label="Browse all courses">
+      <Link href="/courses" className="float-cta" aria-label="Browse all courses">
         📚 Browse Courses
-      </a>
+      </Link>
 
       {/* ── NAV ──────────────────────────────────────────── */}
       <nav className="nav">

@@ -166,7 +166,7 @@ const TOTAL_CARDS = DECKS.reduce((n, d) => n + d.cards.length, 0);
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const keyOf = (deckId: string, i: number) => `${deckId}::${i}`;
 const deckOf = (k: string) => DECKS.find((d) => d.id === k.split("::")[0])!;
-const cardOf = (k: string) => { const [id, i] = k.split("::"); return deckOf(k).cards[Number(i)]; };
+const cardOf = (k: string) => { const [, i] = k.split("::"); return deckOf(k).cards[Number(i)]; };
 const defaultState = (): CardState => ({ box: 1, due: 0, seen: 0, correct: 0 });
 
 function dayStr(ts: number) {
