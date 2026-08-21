@@ -1,0 +1,1 @@
+export default function CourseLoading() { return <main className="route-state lesson-loading" aria-busy="true"><div className="state-skeleton wide" /><div className="state-skeleton" /><div className="state-skeleton" /><div className="state-skeleton short" /></main>; }

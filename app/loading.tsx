@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="route-state" aria-busy="true" aria-label="Loading DigiLearn"><div className="state-skeleton wide" /><div className="state-skeleton" /><div className="state-skeleton short" /></main>; }

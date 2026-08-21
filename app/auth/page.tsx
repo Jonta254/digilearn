@@ -147,6 +147,9 @@ function AuthContent() {
         </h1>
         <p style={{ fontSize:"0.85rem", color:"var(--text-mute)", textAlign:"center", marginBottom:"1.75rem" }}>
           {mode==="signup" ? "Start learning for free — no card needed" : "Continue your learning journey"}
+        <p style={{ fontSize:"0.75rem", color:"var(--amber)", textAlign:"center", marginBottom:"1rem", lineHeight:1.5 }}>
+          Device-local profile only. There is no cloud sync, password recovery or cross-device account yet.
+        </p>
         </p>
 
         <div className="auth-tabs">
