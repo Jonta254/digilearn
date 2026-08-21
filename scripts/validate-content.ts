@@ -3,31 +3,85 @@ import { COURSE_LIBRARY } from "../lib/course-library";
 import { COURSE_PRICE_KES } from "../lib/pricing";
 
 const errors: string[] = [];
-const ids = new Set<string>();
-for (const course of COURSES) {
-  if (ids.has(course.id)) errors.push(`Duplicate course ID: ${course.id}`);
-  ids.add(course.id);
-  if (!course.thumb.trim()) errors.push(`Missing artwork: ${course.id}`);
-  if (!course.free && (!Number.isInteger(COURSE_PRICE_KES) || COURSE_PRICE_KES <= 0)) errors.push(`Invalid future price: ${course.id}`);
-  const curriculum = COURSE_LIBRARY[course.id];
-  if (!curriculum) { errors.push(`Missing curriculum: ${course.id}`); continue; }
-  if (curriculum.durationMinutes <= 0) errors.push(`Invalid duration: ${course.id}`);
-  const moduleIds = new Set<string>();
-  const lessonIds = new Set<string>();
-  curriculum.modules.forEach((module, moduleIndex) => {
-    if (moduleIds.has(module.id)) errors.push(`Duplicate module ID: ${module.id}`);
-    moduleIds.add(module.id);
-    module.lessons.forEach((lesson, lessonIndex) => {
-      if (lessonIds.has(lesson.id)) errors.push(`Duplicate lesson ID: ${lesson.id}`);
-      lessonIds.add(lesson.id);
-      if (!lesson.title || !lesson.introduction || lesson.blocks.length === 0 || lesson.summary.length === 0) errors.push(`Empty lesson: ${lesson.id}`);
-      if (lesson.minutes <= 0) errors.push(`Invalid lesson duration: ${lesson.id}`);
-      if (!lesson.id.startsWith(course.id) || moduleIndex < 0 || lessonIndex < 0) errors.push(`Broken lesson reference: ${lesson.id}`);
-    });
-  });
+const courseIds = new Set<string>();
+const globalLessonIds = new Set<string>();
+const visualIds = new Set<string>();
+const duplicateFields = new Map<string, Map<string, string[]>>();
+const forbidden = [/lorem ipsum/i, /placeholder/i, /coming soon/i, /insert (text|content|image)/i];
+
+function fail(scope: string, message: string) { errors.push(`${scope}: ${message}`); }
+function track(field: string, value: string, scope: string) {
+  const normalized = value.toLowerCase().replace(/\s+/g, " ").trim();
+  const values = duplicateFields.get(field) ?? new Map<string, string[]>();
+  values.set(normalized, [...(values.get(normalized) ?? []), scope]);
+  duplicateFields.set(field, values);
 }
-if (COURSES.length !== 72) errors.push(`Expected 72 courses, found ${COURSES.length}`);
-if (Object.keys(COURSE_LIBRARY).length !== COURSES.length) errors.push("Curriculum registry does not match catalogue.");
-if (errors.length) { console.error(errors.join("\n")); process.exit(1); }
-const lessonTotal = Object.values(COURSE_LIBRARY).flatMap((course) => course.modules.flatMap((module) => module.lessons)).length;
-console.log(`Content valid: ${COURSES.length} courses, ${lessonTotal} lessons, ${ids.size} unique IDs.`);
+function nonEmpty(values: string[]) { return values.length > 0 && values.every((value) => value.trim().length > 0); }
+
+for (const course of COURSES) {
+  if (courseIds.has(course.id)) fail(course.id, "duplicate course ID");
+  courseIds.add(course.id);
+  if (!course.thumb.trim()) fail(course.id, "missing artwork");
+  if (!course.free && (!Number.isInteger(COURSE_PRICE_KES) || COURSE_PRICE_KES <= 0)) fail(course.id, "invalid future price");
+
+  const curriculum = COURSE_LIBRARY[course.id];
+  if (!curriculum) { fail(course.id, "missing curriculum"); continue; }
+  if (curriculum.courseId !== course.id) fail(course.id, "curriculum ID mismatch");
+  if (curriculum.modules.length !== 4) fail(course.id, `expected 4 modules, found ${curriculum.modules.length}`);
+  if (curriculum.durationMinutes <= 0) fail(course.id, "invalid duration");
+  if (curriculum.references.length < 2) fail(course.id, "needs at least two structured references");
+  if (!nonEmpty(curriculum.outcomes) || !nonEmpty(curriculum.skills)) fail(course.id, "missing outcomes or skills");
+
+  const project = curriculum.practicalOutcome;
+  if (!project.objective || !project.expectedOutput || !project.nextStep || !nonEmpty(project.tools) || project.steps.length < 3 || project.successCriteria.length < 3 || project.selfReview.length < 2) {
+    fail(course.id, "incomplete practical outcome");
+  }
+
+  const moduleIds = new Set<string>();
+  for (const [moduleIndex, module] of curriculum.modules.entries()) {
+    if (moduleIds.has(module.id)) fail(course.id, `duplicate module ID ${module.id}`);
+    moduleIds.add(module.id);
+    if (module.lessons.length !== 3) fail(`${course.id}/${module.id}`, `expected 3 lessons, found ${module.lessons.length}`);
+
+    for (const lesson of module.lessons) {
+      const scope = `${course.id}/${lesson.id}`;
+      if (globalLessonIds.has(lesson.id)) fail(scope, "duplicate global lesson ID");
+      globalLessonIds.add(lesson.id);
+      if (!lesson.id.startsWith(course.id)) fail(scope, "lesson ID does not preserve course prefix");
+      if (lesson.minutes <= 0) fail(scope, "invalid duration");
+      if (lesson.introduction.length < 170) fail(scope, "introduction is too shallow");
+      if (lesson.objectives.length < 3 || lesson.blocks.length < 5 || lesson.summary.length < 3 || lesson.commonMistakes.length < 3) fail(scope, "missing required learning sections");
+      if (lesson.activity.length < 160) fail(scope, "practice activity lacks a concrete deliverable");
+      if (lesson.check.options.length !== 4 || lesson.check.answer < 0 || lesson.check.answer > 3 || lesson.check.explanation.length < 70) fail(scope, "invalid knowledge check");
+      if (lesson.references.length < 2) fail(scope, "needs at least two sources");
+      for (const reference of lesson.references) {
+        if (!reference.title || !reference.organization || !reference.accessed || !/^https:\/\//.test(reference.url)) fail(scope, `invalid source: ${reference.title || reference.url}`);
+      }
+      if (visualIds.has(lesson.visual.id)) fail(scope, `duplicate visual ID ${lesson.visual.id}`);
+      visualIds.add(lesson.visual.id);
+      if (!lesson.visual.title || lesson.visual.description.length < 35 || lesson.visual.caption.length < 30 || lesson.visual.labels.length < 3) fail(scope, "incomplete visual specification");
+      const searchable = JSON.stringify(lesson);
+      for (const phrase of forbidden) if (phrase.test(searchable)) fail(scope, `forbidden placeholder phrase: ${phrase}`);
+      track("introduction", lesson.introduction, scope);
+      track("activity", lesson.activity, scope);
+      track("check", lesson.check.prompt, scope);
+      track("summary", lesson.summary.join(" "), scope);
+      track("objectives", lesson.objectives.join(" "), scope);
+    }
+    if (moduleIndex < 0) fail(course.id, "invalid module order");
+  }
+}
+
+for (const [field, values] of duplicateFields) {
+  for (const scopes of values.values()) if (scopes.length > 1) fail(scopes.join(", "), `duplicated ${field}`);
+}
+if (COURSES.length !== 72) errors.push(`catalogue: expected 72 courses, found ${COURSES.length}`);
+if (Object.keys(COURSE_LIBRARY).length !== COURSES.length) errors.push("catalogue: curriculum registry does not match catalogue");
+if (globalLessonIds.size !== 864) errors.push(`catalogue: expected 864 lessons, found ${globalLessonIds.size}`);
+if (visualIds.size !== globalLessonIds.size) errors.push("catalogue: every lesson must have a unique visual specification");
+
+if (errors.length) {
+  console.error(`Content validation failed with ${errors.length} issue(s):\n${errors.join("\n")}`);
+  process.exit(1);
+}
+console.log(`Content valid: ${COURSES.length} courses, ${globalLessonIds.size} unique lessons, ${visualIds.size} unique visual specifications, structured sources and practical outcomes present.`);

@@ -64,3 +64,31 @@ test("search and filtering cover title, skills, topic, level and status", () => 
 test("invalid course IDs do not resolve", () => {
   assert.equal(findLesson("not-a-course"), undefined);
 });
+
+test("every lesson has distinct substantive editorial content and a unique visual", () => {
+  const lessons = Object.values(COURSE_LIBRARY).flatMap((curriculum) => curriculum.modules.flatMap((module) => module.lessons));
+  assert.equal(lessons.length, 864);
+  assert.equal(new Set(lessons.map((lesson) => lesson.visual.id)).size, 864);
+  for (const field of [
+    lessons.map((lesson) => lesson.introduction),
+    lessons.map((lesson) => lesson.activity),
+    lessons.map((lesson) => lesson.check.prompt),
+    lessons.map((lesson) => lesson.summary.join(" ")),
+  ]) assert.equal(new Set(field).size, 864);
+  for (const lesson of lessons) {
+    assert.ok(lesson.blocks.length >= 5);
+    assert.ok(lesson.references.length >= 2);
+    assert.ok(lesson.references.every((reference) => reference.url.startsWith("https://") && reference.organization));
+    assert.ok(lesson.visual.labels.length >= 3);
+  }
+});
+
+test("all courses finish with a structured practical outcome", () => {
+  for (const curriculum of Object.values(COURSE_LIBRARY)) {
+    assert.ok(curriculum.practicalOutcome.objective);
+    assert.ok(curriculum.practicalOutcome.expectedOutput);
+    assert.ok(curriculum.practicalOutcome.steps.length >= 3);
+    assert.ok(curriculum.practicalOutcome.successCriteria.length >= 3);
+    assert.ok(curriculum.practicalOutcome.selfReview.length >= 2);
+  }
+});

@@ -1,3 +1,31 @@
+export type SourceReference = {
+  title: string;
+  organization: string;
+  url: string;
+  accessed?: string;
+  licence?: string;
+};
+
+export type LessonVisual = {
+  id: string;
+  kind: "flow" | "cycle" | "comparison" | "layers" | "timeline" | "matrix";
+  title: string;
+  description: string;
+  labels: string[];
+  caption: string;
+};
+
+export type PracticalOutcome = {
+  objective: string; tools: string[]; steps: string[]; successCriteria: string[];
+  expectedOutput: string; selfReview: string[]; safety?: string; nextStep: string;
+};
+
+export type CourseOutlineModule = {
+  id: string;
+  title: string;
+  lessons: Array<Pick<Lesson, "id" | "title" | "minutes">>;
+};
+
 export type LessonBlock =
   | { type: "paragraph"; text: string }
   | { type: "steps"; title: string; items: string[] }
@@ -21,11 +49,12 @@ export type Lesson = {
   keyTerms: string[];
   introduction: string;
   blocks: LessonBlock[];
+  visual: LessonVisual;
   commonMistakes: string[];
   activity: string;
   summary: string[];
   check: KnowledgeCheck;
-  references: string[];
+  references: SourceReference[];
 };
 
 export type CourseModule = {
@@ -44,8 +73,9 @@ export type CourseCurriculum = {
   skills: string[];
   modules: CourseModule[];
   glossary: Record<string, string>;
-  references: string[];
+  references: SourceReference[];
   finalOutcome: string;
+  practicalOutcome: PracticalOutcome;
   durationMinutes: number;
 };
 

@@ -2,11 +2,11 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { Course } from "@/app/courses/courses";
-import type { CourseCurriculum, Lesson, LessonBlock } from "@/lib/learning-types";
+import type { CourseOutlineModule, Lesson, LessonBlock, PracticalOutcome } from "@/lib/learning-types";
 import { EMPTY_PROGRESS, PROGRESS_KEY, courseProgress, parseProgress } from "@/lib/learning-storage";
 import { NoteEditor } from "./NoteEditor";
 import { AccessBadge } from "./CourseCard";
-import { LessonFigure } from "./LessonFigure";
+import { SubjectDiagram } from "./SubjectDiagram";
 
 function Block({ block }: { block: LessonBlock }) {
   if (block.type === "paragraph") return <p>{block.text}</p>;
@@ -29,8 +29,8 @@ function KnowledgeCheck({ lesson, onComplete }: { lesson: Lesson; onComplete: ()
   </section>;
 }
 
-export function LessonReader({ course, curriculum, lesson }: { course: Course; curriculum: CourseCurriculum; lesson: Lesson }) {
-  const lessonIds = useMemo(() => curriculum.modules.flatMap((module) => module.lessons.map((item) => item.id)), [curriculum]);
+export function LessonReader({ course, outline, durationMinutes, lesson, practicalOutcome }: { course: Course; outline: CourseOutlineModule[]; durationMinutes: number; lesson: Lesson; practicalOutcome: PracticalOutcome }) {
+  const lessonIds = useMemo(() => outline.flatMap((module) => module.lessons.map((item) => item.id)), [outline]);
   const currentIndex = lessonIds.indexOf(lesson.id);
   const [progress, setProgress] = useState(EMPTY_PROGRESS);
   const [outlineOpen, setOutlineOpen] = useState(false);
@@ -56,22 +56,23 @@ export function LessonReader({ course, curriculum, lesson }: { course: Course; c
     <header className="learning-header"><Link href="/" className="wordmark">DigiLearn</Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button className="outline-toggle" type="button" aria-expanded={outlineOpen} onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
     <div className="learning-progress" aria-label={`${percent}% course progress`}><span style={{ width: `${percent}%` }} /></div>
     <div className="reader-layout">
-      <aside className={`course-outline ${outlineOpen ? "open" : ""}`} aria-label="Course outline"><button className="outline-close" onClick={() => setOutlineOpen(false)}>Close outline</button><p className="eyebrow">{course.level} ? {Math.round(curriculum.durationMinutes / 60)} hours</p><h2>{course.title}</h2>{curriculum.modules.map((module, moduleIndex) => <section key={module.id}><h3>{moduleIndex + 1}. {module.title}</h3><ol>{module.lessons.map((item) => <li key={item.id}><Link className={item.id === lesson.id ? "active" : ""} href={`/courses/${course.id}?lesson=${item.id}`} onClick={() => setOutlineOpen(false)}>{progress.completedLessonIds.includes(item.id) ? "? " : ""}{item.title}<small>{item.minutes} min</small></Link></li>)}</ol></section>)}</aside>
+      <aside className={`course-outline ${outlineOpen ? "open" : ""}`} aria-label="Course outline"><button className="outline-close" onClick={() => setOutlineOpen(false)}>Close outline</button><p className="eyebrow">{course.level} - {Math.round(durationMinutes / 60)} hours</p><h2>{course.title}</h2>{outline.map((module, moduleIndex) => <section key={module.id}><h3>{moduleIndex + 1}. {module.title}</h3><ol>{module.lessons.map((item) => <li key={item.id}><Link className={item.id === lesson.id ? "active" : ""} href={`/courses/${course.id}?lesson=${item.id}`} onClick={() => setOutlineOpen(false)}>{progress.completedLessonIds.includes(item.id) ? "Completed: " : ""}{item.title}<small>{item.minutes} min</small></Link></li>)}</ol></section>)}</aside>
       <main id="main-content" className="lesson-content">
         <div className="lesson-context"><Link href={`/courses/${course.id}`}>{course.title}</Link><span>Lesson {currentIndex + 1} of {lessonIds.length}</span><Link href={`/courses/${course.id}/guide`}>Study guide</Link><button type="button" onClick={() => window.print()}>Print lesson</button></div>
         <article>
           <p className="eyebrow">Full course currently open</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>
           <section className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
-          <LessonFigure title="From purpose to evidence" description="A reusable quality loop for this lesson: define the outcome, perform a bounded task, then review evidence." labels={["Define", "Apply", "Review"]} />
+          <SubjectDiagram visual={lesson.visual} />
           {lesson.blocks.map((block, index) => <Block key={index} block={block} />)}
           <section><h2>Common mistakes</h2><ul>{lesson.commonMistakes.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <section className="practice-activity"><p className="eyebrow">Practice activity</p><h2>Apply the lesson</h2><p>{lesson.activity}</p></section>
           <KnowledgeCheck lesson={lesson} onComplete={() => updateProgress("completedChecks")} />
           <section className="takeaways"><h2>Lesson summary</h2><ul>{lesson.summary.map((item) => <li key={item}>{item}</li>)}</ul></section>
-          <section><h2>Sources and further reading</h2><ul>{lesson.references.map((reference) => <li key={reference}>{reference}</li>)}</ul></section>
+          <section><h2>Sources and further reading</h2><ul className="source-list">{lesson.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noreferrer">{reference.title}</a><span>{reference.organization}{reference.accessed ? ` - accessed ${reference.accessed}` : ""}</span></li>)}</ul></section>
+          {currentIndex === lessonIds.length - 1 ? <section className="course-project"><p className="eyebrow">Course practical outcome</p><h2>{practicalOutcome.objective}</h2><p><strong>Expected output:</strong> {practicalOutcome.expectedOutput}</p><h3>Production steps</h3><ol>{practicalOutcome.steps.map((step) => <li key={step}>{step}</li>)}</ol><h3>Success criteria</h3><ul>{practicalOutcome.successCriteria.map((criterion) => <li key={criterion}>{criterion}</li>)}</ul>{practicalOutcome.safety ? <p><strong>Safety note:</strong> {practicalOutcome.safety}</p> : null}<p><strong>Next step:</strong> {practicalOutcome.nextStep}</p></section> : null}
           <NoteEditor courseId={course.id} lessonId={lesson.id} />
         </article>
-        <nav className="lesson-navigation" aria-label="Lesson controls">{currentIndex > 0 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex - 1]}`}>? Previous lesson</Link> : <span /> }<button type="button" className="button primary" onClick={() => updateProgress("completedLessonIds")}>{progress.completedLessonIds.includes(lesson.id) ? "Lesson completed" : "Mark complete"}</button>{currentIndex < lessonIds.length - 1 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex + 1]}`}>Next lesson ?</Link> : <Link href="/practice">Continue to practice ?</Link>}</nav>
+        <nav className="lesson-navigation" aria-label="Lesson controls">{currentIndex > 0 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex - 1]}`}>Previous lesson</Link> : <span /> }<button type="button" className="button primary" onClick={() => updateProgress("completedLessonIds")}>{progress.completedLessonIds.includes(lesson.id) ? "Lesson completed" : "Mark complete"}</button>{currentIndex < lessonIds.length - 1 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex + 1]}`}>Next lesson</Link> : <Link href="/practice">Continue to practice</Link>}</nav>
       </main>
     </div>
   </div>;

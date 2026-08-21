@@ -30,5 +30,10 @@ export default async function CoursePage({ params, searchParams }: Props) {
   if (!learningAccess.isOpen) return <LegacyCoursePage />;
   const lesson = findLesson(id, query.lesson);
   if (!lesson) notFound();
-  return <LessonReader course={course} curriculum={curriculum} lesson={lesson} />;
+  const outline = curriculum.modules.map((module) => ({
+    id: module.id,
+    title: module.title,
+    lessons: module.lessons.map(({ id: lessonId, title, minutes }) => ({ id: lessonId, title, minutes })),
+  }));
+  return <LessonReader course={course} outline={outline} durationMinutes={curriculum.durationMinutes} lesson={lesson} practicalOutcome={curriculum.practicalOutcome} />;
 }

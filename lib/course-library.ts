@@ -1,5 +1,6 @@
 import { COURSES, type Course } from "@/app/courses/courses";
 import type { CourseCurriculum, CourseModule, Lesson } from "./learning-types";
+import { getConceptBrief, TOPIC_SOURCES } from "./editorial/topic-content";
 
 type TopicPlan = {
   audience: string;
@@ -30,25 +31,33 @@ function slug(value: string) {
 function lessonFor(course: Course, moduleTitle: string, concept: string, index: number, caution?: string): Lesson {
   const tag = course.tags[index % course.tags.length];
   const id = `${course.id}-${slug(moduleTitle)}-${index + 1}`;
+  const brief = getConceptBrief(course.topic, concept, index);
+  if (!brief) throw new Error(`Missing editorial brief for ${course.topic}:${concept}`);
+  const correctAnswer = "The input, expected behaviour, normal and boundary results, and a limitation";
+  const options = [`A polished ${tag} output without its input`, "A screenshot showing the tool opened", "A claim that the method always works"];
+  const answer = index % 4;
+  options.splice(answer, 0, correctAnswer);
+
   return {
     id,
     title: `${concept[0].toUpperCase() + concept.slice(1)} with ${tag}`,
     minutes: 18 + (index % 4) * 4,
     objectives: [`Explain ${concept} in the context of ${course.title}.`, `Apply ${tag} to a bounded practical task.`, "Evaluate the result using explicit quality criteria."],
     keyTerms: [concept, tag, course.topic],
-    introduction: `${concept[0].toUpperCase() + concept.slice(1)} is a practical part of ${course.title}. This lesson connects the idea to a concrete decision, shows a repeatable method, and makes the limits visible.`,
+    introduction: `In ${course.title}, ${concept} determines how a learner uses ${tag} with appropriate evidence. ${brief.definition} This ${course.level.toLowerCase()} lesson focuses on an inspectable decision or output.`,
+    visual: { id: `${id}-visual`, kind: brief.visualKind, title: `${concept} in ${course.title}`, description: `A ${brief.visualKind} diagram relating context, ${concept} and evidence for ${tag}.`, labels: brief.labels, caption: `Connect ${concept} decisions to evidence in ${course.title}.` },
     blocks: [
-      { type: "paragraph", text: `Start with the outcome, evidence and constraints. In ${course.title}, ${concept} is useful only when the learner can explain what changed, why the method fits, and how the result was checked. ${tag} is the working focus for this lesson, not a shortcut around judgement.` },
-      { type: "steps", title: "A dependable working method", items: ["Define one observable outcome and the people affected.", `Prepare the smallest useful ${tag} example and record assumptions.`, "Perform the task in small steps, checking each intermediate result.", "Test the result against the stated outcome, edge cases and relevant safety constraints.", "Document what worked, what failed and the next improvement."] },
-      { type: "example", title: "Worked example", body: `Imagine a small team using ${tag} for a ${course.topic.replace("-", " ")} task. They first write a measurable acceptance condition, produce a limited trial, compare the output with a manually checked reference, and keep a short decision log. The useful result is not merely an output; it is an output that another person can inspect and reproduce.` },
-      { type: "table", caption: "Quality review", headers: ["Question", "Evidence to collect"], rows: [["Does it solve the stated problem?", "A result tied to the acceptance condition"], ["Can another person reproduce it?", "Inputs, steps and version information"], ["What could go wrong?", "Edge cases, affected users and recovery steps"]] },
+      { type: "paragraph", text: `${brief.definition} For ${tag}, distinguish performing an operation from demonstrating that it suits the stated purpose. ${brief.application} Record assumptions that could change the conclusion.` },
+      { type: "steps", title: `Apply ${concept} deliberately`, items: [`State the ${course.title} task and the decision it supports.`, `Prepare a small ${tag} case with a known input and difficult boundary.`, brief.application, "Compare the observed result with the expected behaviour and explain differences.", "Save the evidence, limitation and next action in a review record."] },
+      { type: "example", title: `Worked ${tag} example`, body: `A learner in ${course.title} receives a ${tag} task with one normal case and one boundary case. They apply ${concept}, retain the original input, compare each result with a stated expectation and find an assumption exposed by the boundary. After revising the method, they rerun the case and record why the new result is more defensible. ${brief.evidence}` },
+      { type: "table", caption: `${concept} evidence record`, headers: ["Review point", "Evidence"], rows: [["Purpose", `The specific ${tag} outcome and intended user`], ["Method", `The ${concept} decision, input and version or context`], ["Result", "Observed output plus a checked boundary case"], ["Limitation", "What the result does not establish and the next safe action"]] },
       ...(caution ? [{ type: "callout" as const, tone: "safety" as const, title: "Scope and safety", body: caution }] : [{ type: "callout" as const, tone: "remember" as const, title: "Remember", body: "A clear, tested small result is more useful than a complex result nobody can verify." }]),
     ],
-    commonMistakes: ["Starting with a tool before defining the problem.", "Treating a successful first attempt as sufficient evidence.", "Failing to record assumptions, versions or limitations."],
-    activity: `Create a one-page ${concept} checklist for a realistic ${tag} task. Include the outcome, inputs, three test cases, a failure response and one improvement you would make after review.`,
-    summary: [`${concept} should connect to an observable outcome.`, "Small tests expose assumptions early.", "Documentation makes practical work reviewable and reusable."],
-    check: { prompt: `Which action best demonstrates sound ${concept} practice?`, options: ["Use the most complex tool available", "Define an outcome, test a bounded example and record evidence", "Copy an example without checking its context", "Assume the first successful result is production-ready"], answer: 1, explanation: "A bounded test tied to an outcome produces evidence and makes limitations visible." },
-    references: PLANS[course.topic].references,
+    commonMistakes: [`Using ${tag} before defining what ${concept} must achieve.`, `Checking only the easiest ${course.title} example.`, "Reporting a result without its input, assumptions or limitation."],
+    activity: `For ${course.title}, complete a bounded ${tag} task demonstrating ${concept}. Keep the original input, numbered method, normal test, boundary test, observed results and a 100-word self-review naming one limitation and next improvement.`,
+    summary: [`For ${course.title}, ${concept} means: ${brief.definition}`, `A credible ${tag} result includes a checked boundary, not only a successful example.`, `The next lesson builds on this ${concept} evidence record.`],
+    check: { prompt: `In ${course.title}, which evidence best supports a ${concept} result produced with ${tag}?`, options, answer, explanation: `Credible ${concept} work preserves the input, states the expectation, compares contrasting tests and records a limitation.` },
+    references: TOPIC_SOURCES[course.topic],
   };
 }
 
@@ -70,8 +79,9 @@ function curriculumFor(course: Course): CourseCurriculum {
     skills: [...course.tags, "Critical evaluation", "Documentation"],
     modules,
     glossary: Object.fromEntries(course.tags.map((tag) => [tag, `A core concept or tool used in ${course.title}; its exact meaning is established in the relevant lesson.`])),
-    references: plan.references,
+    references: TOPIC_SOURCES[course.topic],
     finalOutcome: `A reviewed practical project demonstrating ${course.tags.slice(0, 3).join(", ")} with documented assumptions, tests and next steps.`,
+    practicalOutcome: { objective: `Produce a reviewable ${course.title} project using ${course.tags.slice(0,3).join(", ")}.`, tools: [`A suitable ${course.tags[0]} environment`, "A plain-text decision log", "Test data or realistic sample material"], steps: ["Define the intended user, outcome and constraints.", `Create the smallest complete result using ${course.tags[0]}.`, "Test one normal case, one boundary case and one failure response.", "Revise the work from the evidence and preserve before-and-after results.", "Prepare a concise handover containing method, limitations and next step."], successCriteria: ["The output matches the stated outcome.", "Inputs and decisions are reproducible.", "Boundary and failure evidence is included.", "Limitations and responsibility considerations are explicit."], expectedOutput: `A working ${course.title} artefact plus an evidence-based self-review.`, selfReview: ["Can another learner repeat the method?", "Did I test a difficult case?", "Did I avoid unsupported claims?", "Is the next action proportionate to the remaining risk?"], safety: plan.caution, nextStep: `Choose one weakness found during review and improve it before extending the ${course.tags[0]} scope.` },
     durationMinutes,
   };
 }

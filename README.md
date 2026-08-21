@@ -16,27 +16,28 @@ DigiLearn is a Next.js learning application for practical digital skills. Its ca
 
 ```text
 app/courses/courses.ts       catalogue metadata and stable course IDs
-lib/course-library.ts        explicit curriculum registry and lesson material
+lib/course-library.ts        stable curriculum registry and lesson assembly
+lib/editorial/topic-content.ts subject-specific concept briefs and authoritative sources
 lib/learning-types.ts        course, module, lesson, check and guide types
 lib/access-policy.ts         temporary open-learning policy
 lib/learning-storage.ts      versioned progress and note parsing
 components/LessonReader.tsx  responsive lesson workspace
 components/NoteEditor.tsx    personal device-local notes
-components/LessonFigure.tsx  accessible original SVG process diagrams
+components/SubjectDiagram.tsx accessible data-driven SVG diagram library
 scripts/validate-content.ts  content integrity checks
 ```
 
-Each course is registered in `COURSE_LIBRARY`; there is no missing-course fallback curriculum. Durations are calculated from lesson durations. The content validator checks course count, unique IDs, curriculum presence, lesson completeness, artwork metadata, pricing consistency and duration validity.
+Each course is registered in `COURSE_LIBRARY`; there is no missing-course fallback curriculum. Durations are calculated from lesson durations. The content validator checks course count, stable and unique IDs, substantive lesson sections, duplicated editorial fields, structured source URLs, unique visual specifications, practical outcomes, placeholder language, artwork metadata, pricing consistency and duration validity. The client lesson workspace receives one active manuscript plus lightweight outline metadata; the other lesson manuscripts remain server-side.
 
 ## Visual and attribution policy
 
-Current course artwork uses original gradient/icon compositions already present in the catalogue. Lesson process diagrams are original responsive SVGs with accessible titles, descriptions and captions. No third-party photographs are currently bundled, so there are no unrecorded photographic licence claims. Future photographs must include a verified source page, creator, licence, local optimized asset, useful caption and accurate alt text.
+Current course artwork uses original gradient/icon compositions already present in the catalogue. Every lesson has a concept-specific visual specification rendered through an original responsive SVG diagram library, with accessible titles, descriptions and captions. No third-party photographs are currently bundled, so there are no unrecorded photographic licence claims. Future photographs must include a verified source page, creator, licence, local optimized asset, useful caption and accurate alt text.
 
 ## Notes, progress and guides
 
-Personal notes are keyed by stable course and lesson IDs, saved explicitly in localStorage, restored safely and removable with confirmation. The interface states ?Saved on this device? and never claims cloud sync. Progress derives from opened lessons, completed lessons and completed knowledge checks; no random advancement is used.
+Personal notes are keyed by stable course and lesson IDs, saved explicitly in localStorage, restored safely and removable with confirmation. The interface states "Saved on this device" and never claims cloud sync. Progress derives from opened lessons, completed lessons and completed knowledge checks; no random advancement is used.
 
-Use the lesson reader?s **Print or save as PDF** action for printable lesson material and personal notes. Print CSS removes navigation and prevents key learning figures from clipping. DigiLearn does not offer a fake PDF download.
+Use the lesson reader's **Print or save as PDF** action for printable lesson material and personal notes. Print CSS removes navigation and prevents key learning figures from clipping. DigiLearn does not offer a fake PDF download.
 
 ## Payment freeze and future pricing
 
