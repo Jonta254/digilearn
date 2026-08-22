@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
+import { BrandLogo } from "@/components/BrandLogo";
+import { parsePracticeStore, type PracticeCardState as CardState, type PracticeStore as Store } from "@/lib/practice-storage";
+import { readLocalValue, writeLocalValue } from "@/lib/learning-storage";
 
 // ── Leitner scheduling ───────────────────────────────────────────────────────
 // Five boxes. A correct answer promotes a card to the next box and pushes its
@@ -12,9 +15,6 @@ const BOX_COLORS = ["#E11D48", "#EA580C", "#D97706", "#0284C7", "#16A34A"];
 const MAX_BOX = 5;
 
 type Grade = "missed" | "almost" | "got";
-type CardState = { box: number; due: number; seen: number; correct: number };
-type Store = { cards: Record<string, CardState>; streak: number; lastDay: string };
-
 const STORAGE_KEY = "digilearn_practice_v1";
 
 // ── Decks ─────────────────────────────────────────────────────────────────────
@@ -190,25 +190,22 @@ export default function PracticePage() {
   const [queue, setQueue] = useState<string[]>([]);
   const [revealed, setRevealed] = useState(false);
   const [session, setSession] = useState({ reviewed: 0, got: 0, almost: 0, missed: 0 });
+  const allKeys = useMemo(() => DECKS.flatMap((d) => d.cards.map((_, i) => keyOf(d.id, i))), []);
 
   useEffect(() => {
     setMounted(true);
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setStore(JSON.parse(raw));
-    } catch { /* ignore corrupt storage */ }
-  }, []);
+    setStore(parsePracticeStore(readLocalValue(STORAGE_KEY), new Set(allKeys)));
+  }, [allKeys]);
 
   const persist = useCallback((next: Store) => {
     setStore(next);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+    writeLocalValue(STORAGE_KEY, JSON.stringify(next));
   }, []);
 
   const now = Date.now();
   const getState = useCallback((k: string): CardState => store.cards[k] ?? defaultState(), [store]);
 
   // Every possible card key, once.
-  const allKeys = useMemo(() => DECKS.flatMap((d) => d.cards.map((_, i) => keyOf(d.id, i))), []);
 
   const stats = useMemo(() => {
     let due = 0, mastered = 0, reviews = 0, nextDue = Infinity;
@@ -361,8 +358,7 @@ export default function PracticePage() {
       {/* Nav */}
       <nav className="nav">
         <Link href="/" className="nav-logo">
-          <DigiLearnLogo size={28} />
-          <span style={{ fontWeight: 800 }}>DigiLearn</span>
+          <BrandLogo compact />
         </Link>
         <div className="nav-links">
           <Link href="/" className="nav-link">Home</Link>
@@ -373,7 +369,7 @@ export default function PracticePage() {
         <Link href="/auth?mode=signup" className="nav-cta">Start free →</Link>
       </nav>
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "6rem 1.5rem 5rem" }}>
+      <main id="main-content" style={{ maxWidth: 900, margin: "0 auto", padding: "6rem 1.5rem 5rem" }}>
         {/* ── DECKS VIEW ── */}
         {(view === "decks" || !mounted) && (
           <>
@@ -575,24 +571,7 @@ export default function PracticePage() {
             </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
-  );
-}
-
-function DigiLearnLogo({ size = 28 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 36 36" fill="none">
-      <rect width="36" height="36" rx="10" fill="url(#dl-p-bg)" />
-      <circle cx="18" cy="18" r="8" stroke="url(#dl-p-ring)" strokeWidth="1.5" fill="none" />
-      <circle cx="18" cy="10" r="2.5" fill="#00D4FF" /><circle cx="10" cy="22" r="2.5" fill="#FF7A00" /><circle cx="26" cy="22" r="2.5" fill="#A855F7" />
-      <line x1="18" y1="12.5" x2="12" y2="20.5" stroke="#00D4FF" strokeWidth="1" strokeOpacity="0.6" />
-      <line x1="18" y1="12.5" x2="24" y2="20.5" stroke="#00D4FF" strokeWidth="1" strokeOpacity="0.6" />
-      <line x1="12.5" y1="22" x2="23.5" y2="22" stroke="#00D4FF" strokeWidth="1" strokeOpacity="0.4" />
-      <defs>
-        <linearGradient id="dl-p-bg" x1="0" y1="0" x2="36" y2="36"><stop offset="0%" stopColor="#061A24" /><stop offset="100%" stopColor="#050508" /></linearGradient>
-        <linearGradient id="dl-p-ring" x1="10" y1="10" x2="26" y2="26"><stop offset="0%" stopColor="#00D4FF" /><stop offset="100%" stopColor="#0077AA" /></linearGradient>
-      </defs>
-    </svg>
   );
 }

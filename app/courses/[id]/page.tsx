@@ -19,6 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: course.title,
     description: `Study ${course.title} through structured lessons, practical activities, knowledge checks and device-local notes.`,
+    alternates: { canonical: `/courses/${course.id}` },
+    openGraph: { title: course.title, description: `Study ${course.title} through 12 structured DigiLearn lessons.`, url: `/courses/${course.id}`, images: [{ url: `/courses/${course.id}/opengraph-image`, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", title: course.title, description: `Study ${course.title} through 12 structured DigiLearn lessons.`, images: [`/courses/${course.id}/opengraph-image`] },
   };
 }
 

@@ -1,7 +1,9 @@
 import { COURSES } from "../app/courses/courses";
-import { COURSE_LIBRARY } from "../lib/course-library";
+import { getAllCurricula } from "../lib/course-library";
 import { COURSE_PRICE_KES } from "../lib/pricing";
+import { isSafeExternalUrl } from "../lib/safe-url";
 
+const COURSE_LIBRARY = getAllCurricula();
 const errors: string[] = [];
 const courseIds = new Set<string>();
 const globalLessonIds = new Set<string>();
@@ -55,7 +57,7 @@ for (const course of COURSES) {
       if (lesson.check.options.length !== 4 || lesson.check.answer < 0 || lesson.check.answer > 3 || lesson.check.explanation.length < 70) fail(scope, "invalid knowledge check");
       if (lesson.references.length < 2) fail(scope, "needs at least two sources");
       for (const reference of lesson.references) {
-        if (!reference.title || !reference.organization || !reference.accessed || !/^https:\/\//.test(reference.url)) fail(scope, `invalid source: ${reference.title || reference.url}`);
+        if (!reference.title || !reference.organization || !reference.accessed || !isSafeExternalUrl(reference.url) || !reference.url.startsWith("https://")) fail(scope, `invalid source: ${reference.title || reference.url}`);
       }
       if (visualIds.has(lesson.visual.id)) fail(scope, `duplicate visual ID ${lesson.visual.id}`);
       visualIds.add(lesson.visual.id);

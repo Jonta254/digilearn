@@ -3,10 +3,11 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { Course } from "@/app/courses/courses";
 import type { CourseOutlineModule, Lesson, LessonBlock, PracticalOutcome } from "@/lib/learning-types";
-import { EMPTY_PROGRESS, PROGRESS_KEY, courseProgress, parseProgress } from "@/lib/learning-storage";
+import { EMPTY_PROGRESS, PROGRESS_KEY, courseProgress, parseProgress, readLocalValue, writeLocalValue } from "@/lib/learning-storage";
 import { NoteEditor } from "./NoteEditor";
 import { AccessBadge } from "./CourseCard";
 import { SubjectDiagram } from "./SubjectDiagram";
+import { BrandLogo } from "./BrandLogo";
 
 function Block({ block }: { block: LessonBlock }) {
   if (block.type === "paragraph") return <p>{block.text}</p>;
@@ -34,26 +35,28 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
   const currentIndex = lessonIds.indexOf(lesson.id);
   const [progress, setProgress] = useState(EMPTY_PROGRESS);
   const [outlineOpen, setOutlineOpen] = useState(false);
+  const [storageAvailable, setStorageAvailable] = useState(true);
 
   useEffect(() => {
-    const stored = parseProgress(localStorage.getItem(PROGRESS_KEY));
+    const stored = parseProgress(readLocalValue(PROGRESS_KEY));
     const openedLessonIds = [...new Set([...stored.openedLessonIds, lesson.id])];
     const next = { ...stored, openedLessonIds, lastVisited: { courseId: course.id, lessonId: lesson.id, visitedAt: new Date().toISOString() } };
-    localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
+    setStorageAvailable(writeLocalValue(PROGRESS_KEY, JSON.stringify(next)));
     setProgress(next);
   }, [course.id, lesson.id]);
 
   function updateProgress(key: "completedLessonIds" | "completedChecks") {
     setProgress((current) => {
       const next = { ...current, [key]: [...new Set([...current[key], lesson.id])] };
-      localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
+      setStorageAvailable(writeLocalValue(PROGRESS_KEY, JSON.stringify(next)));
       return next;
     });
   }
 
   const percent = courseProgress(progress, lessonIds);
   return <div className="learning-shell">
-    <header className="learning-header"><Link href="/" className="wordmark">DigiLearn</Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button className="outline-toggle" type="button" aria-expanded={outlineOpen} onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
+    <header className="learning-header"><Link href="/" className="wordmark" aria-label="DigiLearn home"><BrandLogo compact tone="light" /></Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button className="outline-toggle" type="button" aria-expanded={outlineOpen} onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
+    {!storageAvailable ? <div className="storage-warning" role="status">Progress could not be saved. Check browser storage settings and available space.</div> : null}
     <div className="learning-progress" aria-label={`${percent}% course progress`}><span style={{ width: `${percent}%` }} /></div>
     <div className="reader-layout">
       <aside className={`course-outline ${outlineOpen ? "open" : ""}`} aria-label="Course outline"><button className="outline-close" onClick={() => setOutlineOpen(false)}>Close outline</button><p className="eyebrow">{course.level} - {Math.round(durationMinutes / 60)} hours</p><h2>{course.title}</h2>{outline.map((module, moduleIndex) => <section key={module.id}><h3>{moduleIndex + 1}. {module.title}</h3><ol>{module.lessons.map((item) => <li key={item.id}><Link className={item.id === lesson.id ? "active" : ""} href={`/courses/${course.id}?lesson=${item.id}`} onClick={() => setOutlineOpen(false)}>{progress.completedLessonIds.includes(item.id) ? "Completed: " : ""}{item.title}<small>{item.minutes} min</small></Link></li>)}</ol></section>)}</aside>

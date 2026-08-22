@@ -1,1 +1,2 @@
-export default function CourseLoading() { return <main className="route-state lesson-loading" aria-busy="true"><div className="state-skeleton wide" /><div className="state-skeleton" /><div className="state-skeleton" /><div className="state-skeleton short" /></main>; }
+import { BrandLogo } from "@/components/BrandLogo";
+export default function CourseLoading() { return <main className="route-state lesson-loading" aria-busy="true" aria-label="Loading course"><BrandLogo compact /><span className="sr-only">Loading course</span><div className="state-skeleton wide" /><div className="state-skeleton" /><div className="state-skeleton" /><div className="state-skeleton short" /></main>; }

@@ -1,11 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { COURSES } from "../app/courses/courses";
-import { COURSE_LIBRARY, allLessonIds, findLesson } from "../lib/course-library";
+import { allLessonIds, findLesson, getAllCurricula } from "../lib/course-library";
 import { filterCourses } from "../lib/course-search";
 import { LEARNING_ACCESS_MODE, learningAccess } from "../lib/access-policy";
 import { courseProgress, parseNotes, parseProgress } from "../lib/learning-storage";
 import { COURSE_PRICE_KES } from "../lib/pricing";
+
+const COURSE_LIBRARY = getAllCurricula();
 
 test("catalogue has 72 unique stable IDs and explicit curricula", () => {
   assert.equal(COURSES.length, 72);
@@ -63,6 +65,8 @@ test("search and filtering cover title, skills, topic, level and status", () => 
 
 test("invalid course IDs do not resolve", () => {
   assert.equal(findLesson("not-a-course"), undefined);
+  assert.equal(findLesson("chatgpt-mastery", "../bad"), undefined);
+  assert.equal(findLesson("chatgpt-mastery", "chatgpt-mastery-not-real"), undefined);
 });
 
 test("every lesson has distinct substantive editorial content and a unique visual", () => {

@@ -7,5 +7,5 @@ export function AccessBadge({ course }: { course: Course }) {
 }
 
 export function CourseCard({ course }: { course: Course }) {
-  return <article className="editorial-course-card"><Link href={`/courses/${course.id}`} aria-label={`Open ${course.title}`}><div className="course-art" style={{ background: course.thumb }}><span aria-hidden="true">{course.icon}</span><small>{course.topic.replace("-", " ")}</small></div><div className="course-card-body"><AccessBadge course={course} /><h2>{course.title}</h2><p>{course.tags.slice(0, 3).join(" ? ")}</p><div className="course-card-meta"><span>{course.level}</span><span>12 structured lessons</span></div><strong>Open course ?</strong></div></Link></article>;
+  return <article className="editorial-course-card"><Link href={`/courses/${course.id}`} aria-label={`Open ${course.title}`}><div className="course-art" style={{ background: course.thumb }}><span aria-hidden="true">{course.icon}</span><small>{course.topic.replace("-", " ")}</small></div><div className="course-card-body"><AccessBadge course={course} /><h2>{course.title}</h2><p>{course.tags.slice(0, 3).join(" · ")}</p><div className="course-card-meta"><span>{course.level}</span><span>12 structured lessons</span></div><strong>Open course →</strong></div></Link></article>;
 }

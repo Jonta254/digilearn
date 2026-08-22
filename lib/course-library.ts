@@ -86,21 +86,33 @@ function curriculumFor(course: Course): CourseCurriculum {
   };
 }
 
-export const COURSE_LIBRARY: Record<string, CourseCurriculum> = Object.fromEntries(
-  COURSES.map((course) => [course.id, curriculumFor(course)]),
-);
+const curriculumCache = new Map<string, CourseCurriculum>();
 
 export function getCurriculum(courseId: string) {
-  return COURSE_LIBRARY[courseId];
+  if (!/^[a-z0-9][a-z0-9-]{0,127}$/.test(courseId)) return undefined;
+  const cached = curriculumCache.get(courseId);
+  if (cached) return cached;
+  const course = COURSES.find((item) => item.id === courseId);
+  if (!course) return undefined;
+  const curriculum = curriculumFor(course);
+  curriculumCache.set(courseId, curriculum);
+  return curriculum;
+}
+
+export function getAllCurricula(): Record<string, CourseCurriculum> {
+  return Object.fromEntries(COURSES.map((course) => [course.id, getCurriculum(course.id)!]));
 }
 
 export function allLessonIds(courseId: string) {
-  return getCurriculum(courseId)?.modules.flatMap((module) => module.lessons.map((lesson) => lesson.id)) ?? [];
+  const course = COURSES.find((item) => item.id === courseId);
+  if (!course) return [];
+  const plan = PLANS[course.topic];
+  return plan.modules.flatMap(([moduleTitle, concepts], moduleIndex) => concepts.map((_, lessonIndex) => `${course.id}-${slug(moduleTitle)}-${moduleIndex * 3 + lessonIndex + 1}`));
 }
 
 export function findLesson(courseId: string, lessonId?: string) {
   const curriculum = getCurriculum(courseId);
   if (!curriculum) return undefined;
   const lessons = curriculum.modules.flatMap((module) => module.lessons);
-  return lessons.find((lesson) => lesson.id === lessonId) ?? lessons[0];
+  return lessonId ? lessons.find((lesson) => lesson.id === lessonId) : lessons[0];
 }

@@ -1,51 +1,12 @@
 # DigiLearn
 
-DigiLearn is a Next.js learning application for practical digital skills. Its catalogue contains 72 stable courses across 11 topic areas, with structured lessons, knowledge checks, practice decks, printable material, device-local notes and deterministic progress.
+DigiLearn is a Next.js learning application for practical digital skills. It contains 72 stable courses, 864 structured lessons, 864 lesson visuals, printable guides, eight practice decks, deterministic progress and personal notes.
 
-## Current product state
+All lessons currently use the centralized `open-preview` policy. Previously paid courses keep their future KES price, but opening learning content does not initiate payment.
 
-- All 72 courses are available through the existing `/courses/[id]` URLs.
-- `LEARNING_ACCESS_MODE` is `open-preview`: every lesson is currently accessible without payment.
-- Previously paid courses retain the future price from `lib/pricing.ts`.
-- Opening learning content does not initiate M-Pesa or create a payment confirmation.
-- Eight existing Leitner-style practice decks and their saved browser data are preserved.
-- Notes and progress are stored on the current device, not synchronized to a server.
-- Login and signup remain a browser-local prototype. There is no password recovery or production account security yet.
+## Requirements and installation
 
-## Learning architecture
-
-```text
-app/courses/courses.ts       catalogue metadata and stable course IDs
-lib/course-library.ts        stable curriculum registry and lesson assembly
-lib/editorial/topic-content.ts subject-specific concept briefs and authoritative sources
-lib/learning-types.ts        course, module, lesson, check and guide types
-lib/access-policy.ts         temporary open-learning policy
-lib/learning-storage.ts      versioned progress and note parsing
-components/LessonReader.tsx  responsive lesson workspace
-components/NoteEditor.tsx    personal device-local notes
-components/SubjectDiagram.tsx accessible data-driven SVG diagram library
-scripts/validate-content.ts  content integrity checks
-```
-
-Each course is registered in `COURSE_LIBRARY`; there is no missing-course fallback curriculum. Durations are calculated from lesson durations. The content validator checks course count, stable and unique IDs, substantive lesson sections, duplicated editorial fields, structured source URLs, unique visual specifications, practical outcomes, placeholder language, artwork metadata, pricing consistency and duration validity. The client lesson workspace receives one active manuscript plus lightweight outline metadata; the other lesson manuscripts remain server-side.
-
-## Visual and attribution policy
-
-Current course artwork uses original gradient/icon compositions already present in the catalogue. Every lesson has a concept-specific visual specification rendered through an original responsive SVG diagram library, with accessible titles, descriptions and captions. No third-party photographs are currently bundled, so there are no unrecorded photographic licence claims. Future photographs must include a verified source page, creator, licence, local optimized asset, useful caption and accurate alt text.
-
-## Notes, progress and guides
-
-Personal notes are keyed by stable course and lesson IDs, saved explicitly in localStorage, restored safely and removable with confirmation. The interface states "Saved on this device" and never claims cloud sync. Progress derives from opened lessons, completed lessons and completed knowledge checks; no random advancement is used.
-
-Use the lesson reader's **Print or save as PDF** action for printable lesson material and personal notes. Print CSS removes navigation and prevents key learning figures from clipping. DigiLearn does not offer a fake PDF download.
-
-## Payment freeze and future pricing
-
-M-Pesa service code, callback routes, credentials, environment variables, payment-status storage and pricing logic are frozen during this product stage. `lib/pricing.ts` remains the only price source. International dollar pricing is not configured; adding it requires an explicit currency/pricing source and supported payment provider in a future payment stage.
-
-## Development
-
-Requirements: Node.js 20+ and npm.
+Use Node.js 20.9 or newer.
 
 ```bash
 npm ci
@@ -61,20 +22,90 @@ npm run lint
 npm run typecheck
 npm run test
 npm run validate:content
+npm run verify:payments
 npm run build
 npm run verify
+npm audit
 ```
 
-`npm run verify` runs linting, TypeScript, focused tests, content validation and a production build.
+`npm run verify` runs linting, TypeScript, tests, content validation, the payment-freeze check and a production build. The GitHub Actions workflow runs the same checks after a clean cached installation on pushes and pull requests.
+
+Before committing, run `npm run verify`, `npm audit` and `git diff --check`. No intrusive Git hook is installed.
+
+## Application architecture
+
+```text
+app/courses/courses.ts          catalogue metadata and stable course IDs
+lib/course-library.ts           lazy selected-course curriculum assembly
+lib/editorial/topic-content.ts  subject concepts and authoritative sources
+lib/learning-types.ts           course, lesson, visual and guide contracts
+lib/learning-storage.ts         bounded progress and note parsing
+lib/practice-storage.ts         bounded practice-state parsing
+lib/local-profile.ts            browser-local profile migration and parsing
+lib/access-policy.ts            centralized open-preview policy
+components/LessonReader.tsx     active lesson workspace
+components/SubjectDiagram.tsx   lightweight SVG diagram renderer
+components/BrandLogo.tsx        shared application brand
+scripts/validate-content.ts     editorial integrity validation
+```
+
+Catalogue and search routes import metadata only. The dashboard receives course metadata and lightweight lesson IDs. Lesson routes receive one active manuscript plus navigation metadata. Printable guides assemble only the selected course at runtime. Scripts and tests can explicitly call `getAllCurricula()` when a complete-library audit is required.
+
+## Adding or reviewing learning content
+
+Course IDs and existing lesson IDs are compatibility contracts.
+
+1. Add catalogue metadata to `app/courses/courses.ts`.
+2. Add or review topic concepts and sources in `lib/editorial/topic-content.ts`.
+3. Keep explanations, examples, activities, checks and practical outcomes aligned.
+4. Run `npm run validate:content` and `npm run test`.
+5. Inspect lesson, guide and print layouts at small and large viewports.
+
+Use `SubjectDiagram` for a meaningful flow, cycle, comparison, layer, timeline or matrix. Each visual requires a unique ID, useful title, description, labels and caption.
+
+Licensed photographs must include a verified source page, creator, licence, local optimized file, intrinsic dimensions, accurate alt text and a caption. DigiLearn currently ships no third-party photography and makes no unverified licence claims.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the content-review, visual-attribution and deployment checklists.
+
+## Brand and application assets
+
+The original DigiLearn mark combines open pages with an ascending three-step path. Vector masters, light/dark/monochrome variants, minimum-size rules and clear-space guidance are documented in [docs/BRAND.md](docs/BRAND.md).
+
+Favicon, Apple touch, 192px, 512px, maskable and profile images are derived from the same symbol. Open Graph and Twitter images are generated through Next.js metadata routes, including course-specific titles without generating hundreds of raster files.
+
+## Browser-local records and security boundary
+
+Notes, progress, practice state and profiles stay in the current browser. They do not synchronize, receive cloud backup or provide server authorization. Clearing site data can remove them.
+
+New local profile credentials use a salted PBKDF2 verifier; successful legacy sign-in migrates the old encoded value. Active sessions exclude credential material. This reduces accidental exposure but does not make browser-local authentication equivalent to a secure backend account.
+
+The exact protected and future-backend boundaries are documented in [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md). Do not claim cloud accounts, recovery, tamper-resistant progress or production authorization until an explicitly approved backend is introduced.
+
+## Payment freeze
+
+M-Pesa integration, callback/status/STK Push routes, pricing, payment state, payment environment variables, the legacy paywall and `LEARNING_ACCESS_MODE` are frozen against commit `0c47f6d`.
+
+```bash
+npm run verify:payments
+```
+
+International dollar pricing is not configured. It requires a future authorized pricing source, currency policy and supported payment provider.
 
 ## Deployment
 
-Build with `npm run build` and deploy the resulting Next.js application to a compatible Node.js host. Supply payment environment variables only during an explicitly authorized future payment stage. Never commit credentials.
+1. Set `NEXT_PUBLIC_SITE_URL` to the canonical HTTPS origin.
+2. Run `npm ci && npm run verify && npm audit`.
+3. Verify `/robots.txt`, `/sitemap.xml`, `/manifest.webmanifest`, icons and social previews.
+4. Confirm production response security headers and a clean browser console.
+5. Configure hosting-level availability/error monitoring; no third-party learner tracking is bundled.
+6. Never place payment credentials or other secrets in `NEXT_PUBLIC_*` variables.
+7. Do not activate payment routes without a separately authorized payment review.
 
 ## Known limitations
 
-- Profiles, notes and progress are device-local and can be lost when browser data is cleared.
-- No backend account recovery, synchronization or multi-device support exists.
-- No certificates, instructor review, ratings, enrolment totals or learning analytics are claimed.
-- Current lesson visuals are original diagrams; an attributed photography library has not yet been introduced.
-- International pricing and payment methods are intentionally deferred.
+- Profiles, notes, progress and practice state are device-local and can be lost.
+- There is no server account recovery, synchronization, authorization or multi-device support.
+- There are no certificates, instructor reviews, ratings, learner counts or analytics claims.
+- Offline course availability is not claimed; already rendered content may remain visible only by normal browser behavior.
+- A production deployment must provide its canonical URL and external monitoring.
+- International pricing and payment methods remain intentionally deferred.
