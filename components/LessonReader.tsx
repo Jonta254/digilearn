@@ -14,7 +14,7 @@ function Block({ block }: { block: LessonBlock }) {
   if (block.type === "steps") return <section><h2>{block.title}</h2><ol className="process-list">{block.items.map((item) => <li key={item}>{item}</li>)}</ol></section>;
   if (block.type === "example") return <aside className="content-callout example"><h2>{block.title}</h2><p>{block.body}</p></aside>;
   if (block.type === "callout") return <aside className={`content-callout ${block.tone}`}><h2>{block.title}</h2><p>{block.body}</p></aside>;
-  if (block.type === "code") return <pre className="code-example"><code>{block.code}</code></pre>;
+  if (block.type === "code") return <figure className="code-figure"><figcaption><span>Example file · {block.language}</span><button type="button" onClick={() => navigator.clipboard?.writeText(block.code)}>Copy code</button></figcaption><pre className="code-example" tabIndex={0}><code data-language={block.language}>{block.code}</code></pre></figure>;
   return <div className="table-wrap"><table><caption>{block.caption}</caption><thead><tr>{block.headers.map((header) => <th key={header} scope="col">{header}</th>)}</tr></thead><tbody>{block.rows.map((row) => <tr key={row.join("-")}>{row.map((cell, index) => index === 0 ? <th key={cell} scope="row">{cell}</th> : <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div>;
 }
 

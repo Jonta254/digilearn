@@ -1,0 +1,9 @@
+﻿DIGILEARN DIGITAL SAFETY CHECKLIST
+Fictional practice resource — reviewed 2026-08-25
+
+[ ] Use a unique password and enable multi-factor authentication.
+[ ] Verify the destination before entering credentials.
+[ ] Remove private or identifying information from practice files.
+[ ] Record software updates and backup checks.
+[ ] Test recovery steps before an incident.
+[ ] Report suspicious activity through the organisation's approved channel.

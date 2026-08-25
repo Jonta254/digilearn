@@ -2,6 +2,7 @@ import { COURSES } from "../app/courses/courses";
 import { getAllCurricula } from "../lib/course-library";
 import { COURSE_PRICE_KES } from "../lib/pricing";
 import { isSafeExternalUrl } from "../lib/safe-url";
+import { editorialFor } from "../lib/course-editorial";
 
 const COURSE_LIBRARY = getAllCurricula();
 const errors: string[] = [];
@@ -10,6 +11,7 @@ const globalLessonIds = new Set<string>();
 const visualIds = new Set<string>();
 const duplicateFields = new Map<string, Map<string, string[]>>();
 const forbidden = [/lorem ipsum/i, /placeholder/i, /coming soon/i, /insert (text|content|image)/i];
+const emoji = /[\\p{Extended_Pictographic}]/u;
 
 function fail(scope: string, message: string) { errors.push(`${scope}: ${message}`); }
 function track(field: string, value: string, scope: string) {
@@ -24,6 +26,8 @@ for (const course of COURSES) {
   if (courseIds.has(course.id)) fail(course.id, "duplicate course ID");
   courseIds.add(course.id);
   if (!course.thumb.trim()) fail(course.id, "missing artwork");
+  if (emoji.test(course.icon)) fail(course.id, "emoji artwork is not permitted");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(editorialFor(course).lastReviewed)) fail(course.id, "missing lastReviewed date");
   if (!course.free && (!Number.isInteger(COURSE_PRICE_KES) || COURSE_PRICE_KES <= 0)) fail(course.id, "invalid future price");
 
   const curriculum = COURSE_LIBRARY[course.id];
@@ -62,6 +66,7 @@ for (const course of COURSES) {
       if (visualIds.has(lesson.visual.id)) fail(scope, `duplicate visual ID ${lesson.visual.id}`);
       visualIds.add(lesson.visual.id);
       if (!lesson.visual.title || lesson.visual.description.length < 35 || lesson.visual.caption.length < 30 || lesson.visual.labels.length < 3) fail(scope, "incomplete visual specification");
+      for (const block of lesson.blocks) if (block.type === "code" && (!block.language.trim() || !block.code.trim())) fail(scope, "code block requires a language and real source");
       const searchable = JSON.stringify(lesson);
       for (const phrase of forbidden) if (phrase.test(searchable)) fail(scope, `forbidden placeholder phrase: ${phrase}`);
       track("introduction", lesson.introduction, scope);
