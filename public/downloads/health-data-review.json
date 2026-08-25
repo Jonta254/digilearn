@@ -1,0 +1,9 @@
+{
+  "dataset": "fictional-clinic-quality-sample",
+  "reviewed": "2026-08-25",
+  "records": [
+    { "record_id": "S-001", "age_band": "20-29", "wait_minutes": 24, "follow_up": true },
+    { "record_id": "S-002", "age_band": "40-49", "wait_minutes": 41, "follow_up": false },
+    { "record_id": "S-003", "age_band": "30-39", "wait_minutes": 18, "follow_up": true }
+  ]
+}

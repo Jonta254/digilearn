@@ -11,6 +11,10 @@ import { MAX_NOTE_LENGTH, normalizeNoteBody, parseNotes, parseProgress } from ".
 import { parseLocalAccount, toSession } from "../lib/local-profile";
 import { parsePracticeStore } from "../lib/practice-storage";
 import { isSafeExternalUrl } from "../lib/safe-url";
+import { COURSES } from "../app/courses/courses";
+import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
+import { existsSync, statSync } from "node:fs";
+import { join } from "node:path";
 
 test("storage parsers bound and sanitize corrupt local data", () => {
   const oversized = "x".repeat(2_000_001);
@@ -87,4 +91,19 @@ test("course Open Graph renderer returns a complete PNG", async () => {
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("content-type"), "image/png");
   assert.ok((await response.arrayBuffer()).byteLength > 10_000);
+});
+test("every course has unique reviewed cover metadata and a valid starter resource", () => {
+  const assets = COURSES.map(coverAssetFor);
+  assert.equal(new Set(assets.map((asset) => asset.assetId)).size, 72);
+  for (const [index, course] of COURSES.entries()) {
+    const asset = assets[index];
+    assert.equal(asset.courseId, course.id);
+    assert.equal(asset.sourceReview, "original-local");
+    assert.ok(asset.alt.length > 40 && asset.caption.length > 50);
+    const resource = DOWNLOADS_BY_TOPIC[course.topic];
+    assert.ok(resource, `${course.id} needs a mapped starter resource`);
+    const file = join(process.cwd(), "public", resource.path.slice(1));
+    assert.ok(existsSync(file), `${course.id} resource is missing`);
+    assert.ok(statSync(file).size >= 80, `${course.id} resource is shallow`);
+  }
 });

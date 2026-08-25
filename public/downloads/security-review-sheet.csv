@@ -1,0 +1,5 @@
+control,scope,expected_evidence,status,next_action
+Unique password,Fictional work account,Password manager record,check,Create unique credential
+Multi-factor authentication,Fictional work account,Recovery codes stored safely,pass,Review recovery contact
+Software updates,Practice device,Update history,check,Schedule monthly review
+Incident reporting,Northstar Studio policy,Test report record,pass,Repeat tabletop exercise

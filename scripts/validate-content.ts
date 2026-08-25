@@ -3,12 +3,17 @@ import { getAllCurricula } from "../lib/course-library";
 import { COURSE_PRICE_KES } from "../lib/pricing";
 import { isSafeExternalUrl } from "../lib/safe-url";
 import { editorialFor } from "../lib/course-editorial";
+import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
+import { existsSync, statSync } from "node:fs";
+import { extname, join } from "node:path";
 
 const COURSE_LIBRARY = getAllCurricula();
 const errors: string[] = [];
 const courseIds = new Set<string>();
 const globalLessonIds = new Set<string>();
 const visualIds = new Set<string>();
+const coverIds = new Set<string>();
+const safeDownloadExtensions = new Set([".md", ".txt", ".csv", ".json", ".html", ".sql"]);
 const duplicateFields = new Map<string, Map<string, string[]>>();
 const forbidden = [/lorem ipsum/i, /placeholder/i, /coming soon/i, /insert (text|content|image)/i];
 const emoji = /[\\p{Extended_Pictographic}]/u;
@@ -29,6 +34,19 @@ for (const course of COURSES) {
   if (emoji.test(course.icon)) fail(course.id, "emoji artwork is not permitted");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(editorialFor(course).lastReviewed)) fail(course.id, "missing lastReviewed date");
   if (!course.free && (!Number.isInteger(COURSE_PRICE_KES) || COURSE_PRICE_KES <= 0)) fail(course.id, "invalid future price");
+
+  const cover = coverAssetFor(course);
+  if (cover.courseId !== course.id || !cover.assetId || !cover.alt || !cover.caption || cover.sourceReview !== "original-local") fail(course.id, "incomplete cover metadata");
+  if (coverIds.has(cover.assetId)) fail(course.id, `duplicate cover asset ${cover.assetId}`);
+  coverIds.add(cover.assetId);
+  const download = DOWNLOADS_BY_TOPIC[course.topic];
+  if (!download) fail(course.id, "missing practical download or recorded reason");
+  else {
+    const downloadPath = join(process.cwd(), "public", download.path.replace(/^\/downloads\//, "downloads/"));
+    if (!safeDownloadExtensions.has(extname(downloadPath).toLowerCase())) fail(course.id, `unsafe download extension: ${download.path}`);
+    if (!existsSync(downloadPath)) fail(course.id, `missing download file: ${download.path}`);
+    else if (statSync(downloadPath).size < 80) fail(course.id, `empty or shallow download file: ${download.path}`);
+  }
 
   const curriculum = COURSE_LIBRARY[course.id];
   if (!curriculum) { fail(course.id, "missing curriculum"); continue; }
@@ -86,9 +104,10 @@ if (COURSES.length !== 72) errors.push(`catalogue: expected 72 courses, found ${
 if (Object.keys(COURSE_LIBRARY).length !== COURSES.length) errors.push("catalogue: curriculum registry does not match catalogue");
 if (globalLessonIds.size !== 864) errors.push(`catalogue: expected 864 lessons, found ${globalLessonIds.size}`);
 if (visualIds.size !== globalLessonIds.size) errors.push("catalogue: every lesson must have a unique visual specification");
+if (coverIds.size !== COURSES.length) errors.push("catalogue: every course must have a unique cover asset");
 
 if (errors.length) {
   console.error(`Content validation failed with ${errors.length} issue(s):\n${errors.join("\n")}`);
   process.exit(1);
 }
-console.log(`Content valid: ${COURSES.length} courses, ${globalLessonIds.size} unique lessons, ${visualIds.size} unique visual specifications, structured sources and practical outcomes present.`);
+console.log(`Content valid: ${COURSES.length} courses, ${globalLessonIds.size} unique lessons, ${visualIds.size} unique visual specifications, structured sources, unique covers, safe downloads and practical outcomes present.`);

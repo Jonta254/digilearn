@@ -1,0 +1,5 @@
+month,service,region,orders,revenue_kes,review_status
+2026-01,Website support,Nairobi,8,144000,reviewed
+2026-02,Data cleanup,Kisumu,11,104500,reviewed
+2026-03,Content planning,Mombasa,7,87500,reviewed
+2026-04,Security review,Nakuru,9,135000,check

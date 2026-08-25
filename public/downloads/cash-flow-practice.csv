@@ -1,0 +1,5 @@
+date,reference,category,direction,amount_kes,notes
+2026-07-01,INV-1001,Website support,in,36000,Fictional invoice paid
+2026-07-03,EXP-204,Internet,out,6500,Fictional operating expense
+2026-07-12,INV-1002,Data cleanup,in,28500,Fictional invoice paid
+2026-07-18,EXP-219,Software,out,4200,Fictional monthly licence
