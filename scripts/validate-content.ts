@@ -4,7 +4,6 @@ import { COURSE_PRICE_KES } from "../lib/pricing";
 import { isSafeExternalUrl } from "../lib/safe-url";
 import { editorialFor } from "../lib/course-editorial";
 import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
-import { COURSE_IMAGE_ATTRIBUTIONS } from "../lib/image-attributions";
 import { existsSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 
@@ -37,13 +36,8 @@ for (const course of COURSES) {
   if (!course.free && (!Number.isInteger(COURSE_PRICE_KES) || COURSE_PRICE_KES <= 0)) fail(course.id, "invalid future price");
 
   const cover = coverAssetFor(course);
-  if (cover.courseId !== course.id || !cover.assetId || !cover.alt || !cover.caption || !["original-local", "licensed-photography"].includes(cover.sourceReview)) fail(course.id, "incomplete cover metadata");
-  const coverPath = join(process.cwd(), "public", cover.src.replace(/^\//, ""));
-  if (!existsSync(coverPath) || statSync(coverPath).size < 500) fail(course.id, `missing or shallow cover file: ${cover.src}`);
-  if (cover.sourceReview === "licensed-photography") {
-    const attribution = COURSE_IMAGE_ATTRIBUTIONS.find((image) => image.id === cover.attributionId);
-    if (!attribution || !attribution.creator || !attribution.sourceUrl || !attribution.licenseUrl || !attribution.modified) fail(course.id, "licensed cover attribution is incomplete");
-  }
+  if (cover.courseId !== course.id || !cover.assetId || !cover.alt || !cover.caption || cover.sourceReview !== "cc0-brand-icons") fail(course.id, "incomplete cover metadata");
+  if (cover.iconKeys.length < 1 || cover.iconKeys.length > 2 || !cover.topicLabel || !cover.tone) fail(course.id, "incomplete brand-icon cover composition");
   if (coverIds.has(cover.assetId)) fail(course.id, `duplicate cover asset ${cover.assetId}`);
   coverIds.add(cover.assetId);
   const download = DOWNLOADS_BY_TOPIC[course.topic];

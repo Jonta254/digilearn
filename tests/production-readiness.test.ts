@@ -101,15 +101,10 @@ test("every course has unique reviewed cover metadata and a valid starter resour
   for (const [index, course] of COURSES.entries()) {
     const asset = assets[index];
     assert.equal(asset.courseId, course.id);
-    assert.ok(["original-local", "licensed-photography"].includes(asset.sourceReview));
+    assert.equal(asset.sourceReview, "cc0-brand-icons");
     assert.ok(asset.alt.length > 40 && asset.caption.length > 50);
-    const imageFile = join(process.cwd(), "public", asset.src.slice(1));
-    assert.ok(existsSync(imageFile), `${course.id} cover file is missing`);
-    assert.ok(statSync(imageFile).size > 500, `${course.id} cover file is shallow`);
-    if (asset.sourceReview === "licensed-photography") {
-      assert.ok(asset.attributionId, `${course.id} licensed image needs attribution`);
-      assert.ok(COURSE_IMAGE_ATTRIBUTIONS.some((image) => image.id === asset.attributionId));
-    }
+    assert.ok(asset.iconKeys.length >= 1 && asset.iconKeys.length <= 2, `${course.id} needs a focused icon stack`);
+    assert.ok(asset.topicLabel.length > 3 && asset.tone.length > 2);
     const resource = DOWNLOADS_BY_TOPIC[course.topic];
     assert.ok(resource, `${course.id} needs a mapped starter resource`);
     const file = join(process.cwd(), "public", resource.path.slice(1));
@@ -136,6 +131,7 @@ test("course imagery has complete attribution and semantic rendering", () => {
   assert.doesNotMatch(hero, /sales-summary\.pyTest passed|Expected outputRevenue/);
   const cover = renderToStaticMarkup(createElement(CourseCover, { course: COURSES.find((course) => course.topic === "business")! }));
   assert.match(cover, /<figure/);
-  assert.match(cover, /<img/);
+  assert.match(cover, /<svg/);
+  assert.match(cover, /data-source="cc0-brand-icons"/);
   assert.doesNotMatch(cover, /SourceChatGPT|PeriodValueQ1|PASSFirewalls|validate\(data\)assert/);
 });

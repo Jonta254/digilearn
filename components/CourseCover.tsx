@@ -1,13 +1,11 @@
-import Image from "next/image";
+import type { CSSProperties } from "react";
+import type { SimpleIcon } from "simple-icons";
+import {
+  siAirtable,siAnthropic,siBitcoin,siClaude,siCss,siD3,siElevenlabs,siEthereum,siExpo,siFitbit,siGithubcopilot,siGooglebigquery,siGooglecloud,siGooglegemini,siHtml5,siJavascript,siKalilinux,siLangchain,siMake,siMongodb,siN8n,siNextdotjs,siNodedotjs,siNotion,siOpenaigym,siPandas,siPerplexity,siPlotly,siPostgresql,siPython,siPytorch,siReact,siRedis,siScikitlearn,siShopify,siSnowflake,siSolidity,siStripe,siSuno,siSupabase,siTailwindcss,siTensorflow,siTorbrowser,siTypescript,siWebflow,siZapier
+} from "simple-icons";
 import type { Course } from "@/app/courses/courses";
-import { coverAssetFor } from "@/lib/course-assets";
+import { coverAssetFor,type CourseIconKey } from "@/lib/course-assets";
 
-export function CourseCover({ course, priority = false }: { course: Course; priority?: boolean }) {
-  const asset = coverAssetFor(course);
-  return (
-    <figure className="course-cover" data-asset-id={asset.assetId} data-priority={priority ? "true" : undefined} data-source={asset.sourceReview}>
-      <Image src={asset.src} alt={asset.alt} fill sizes="(max-width: 720px) 100vw, (max-width: 1200px) 50vw, 420px" priority={priority} />
-      <figcaption className="sr-only">{asset.caption}</figcaption>
-    </figure>
-  );
-}
+const ICONS:Record<CourseIconKey,SimpleIcon>={airtable:siAirtable,anthropic:siAnthropic,bitcoin:siBitcoin,claude:siClaude,css:siCss,d3:siD3,elevenlabs:siElevenlabs,ethereum:siEthereum,expo:siExpo,fitbit:siFitbit,githubcopilot:siGithubcopilot,googlebigquery:siGooglebigquery,googlecloud:siGooglecloud,googlegemini:siGooglegemini,html5:siHtml5,javascript:siJavascript,kali:siKalilinux,langchain:siLangchain,make:siMake,mongodb:siMongodb,n8n:siN8n,nextjs:siNextdotjs,nodejs:siNodedotjs,notion:siNotion,openai:{...siOpenaigym,title:"OpenAI"},pandas:siPandas,perplexity:siPerplexity,plotly:siPlotly,postgresql:siPostgresql,python:siPython,pytorch:siPytorch,react:siReact,redis:siRedis,scikitlearn:siScikitlearn,shopify:siShopify,snowflake:siSnowflake,solidity:siSolidity,stripe:siStripe,suno:siSuno,supabase:siSupabase,tailwind:siTailwindcss,tensorflow:siTensorflow,tor:siTorbrowser,typescript:siTypescript,webflow:siWebflow,zapier:siZapier};
+function BrandMark({icon}:{icon:SimpleIcon}){return <span className="course-brand-mark" style={{"--brand":`#${icon.hex}`} as CSSProperties}><svg viewBox="0 0 24 24" role="img" aria-label={icon.title}><path d={icon.path}/></svg><span>{icon.title}</span></span>}
+export function CourseCover({course,priority=false}:{course:Course;priority?:boolean}){const asset=coverAssetFor(course);return <figure className={`course-cover course-cover--brands tone-${asset.tone}`} data-asset-id={asset.assetId} data-priority={priority?"true":undefined} data-source={asset.sourceReview} aria-label={asset.alt}><div className="course-cover-grid" aria-hidden="true"/><div className="course-cover-heading"><span>{asset.topicLabel}</span><small>Tool stack</small></div><div className={`course-brand-list count-${asset.iconKeys.length}`}>{asset.iconKeys.map(key=><BrandMark key={key} icon={ICONS[key]}/>)}</div><figcaption className="sr-only">{asset.caption}</figcaption></figure>}
