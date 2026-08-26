@@ -6,6 +6,8 @@ import manifest from "../app/manifest";
 import { generateMetadata as generateCourseMetadata } from "../app/courses/[id]/page";
 import renderCourseOpenGraphImage from "../app/courses/[id]/opengraph-image";
 import { BrandLogo } from "../components/BrandLogo";
+import { CourseCover } from "../components/CourseCover";
+import { HeroCodeDemo } from "../components/HeroCodeDemo";
 import { allLessonIds, findLesson, getCurriculum } from "../lib/course-library";
 import { MAX_NOTE_LENGTH, normalizeNoteBody, parseNotes, parseProgress } from "../lib/learning-storage";
 import { parseLocalAccount, toSession } from "../lib/local-profile";
@@ -13,6 +15,7 @@ import { parsePracticeStore } from "../lib/practice-storage";
 import { isSafeExternalUrl } from "../lib/safe-url";
 import { COURSES } from "../app/courses/courses";
 import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
+import { COURSE_IMAGE_ATTRIBUTIONS } from "../lib/image-attributions";
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 
@@ -98,12 +101,41 @@ test("every course has unique reviewed cover metadata and a valid starter resour
   for (const [index, course] of COURSES.entries()) {
     const asset = assets[index];
     assert.equal(asset.courseId, course.id);
-    assert.equal(asset.sourceReview, "original-local");
+    assert.ok(["original-local", "licensed-photography"].includes(asset.sourceReview));
     assert.ok(asset.alt.length > 40 && asset.caption.length > 50);
+    const imageFile = join(process.cwd(), "public", asset.src.slice(1));
+    assert.ok(existsSync(imageFile), `${course.id} cover file is missing`);
+    assert.ok(statSync(imageFile).size > 500, `${course.id} cover file is shallow`);
+    if (asset.sourceReview === "licensed-photography") {
+      assert.ok(asset.attributionId, `${course.id} licensed image needs attribution`);
+      assert.ok(COURSE_IMAGE_ATTRIBUTIONS.some((image) => image.id === asset.attributionId));
+    }
     const resource = DOWNLOADS_BY_TOPIC[course.topic];
     assert.ok(resource, `${course.id} needs a mapped starter resource`);
     const file = join(process.cwd(), "public", resource.path.slice(1));
     assert.ok(existsSync(file), `${course.id} resource is missing`);
     assert.ok(statSync(file).size >= 80, `${course.id} resource is shallow`);
   }
+});
+
+test("course imagery has complete attribution and semantic rendering", () => {
+  assert.equal(COURSE_IMAGE_ATTRIBUTIONS.length, 4);
+  for (const image of COURSE_IMAGE_ATTRIBUTIONS) {
+    assert.match(image.sourceUrl, /^https:\/\/www\.pexels\.com\/photo\//);
+    assert.equal(image.license, "Pexels License");
+    assert.match(image.licenseUrl, /^https:\/\/www\.pexels\.com\//);
+    assert.match(image.reviewedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(image.creator.length > 3 && image.alt.length > 40 && image.modified.includes("WebP"));
+    assert.ok(existsSync(join(process.cwd(), "public", image.file.slice(1))));
+  }
+  const hero = renderToStaticMarkup(createElement(HeroCodeDemo));
+  assert.match(hero, /<figure/);
+  assert.match(hero, /<figcaption/);
+  assert.match(hero, /<pre[^>]*><code>/);
+  assert.match(hero, /<section class="preview-output"/);
+  assert.doesNotMatch(hero, /sales-summary\.pyTest passed|Expected outputRevenue/);
+  const cover = renderToStaticMarkup(createElement(CourseCover, { course: COURSES.find((course) => course.topic === "business")! }));
+  assert.match(cover, /<figure/);
+  assert.match(cover, /<img/);
+  assert.doesNotMatch(cover, /SourceChatGPT|PeriodValueQ1|PASSFirewalls|validate\(data\)assert/);
 });

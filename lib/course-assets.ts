@@ -1,4 +1,5 @@
 import type { Course } from "@/app/courses/courses";
+import { imageAttribution } from "@/lib/image-attributions";
 
 export type CourseCoverAsset = {
   assetId: string;
@@ -6,34 +7,39 @@ export type CourseCoverAsset = {
   src: string;
   alt: string;
   caption: string;
-  sourceReview: "original-local";
-  attribution: null;
+  sourceReview: "original-local" | "licensed-photography";
+  attributionId: string | null;
 };
 
-const TOPIC_ART: Record<string, { file: string; description: string }> = {
-  "ai-tools": { file: "ai-review", description: "a person reviewing an AI-assisted workflow" },
-  webdev: { file: "web-development", description: "a responsive interface taking shape on a laptop" },
-  data: { file: "data-analysis", description: "a clear analytical dashboard and source table" },
-  automation: { file: "automation", description: "a connected, human-reviewed automation workflow" },
-  security: { file: "cybersecurity", description: "a protected workstation and verified security controls" },
-  business: { file: "business", description: "a project team planning client work" },
-  databases: { file: "databases", description: "related data records and a structured query" },
-  ethics: { file: "digital-ethics", description: "people weighing evidence and technology impacts" },
-  finance: { file: "finance", description: "a cash-flow workbook and trend chart" },
-  healthcare: { file: "health-data", description: "a privacy-safe health-data review" },
-  policy: { file: "policy", description: "an evidence brief prepared for public-interest decisions" },
+type TopicArtwork = { file: string; description: string; attributionId?: string };
+
+const TOPIC_ART: Record<string, TopicArtwork> = {
+  "ai-tools": { file: "/course-art/ai-review.svg", description: "a precise human-reviewed AI workflow" },
+  webdev: { file: "/course-art/web-development.svg", description: "a responsive interface taking shape on a laptop" },
+  data: { file: "/course-art/data-analysis.svg", description: "a clear analytical dashboard and source table" },
+  automation: { file: "/course-art/automation.svg", description: "a connected, human-reviewed automation workflow" },
+  security: { file: "/course-art/cybersecurity.svg", description: "a protected workstation and verified security controls" },
+  business: { file: "/images/courses/business-planning.webp", description: "professional project planning in a real workplace", attributionId: "business-planning-pexels-10376212" },
+  databases: { file: "/course-art/databases.svg", description: "related data records and a structured query" },
+  ethics: { file: "/images/courses/collaborative-learning.webp", description: "adult learners evaluating evidence together", attributionId: "collaborative-learning-pexels-5940713" },
+  finance: { file: "/images/courses/finance-workspace.webp", description: "hands-on financial analysis using reports and a calculator", attributionId: "finance-workspace-pexels-6694492" },
+  healthcare: { file: "/images/courses/health-data-review.webp", description: "a healthcare professional using digital tools in a clinic", attributionId: "health-data-review-pexels-3881422" },
+  policy: { file: "/images/courses/collaborative-learning.webp", description: "people reviewing evidence together in a learning environment", attributionId: "collaborative-learning-pexels-5940713" },
 };
 
 export function coverAssetFor(course: Course): CourseCoverAsset {
   const artwork = TOPIC_ART[course.topic] ?? TOPIC_ART.business;
+  const attribution = artwork.attributionId ? imageAttribution(artwork.attributionId) : undefined;
   return {
-    assetId: `cover-${course.id}-2026-08-repair`,
+    assetId: `cover-${course.id}-2026-08-authentic`,
     courseId: course.id,
-    src: `/course-art/${artwork.file}.svg`,
-    alt: `${course.title}: ${artwork.description}.`,
-    caption: `Original DigiLearn illustration showing ${artwork.description}.`,
-    sourceReview: "original-local",
-    attribution: null,
+    src: artwork.file,
+    alt: attribution?.alt ?? `${course.title}: ${artwork.description}.`,
+    caption: attribution
+      ? `${artwork.description}. Photograph by ${attribution.creator} on ${attribution.source}, used under the ${attribution.license}.`
+      : `Original DigiLearn illustration showing ${artwork.description}.`,
+    sourceReview: attribution ? "licensed-photography" : "original-local",
+    attributionId: attribution?.id ?? null,
   };
 }
 export const DOWNLOADS_BY_TOPIC: Record<string, { path: string; label: string; description: string }> = {
