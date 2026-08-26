@@ -1,57 +1,41 @@
 import type { Course } from "@/app/courses/courses";
 
-export type CoverVisualType = "code-output" | "data-analysis" | "review-workflow" | "professional-document" | "security-review" | "evidence-brief";
-
 export type CourseCoverAsset = {
   assetId: string;
   courseId: string;
-  visualType: CoverVisualType;
+  src: string;
   alt: string;
   caption: string;
   sourceReview: "original-local";
   attribution: null;
-  labels: [string, string, string];
-  values: [number, number, number, number];
 };
 
-const TYPES: Record<string, CoverVisualType> = {
-  "ai-tools": "review-workflow",
-  webdev: "code-output",
-  data: "data-analysis",
-  automation: "review-workflow",
-  security: "security-review",
-  business: "professional-document",
-  databases: "data-analysis",
-  ethics: "evidence-brief",
-  finance: "data-analysis",
-  healthcare: "evidence-brief",
-  policy: "evidence-brief",
+const TOPIC_ART: Record<string, { file: string; description: string }> = {
+  "ai-tools": { file: "ai-review", description: "a person reviewing an AI-assisted workflow" },
+  webdev: { file: "web-development", description: "a responsive interface taking shape on a laptop" },
+  data: { file: "data-analysis", description: "a clear analytical dashboard and source table" },
+  automation: { file: "automation", description: "a connected, human-reviewed automation workflow" },
+  security: { file: "cybersecurity", description: "a protected workstation and verified security controls" },
+  business: { file: "business", description: "a project team planning client work" },
+  databases: { file: "databases", description: "related data records and a structured query" },
+  ethics: { file: "digital-ethics", description: "people weighing evidence and technology impacts" },
+  finance: { file: "finance", description: "a cash-flow workbook and trend chart" },
+  healthcare: { file: "health-data", description: "a privacy-safe health-data review" },
+  policy: { file: "policy", description: "an evidence brief prepared for public-interest decisions" },
 };
-
-function valuesFor(id: string): [number, number, number, number] {
-  const seed = [...id].reduce((total, character) => total + character.charCodeAt(0), 0);
-  return [42 + seed % 37, 58 + seed % 29, 36 + seed % 41, 68 + seed % 25];
-}
 
 export function coverAssetFor(course: Course): CourseCoverAsset {
-  const visualType = TYPES[course.topic] ?? "professional-document";
-  const labels = [course.tags[0] ?? course.topic, course.tags[1] ?? "Practice", course.tags[2] ?? "Review"] as [string, string, string];
-  const descriptions: Record<CoverVisualType, string> = {
-    "code-output": `Readable ${labels[0]} source beside a validated interface result`,
-    "data-analysis": `A fictional ${labels[0]} dataset with a chart derived from four defined values`,
-    "review-workflow": `A human-controlled ${labels[0]} workflow moving from source to review and verification`,
-    "professional-document": `A fictional professional ${labels[0]} work product with totals and review status`,
-    "security-review": `An accurate ${labels[0]} protection review with configuration and response checks`,
-    "evidence-brief": `A structured ${labels[0]} evidence brief separating source, finding and action`,
-  };
+  const artwork = TOPIC_ART[course.topic] ?? TOPIC_ART.business;
   return {
-    assetId: `cover-${course.id}-2026-08`, courseId: course.id, visualType,
-    alt: `${course.title} cover. ${descriptions[visualType]}.`,
-    caption: `${descriptions[visualType]} created locally for the ${course.title} practical project.`,
-    sourceReview: "original-local", attribution: null, labels, values: valuesFor(course.id),
+    assetId: `cover-${course.id}-2026-08-repair`,
+    courseId: course.id,
+    src: `/course-art/${artwork.file}.svg`,
+    alt: `${course.title}: ${artwork.description}.`,
+    caption: `Original DigiLearn illustration showing ${artwork.description}.`,
+    sourceReview: "original-local",
+    attribution: null,
   };
 }
-
 export const DOWNLOADS_BY_TOPIC: Record<string, { path: string; label: string; description: string }> = {
   "ai-tools": { path: "/downloads/responsible-ai-workflow.md", label: "Responsible AI workflow", description: "A source, instruction, review and privacy-check worksheet." },
   webdev: { path: "/downloads/responsive-interface-starter.html", label: "Responsive interface starter", description: "A semantic HTML starter with a clear project region." },
