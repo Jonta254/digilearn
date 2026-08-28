@@ -14,7 +14,7 @@ import { parseLocalAccount, toSession } from "../lib/local-profile";
 import { parsePracticeStore } from "../lib/practice-storage";
 import { isSafeExternalUrl } from "../lib/safe-url";
 import { COURSES } from "../app/courses/courses";
-import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
+import { courseGuidePdfPath, coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
 import { COURSE_IMAGE_ATTRIBUTIONS } from "../lib/image-attributions";
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -110,6 +110,9 @@ test("every course has unique reviewed cover metadata and a valid starter resour
     const file = join(process.cwd(), "public", resource.path.slice(1));
     assert.ok(existsSync(file), `${course.id} resource is missing`);
     assert.ok(statSync(file).size >= 80, `${course.id} resource is shallow`);
+    const guide = join(process.cwd(), "public", courseGuidePdfPath(course.id).slice(1));
+    assert.ok(existsSync(guide), `${course.id} PDF guide is missing`);
+    assert.ok(statSync(guide).size >= 5_000, `${course.id} PDF guide is shallow`);
   }
 });
 

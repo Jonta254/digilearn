@@ -5,10 +5,10 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { parsePracticeStore, type PracticeCardState as CardState, type PracticeStore as Store } from "@/lib/practice-storage";
 import { readLocalValue, writeLocalValue } from "@/lib/learning-storage";
 
-// â”€â”€ Leitner scheduling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Leitner scheduling -------------------------------------------------------
 // Five boxes. A correct answer promotes a card to the next box and pushes its
 // next review further out; a miss sends it back to box 1. Intervals are the
-// classic Leitner spacing (immediate â†’ 1 â†’ 3 â†’ 7 â†’ 16 days).
+// classic Leitner spacing (immediate  ->  1  ->  3  ->  7  ->  16 days).
 const DAY = 86_400_000;
 const BOX_INTERVALS = [0, 1 * DAY, 3 * DAY, 7 * DAY, 16 * DAY]; // index = box-1
 const BOX_COLORS = ["#E11D48", "#EA580C", "#D97706", "#0284C7", "#16A34A"];
@@ -17,7 +17,7 @@ const MAX_BOX = 5;
 type Grade = "missed" | "almost" | "got";
 const STORAGE_KEY = "digilearn_practice_v1";
 
-// â”€â”€ Decks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Decks ---------------------------------------------------------------------
 // Hand-written, factually checked. Front = prompt, back = answer.
 type Card = { q: string; a: string };
 type Deck = { id: string; name: string; icon: string; color: string; blurb: string; cards: Card[] };
@@ -30,14 +30,14 @@ const DECKS: Deck[] = [
     color: "#7C3AED",
     blurb: "Techniques for getting reliable output from LLMs.",
     cards: [
-      { q: "What is zero-shot prompting?", a: "Asking a model to perform a task from an instruction alone, with no worked examples â€” relying on knowledge it learned during pre-training." },
-      { q: "What is few-shot prompting?", a: "Including a handful of example inputâ†’output pairs in the prompt so the model infers the pattern and applies it to a new input." },
+      { q: "What is zero-shot prompting?", a: "Asking a model to perform a task from an instruction alone, with no worked examples - relying on knowledge it learned during pre-training." },
+      { q: "What is few-shot prompting?", a: "Including a handful of example input -> output pairs in the prompt so the model infers the pattern and applies it to a new input." },
       { q: "What does chain-of-thought prompting do?", a: "It asks the model to reason step by step before answering, which improves accuracy on multi-step problems by making the intermediate steps explicit." },
       { q: "In sampling, what does a higher temperature do?", a: "It flattens the probability distribution over the next token, increasing randomness and diversity. Lower temperature makes output more focused and deterministic." },
       { q: "What is top-p (nucleus) sampling?", a: "The model samples only from the smallest set of tokens whose cumulative probability exceeds p (e.g. 0.9), cutting off the unlikely long tail." },
       { q: "What is retrieval-augmented generation (RAG)?", a: "Retrieving relevant documents from an external source and adding them to the prompt so the model grounds its answer in that context instead of parametric memory alone." },
       { q: "What is a system prompt?", a: "A high-level instruction that sets the model's role, constraints, and behaviour for the whole conversation, separate from individual user turns." },
-      { q: "Name a practical way to reduce hallucinations in a prompt.", a: "Instruct the model to answer only from provided context and to say \"I don't know\" when the answer isn't present â€” ideally grounded with retrieval and citations." },
+      { q: "Name a practical way to reduce hallucinations in a prompt.", a: "Instruct the model to answer only from provided context and to say \"I don't know\" when the answer isn't present - ideally grounded with retrieval and citations." },
     ],
   },
   {
@@ -47,11 +47,11 @@ const DECKS: Deck[] = [
     color: "#16A34A",
     blurb: "Core language mechanics every Python dev should know.",
     cards: [
-      { q: "What is the difference between a list and a tuple?", a: "Lists are mutable and written with []; tuples are immutable and written with (). Because tuples are hashable, they can be dict keys or set members â€” lists cannot." },
-      { q: "What does a list comprehension do? Give an example.", a: "It builds a list from an iterable in one expression. e.g. [x*x for x in range(5)] â†’ [0, 1, 4, 9, 16]." },
-      { q: "Difference between `is` and `==` in Python?", a: "`==` compares values (equality); `is` compares identity â€” whether two names point to the exact same object in memory." },
+      { q: "What is the difference between a list and a tuple?", a: "Lists are mutable and written with []; tuples are immutable and written with (). Because tuples are hashable, they can be dict keys or set members - lists cannot." },
+      { q: "What does a list comprehension do? Give an example.", a: "It builds a list from an iterable in one expression. e.g. [x*x for x in range(5)]  ->  [0, 1, 4, 9, 16]." },
+      { q: "Difference between `is` and `==` in Python?", a: "`==` compares values (equality); `is` compares identity - whether two names point to the exact same object in memory." },
       { q: "What does `if __name__ == \"__main__\":` do?", a: "It runs the guarded block only when the file is executed directly, not when it is imported as a module." },
-      { q: "How do you safely read a value from a dict that may be missing the key?", a: "Use dict.get(key, default) â€” it returns the default instead of raising a KeyError when the key is absent." },
+      { q: "How do you safely read a value from a dict that may be missing the key?", a: "Use dict.get(key, default) - it returns the default instead of raising a KeyError when the key is absent." },
       { q: "Difference between list.append() and list.extend()?", a: "append(x) adds x as a single element; extend(iterable) adds each element of the iterable individually." },
       { q: "What does the `with` statement do when opening a file?", a: "It uses the file as a context manager so it is closed automatically at the end of the block, even if an exception is raised." },
       { q: "How are exceptions handled in Python?", a: "With try/except, optionally followed by else (runs if no exception) and finally (always runs). Risky code goes in try; the handler in except." },
@@ -71,7 +71,7 @@ const DECKS: Deck[] = [
       { q: "What is a closure?", a: "A function together with references to its surrounding lexical scope, letting it access variables from where it was defined even after that outer function has returned." },
       { q: "Difference between null and undefined?", a: "undefined means a variable was declared but never assigned a value; null is an explicit assignment meaning \"no value\"." },
       { q: "What do async/await do?", a: "`async` marks a function that returns a Promise; `await` pauses inside it until a Promise settles, letting you write async code that reads synchronously." },
-      { q: "What does the spread operator (...) do with arrays?", a: "It expands an iterable into individual elements â€” e.g. [...a, ...b] concatenates, and [...a] makes a shallow copy." },
+      { q: "What does the spread operator (...) do with arrays?", a: "It expands an iterable into individual elements - e.g. [...a, ...b] concatenates, and [...a] makes a shallow copy." },
     ],
   },
   {
@@ -81,13 +81,13 @@ const DECKS: Deck[] = [
     color: "#E11D48",
     blurb: "Foundational security concepts and common attacks.",
     cards: [
-      { q: "What are the three pillars of the CIA triad?", a: "Confidentiality, Integrity, and Availability â€” the core goals of information security." },
+      { q: "What are the three pillars of the CIA triad?", a: "Confidentiality, Integrity, and Availability - the core goals of information security." },
       { q: "What is phishing?", a: "A social-engineering attack that tricks people into revealing credentials or running malware, usually via deceptive emails, messages, or fake sites impersonating a trusted party." },
       { q: "Difference between symmetric and asymmetric encryption?", a: "Symmetric uses one shared secret key for both encrypt and decrypt (fast, e.g. AES). Asymmetric uses a public/private key pair (e.g. RSA), enabling key exchange and digital signatures." },
       { q: "What is SQL injection, and how is it prevented?", a: "Injecting malicious SQL through unvalidated input so the database executes it. Prevented with parameterized queries / prepared statements." },
-      { q: "What is multi-factor authentication (MFA)?", a: "Requiring two or more independent factors â€” something you know, have, or are â€” so a stolen password alone is not enough to log in." },
+      { q: "What is multi-factor authentication (MFA)?", a: "Requiring two or more independent factors - something you know, have, or are - so a stolen password alone is not enough to log in." },
       { q: "What does the principle of least privilege mean?", a: "Granting each user, process, or system only the minimum access it needs, limiting the damage from a compromise or mistake." },
-      { q: "Why store salted password hashes instead of the passwords?", a: "Hashing is one-way, and a unique salt per user defeats precomputed (rainbow-table) attacks â€” so a database breach doesn't directly reveal the plaintext passwords." },
+      { q: "Why store salted password hashes instead of the passwords?", a: "Hashing is one-way, and a unique salt per user defeats precomputed (rainbow-table) attacks - so a database breach doesn't directly reveal the plaintext passwords." },
       { q: "What is cross-site scripting (XSS)?", a: "A web flaw where an attacker injects malicious scripts into pages other users view. Mitigated by escaping/encoding output and a Content Security Policy." },
     ],
   },
@@ -98,12 +98,12 @@ const DECKS: Deck[] = [
     color: "#0284C7",
     blurb: "Machine-learning and LLM concepts from the ground up.",
     cards: [
-      { q: "What is supervised learning?", a: "Training a model on labelled examples (input â†’ known output) so it learns to predict the label for new, unseen inputs." },
-      { q: "How does unsupervised learning differ from supervised?", a: "Unsupervised learning finds structure â€” clusters or patterns â€” in unlabelled data, whereas supervised learning maps inputs to known labels." },
+      { q: "What is supervised learning?", a: "Training a model on labelled examples (input  ->  known output) so it learns to predict the label for new, unseen inputs." },
+      { q: "How does unsupervised learning differ from supervised?", a: "Unsupervised learning finds structure - clusters or patterns - in unlabelled data, whereas supervised learning maps inputs to known labels." },
       { q: "Difference between training and inference?", a: "Training adjusts the model's parameters from data; inference uses the already-trained model to make predictions on new inputs." },
-      { q: "What is overfitting?", a: "When a model fits the training data too closely â€” including its noise â€” and so performs well on training data but poorly on new data. Countered with more data, regularization, or a simpler model." },
+      { q: "What is overfitting?", a: "When a model fits the training data too closely - including its noise - and so performs well on training data but poorly on new data. Countered with more data, regularization, or a simpler model." },
       { q: "What is gradient descent?", a: "An optimization method that repeatedly nudges parameters in the direction that lowers the loss, using the gradient (slope) of the loss function." },
-      { q: "What is a token in the context of LLMs?", a: "A chunk of text â€” often a word or sub-word piece â€” that the model processes as a single unit. Text is split into tokens before being fed to the model." },
+      { q: "What is a token in the context of LLMs?", a: "A chunk of text - often a word or sub-word piece - that the model processes as a single unit. Text is split into tokens before being fed to the model." },
       { q: "What is a large language model (LLM)?", a: "A neural network (usually a transformer) trained on large text corpora to predict the next token, which lets it generate and understand natural language." },
       { q: "What is the transformer architecture known for?", a: "Using self-attention to process sequence elements in parallel and capture long-range dependencies. It underlies modern LLMs." },
     ],
@@ -119,10 +119,10 @@ const DECKS: Deck[] = [
       { q: "What is the staging area (the index)?", a: "A middle step where you assemble exactly which changes go into the next commit, using `git add`. It lets you commit some edits while leaving others out." },
       { q: "Difference between `git fetch` and `git pull`?", a: "`git fetch` downloads new commits from the remote without touching your working branch. `git pull` is a fetch followed by a merge (or rebase) into your current branch." },
       { q: "What is a merge conflict?", a: "When the same lines were changed differently on two branches, Git can't combine them automatically and marks the spot for you to resolve manually, then commit the resolution." },
-      { q: "How does `git rebase` differ from `git merge`?", a: "Merge keeps both histories and adds a merge commit. Rebase re-applies your commits on top of another branch for a linear history â€” but it rewrites your commit hashes." },
-      { q: "What's the difference between `git reset` and `git revert`?", a: "`git revert` adds a new commit that undoes an earlier one (safe on shared history). `git reset` moves the branch pointer and can discard commits â€” it rewrites history, risky when shared." },
+      { q: "How does `git rebase` differ from `git merge`?", a: "Merge keeps both histories and adds a merge commit. Rebase re-applies your commits on top of another branch for a linear history - but it rewrites your commit hashes." },
+      { q: "What's the difference between `git reset` and `git revert`?", a: "`git revert` adds a new commit that undoes an earlier one (safe on shared history). `git reset` moves the branch pointer and can discard commits - it rewrites history, risky when shared." },
       { q: "What does `git stash` do?", a: "It sets your uncommitted changes aside on a stack and gives you a clean working directory, so you can switch tasks. `git stash pop` brings them back." },
-      { q: "What is a `.gitignore` file?", a: "A list of path patterns Git should not track â€” build output, secrets, dependencies like node_modules. Note it doesn't untrack files that are already committed." },
+      { q: "What is a `.gitignore` file?", a: "A list of path patterns Git should not track - build output, secrets, dependencies like node_modules. Note it doesn't untrack files that are already committed." },
     ],
   },
   {
@@ -134,11 +134,11 @@ const DECKS: Deck[] = [
     cards: [
       { q: "What do SELECT and WHERE do?", a: "SELECT chooses which columns to return; WHERE filters which rows come back based on a condition. e.g. SELECT name FROM users WHERE age >= 18." },
       { q: "Difference between INNER JOIN and LEFT JOIN?", a: "INNER JOIN returns only rows that match in both tables. LEFT JOIN returns every row from the left table, filling NULLs where the right table has no match." },
-      { q: "What does GROUP BY do?", a: "It collapses rows that share a value into groups so you can aggregate them with COUNT, SUM, AVG, etc. â€” e.g. total orders per customer." },
+      { q: "What does GROUP BY do?", a: "It collapses rows that share a value into groups so you can aggregate them with COUNT, SUM, AVG, etc. - e.g. total orders per customer." },
       { q: "Difference between WHERE and HAVING?", a: "WHERE filters individual rows before grouping; HAVING filters aggregated groups after GROUP BY. Aggregate functions can appear in HAVING but not in WHERE." },
       { q: "What is a primary key vs a foreign key?", a: "A primary key uniquely identifies each row in its table (unique, non-null). A foreign key references another table's primary key, linking the two and enforcing referential integrity." },
-      { q: "What does a database index do?", a: "It's a structure (often a B-tree) that lets the engine find matching rows without scanning the whole table â€” faster reads, at the cost of extra storage and slightly slower writes." },
-      { q: "What is a transaction, and what does ACID mean?", a: "A group of statements that all commit or all roll back as one unit. ACID = Atomicity, Consistency, Isolation, Durability â€” the guarantees that keep data correct under failures and concurrency." },
+      { q: "What does a database index do?", a: "It's a structure (often a B-tree) that lets the engine find matching rows without scanning the whole table - faster reads, at the cost of extra storage and slightly slower writes." },
+      { q: "What is a transaction, and what does ACID mean?", a: "A group of statements that all commit or all roll back as one unit. ACID = Atomicity, Consistency, Isolation, Durability - the guarantees that keep data correct under failures and concurrency." },
       { q: "What's the difference between DELETE and TRUNCATE?", a: "DELETE removes selected rows (with WHERE) and can be rolled back row by row. TRUNCATE quickly empties an entire table, is faster, and usually can't be filtered." },
     ],
   },
@@ -150,12 +150,12 @@ const DECKS: Deck[] = [
     blurb: "How browsers and servers actually talk.",
     cards: [
       { q: "Difference between HTTP GET and POST?", a: "GET requests data and should be safe and idempotent, with parameters in the URL. POST sends data in the request body to create or change server state, and is not idempotent." },
-      { q: "What do status codes 404 and 500 mean?", a: "404 Not Found â€” the resource doesn't exist. 500 Internal Server Error â€” the server hit an unexpected error. Broadly, 4xx are client errors and 5xx are server errors." },
+      { q: "What do status codes 404 and 500 mean?", a: "404 Not Found - the resource doesn't exist. 500 Internal Server Error - the server hit an unexpected error. Broadly, 4xx are client errors and 5xx are server errors." },
       { q: "What is HTTPS and why does it matter?", a: "HTTP over TLS. It encrypts traffic between browser and server so it can't be read or tampered with in transit, and authenticates the server through its certificate." },
-      { q: "What is a cookie?", a: "A small piece of data the server stores in the browser and that is sent back on later requests to the same site â€” commonly for sessions. HttpOnly and Secure flags harden it." },
-      { q: "What is CORS?", a: "Cross-Origin Resource Sharing â€” a browser mechanism using response headers like Access-Control-Allow-Origin to decide whether a page on one origin may call an API on another." },
-      { q: "What is the DOM?", a: "The Document Object Model â€” a live, tree-shaped representation of an HTML page that JavaScript can read and modify to change content, structure, and styling on the fly." },
-      { q: "What is an API in web terms?", a: "An Application Programming Interface â€” a defined contract, often HTTP endpoints returning JSON, that lets one program request data or actions from another." },
+      { q: "What is a cookie?", a: "A small piece of data the server stores in the browser and that is sent back on later requests to the same site - commonly for sessions. HttpOnly and Secure flags harden it." },
+      { q: "What is CORS?", a: "Cross-Origin Resource Sharing - a browser mechanism using response headers like Access-Control-Allow-Origin to decide whether a page on one origin may call an API on another." },
+      { q: "What is the DOM?", a: "The Document Object Model - a live, tree-shaped representation of an HTML page that JavaScript can read and modify to change content, structure, and styling on the fly." },
+      { q: "What is an API in web terms?", a: "An Application Programming Interface - a defined contract, often HTTP endpoints returning JSON, that lets one program request data or actions from another." },
       { q: "What roles do the client and server play?", a: "The client (browser) requests and renders pages and handles interaction; the server receives requests, runs logic, talks to databases, and returns responses. They communicate over HTTP." },
     ],
   },
@@ -163,7 +163,7 @@ const DECKS: Deck[] = [
 
 const TOTAL_CARDS = DECKS.reduce((n, d) => n + d.cards.length, 0);
 
-// â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Helpers -------------------------------------------------------------------
 const keyOf = (deckId: string, i: number) => `${deckId}::${i}`;
 const deckOf = (k: string) => DECKS.find((d) => d.id === k.split("::")[0])!;
 const cardOf = (k: string) => { const [, i] = k.split("::"); return deckOf(k).cards[Number(i)]; };
@@ -182,7 +182,7 @@ function relativeDue(due: number, now: number) {
   return `in ~${days} days`;
 }
 
-// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// -- Component -----------------------------------------------------------------
 export default function PracticePage() {
   const [mounted, setMounted] = useState(false);
   const [store, setStore] = useState<Store>({ cards: {}, streak: 0, lastDay: "" });
@@ -366,19 +366,19 @@ export default function PracticePage() {
           <Link href="/practice" className="nav-link active">Practice</Link>
           <Link href="/dashboard" className="nav-link">Dashboard</Link>
         </div>
-        <Link href="/auth?mode=signup" className="nav-cta">Start free â†’</Link>
+        <Link href="/auth?mode=signup" className="nav-cta">Start free &rarr;</Link>
       </nav>
 
       <main id="main-content" style={{ maxWidth: 900, margin: "0 auto", padding: "6rem 1.5rem 5rem" }}>
-        {/* â”€â”€ DECKS VIEW â”€â”€ */}
+        {/* -- DECKS VIEW -- */}
         {(view === "decks" || !mounted) && (
           <>
-            <div className="section-tag tag-violet" style={{ marginBottom: "1rem" }}>Spaced repetition Â· Leitner system</div>
+            <div className="section-tag tag-violet" style={{ marginBottom: "1rem" }}>Spaced repetition  /  Leitner system</div>
             <h1 style={{ fontSize: "clamp(1.9rem,5vw,3rem)", fontWeight: 800, letterSpacing: "-0.04em", marginBottom: "0.75rem" }}>
               Practice &amp; <span className="cyan-text">remember</span>
             </h1>
             <p style={{ color: "var(--text-dim)", fontSize: "1rem", lineHeight: 1.8, maxWidth: 560, marginBottom: "2.25rem" }}>
-              Short flashcard drills that schedule themselves. Cards you know slip further into the future; cards you miss come back soon â€” so your time lands where it matters. Progress is saved on this device.
+              Short flashcard drills that schedule themselves. Cards you know slip further into the future; cards you miss come back soon - so your time lands where it matters. Progress is saved on this device.
             </p>
 
             {/* Stats */}
@@ -400,11 +400,11 @@ export default function PracticePage() {
             {/* All-due CTA or caught-up banner */}
             {mounted && stats.due > 0 ? (
               <button onClick={() => startSession("all", false)} className="btn-primary" style={{ width: "100%", justifyContent: "center", marginBottom: "2.25rem", fontSize: "0.95rem" }}>
-                Review all {stats.due} due card{stats.due > 1 ? "s" : ""} â†’
+                Review all {stats.due} due card{stats.due > 1 ? "s" : ""} &rarr;
               </button>
             ) : mounted ? (
               <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", padding: "1.25rem 1.5rem", borderRadius: "var(--radius)", background: "var(--green-light)", border: "1px solid rgba(var(--green-rgb),0.25)", marginBottom: "2.25rem" }}>
-                <span style={{ fontSize: "1.6rem" }}>âœ…</span>
+                <span style={{ fontSize: "1.6rem" }}>check</span>
                 <div style={{ flex: 1, minWidth: 200 }}>
                   <div style={{ fontWeight: 700, color: "var(--green)" }}>You&apos;re all caught up.</div>
                   <div style={{ fontSize: "0.82rem", color: "var(--text-dim)" }}>
@@ -445,24 +445,24 @@ export default function PracticePage() {
                       className={mounted && ds.due === 0 ? "btn-ghost" : "btn-primary"}
                       style={{ justifyContent: "center", padding: "0.6rem", fontSize: "0.82rem", width: "100%", minHeight: 42, boxShadow: "none" }}
                     >
-                      {mounted && ds.due === 0 ? "Review ahead" : "Study â†’"}
+                      {mounted && ds.due === 0 ? "Review ahead" : "Study  -> "}
                     </button>
                   </div>
                 );
               })}
             </div>
 
-            {/* How it works â€” a plain explanation of the method */}
+            {/* How it works - a plain explanation of the method */}
             <div style={{ marginTop: "3.5rem", paddingTop: "2.5rem", borderTop: "1px solid var(--border)" }}>
               <h2 style={{ fontSize: "1.15rem", fontWeight: 800, letterSpacing: "-0.02em", marginBottom: "0.4rem" }}>How this works</h2>
               <p style={{ color: "var(--text-dim)", fontSize: "0.9rem", lineHeight: 1.75, maxWidth: 620, marginBottom: "1.75rem" }}>
-                This is the <strong>Leitner system</strong> â€” a proven, low-effort way to remember more by reviewing at the right moment. You grade yourself honestly, and each card&apos;s next review is scheduled for you.
+                This is the <strong>Leitner system</strong> - a proven, low-effort way to remember more by reviewing at the right moment. You grade yourself honestly, and each card&apos;s next review is scheduled for you.
               </p>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))", gap: "1rem", marginBottom: "1.75rem" }}>
                 {[
                   { n: "1", title: "Answer, then self-grade", body: "Read the front, recall the answer, flip the card, then tell it the truth: Got it, Almost, or Missed. Honest grading is what makes the schedule work." },
                   { n: "2", title: "Five boxes space it out", body: "Every card lives in a box from 1 to 5. Get it right and it moves up a box, so you see it less often. Miss it and it drops to box 1 to be relearned." },
-                  { n: "3", title: "Come back when it's due", body: "Higher boxes wait longer between reviews â€” roughly 1, 3, 7, then 16 days. You only study what's due, so effort goes where memory is weakest." },
+                  { n: "3", title: "Come back when it's due", body: "Higher boxes wait longer between reviews - roughly 1, 3, 7, then 16 days. You only study what's due, so effort goes where memory is weakest." },
                 ].map((s) => (
                   <div key={s.n} className="dash-card" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     <div style={{ width: 30, height: 30, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "0.85rem", color: "var(--violet)", background: "var(--violet-light)" }}>{s.n}</div>
@@ -472,7 +472,7 @@ export default function PracticePage() {
                 ))}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                <span style={{ fontSize: "0.78rem", color: "var(--text-mute)", marginRight: 4 }}>Box â†’ review after:</span>
+                <span style={{ fontSize: "0.78rem", color: "var(--text-mute)", marginRight: 4 }}>Box &rarr; review after:</span>
                 {[
                   { box: "1", when: "same session", c: BOX_COLORS[0] },
                   { box: "2", when: "~1 day", c: BOX_COLORS[1] },
@@ -482,22 +482,22 @@ export default function PracticePage() {
                 ].map((b) => (
                   <span key={b.box} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.72rem", fontWeight: 600, color: "var(--text-dim)", background: "var(--bg3)", border: "1px solid var(--border)", padding: "3px 10px", borderRadius: 100 }}>
                     <span style={{ width: 8, height: 8, borderRadius: "50%", background: b.c }} />
-                    Box {b.box} Â· {b.when}
+                    Box {b.box}  /  {b.when}
                   </span>
                 ))}
               </div>
               <p style={{ fontSize: "0.75rem", color: "var(--text-mute)", marginTop: "1.5rem", lineHeight: 1.6 }}>
-                Your progress is stored only in this browser (localStorage) â€” nothing is uploaded, and there are no accounts to create.
+                Your progress is stored only in this browser (localStorage) - nothing is uploaded, and there are no accounts to create.
               </p>
             </div>
           </>
         )}
 
-        {/* â”€â”€ STUDY VIEW â”€â”€ */}
+        {/* -- STUDY VIEW -- */}
         {view === "study" && mounted && currentCard && currentDeck && (
           <div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem", flexWrap: "wrap", gap: 10 }}>
-              <button onClick={() => setView("decks")} style={{ background: "none", border: "none", color: "var(--text-mute)", cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, fontFamily: "inherit", padding: 0 }}>â† End session</button>
+              <button onClick={() => setView("decks")} style={{ background: "none", border: "none", color: "var(--text-mute)", cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, fontFamily: "inherit", padding: 0 }}>&larr; End session</button>
               <span style={{ fontSize: "0.8rem", color: "var(--text-dim)", fontWeight: 600 }}>
                 {queue.length} card{queue.length > 1 ? "s" : ""} left
               </span>
@@ -528,20 +528,20 @@ export default function PracticePage() {
             {revealed && (
               <div style={{ display: "flex", gap: 10, marginTop: "1.25rem" }}>
                 <button className="grade-btn" style={{ borderColor: "rgba(var(--rose-rgb),0.4)", color: "var(--rose)" }} onClick={() => grade("missed")}>
-                  Missed <small>1 Â· back to box 1</small>
+                  Missed <small>1  /  back to box 1</small>
                 </button>
                 <button className="grade-btn" style={{ borderColor: "rgba(var(--amber-rgb),0.45)", color: "var(--amber)" }} onClick={() => grade("almost")}>
-                  Almost <small>2 Â· same box</small>
+                  Almost <small>2  /  same box</small>
                 </button>
                 <button className="grade-btn" style={{ borderColor: "rgba(var(--green-rgb),0.45)", color: "var(--green)" }} onClick={() => grade("got")}>
-                  Got it <small>3 Â· promote</small>
+                  Got it <small>3  /  promote</small>
                 </button>
               </div>
             )}
           </div>
         )}
 
-        {/* â”€â”€ DONE VIEW â”€â”€ */}
+        {/* -- DONE VIEW -- */}
         {view === "done" && mounted && (
           <div style={{ textAlign: "center", padding: "2rem 0" }}>
             <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>ðŸŽ‰</div>
@@ -564,7 +564,7 @@ export default function PracticePage() {
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
               {stats.due > 0 && (
                 <button onClick={() => startSession("all", false)} className="btn-primary" style={{ justifyContent: "center" }}>
-                  Keep going Â· {stats.due} due â†’
+                  Keep going  /  {stats.due} due &rarr;
                 </button>
               )}
               <button onClick={() => setView("decks")} className="btn-ghost">Back to decks</button>

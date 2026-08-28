@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit --incremental false",
     "test": "tsx --test tests/**/*.test.ts",
     "validate:content": "tsx scripts/validate-content.ts",
+    "guides:pdf": "tsx scripts/export-course-guide-data.ts && python scripts/generate-course-guides.py",
     "verify:payments": "node scripts/verify-payment-freeze.mjs",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run validate:content && npm run verify:payments && npm run build"
   },
