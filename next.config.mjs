@@ -32,6 +32,7 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   turbopack: { root: process.cwd() },
+  experimental: { cpus: 1, workerThreads: false },
 };
 
 export default nextConfig;

@@ -24,7 +24,7 @@ export function CourseOverview({ course, curriculum }: { course: Course; curricu
         <div className="hero-actions">
           <Link className="button primary inline-button" href={`/courses/${course.id}?lesson=${firstLesson.id}`}>Start first lesson</Link>
           <a className="button secondary inline-button" href={pdf} download>Download PDF guide</a>
-          <Link className="text-link" href={`/courses/${course.id}/guide`}>Preview guide</Link>
+          <Link className="text-link" href={`/courses/${course.id}/guide`}>Preview guide</Link><Link className="text-link" href={`/courses/${course.id}?assessment=final`}>Final assessment</Link>
         </div>
         <p className="browser-limit">Progress and notes are stored only in this browser. They are not synchronized or backed up.</p>
       </div>
