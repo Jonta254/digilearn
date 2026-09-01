@@ -43,13 +43,15 @@ test("external URL validation rejects credentials and executable schemes", () =>
   assert.equal(isSafeExternalUrl("//example.com"), false);
 });
 
-test("local profile parsing is explicit and sessions exclude credentials", () => {
+test("device profile migration strips identity and credential claims", () => {
   const account = parseLocalAccount({ id: "abc", name: "Learner", email: "LEARNER@example.com", joinedAt: "2026-08-22T00:00:00.000Z", plan: "free", coursesEnrolled: [], progress: {}, streak: 0, hoursLearned: 0, password: "legacy", credential: { version: 1, salt: "salt", hash: "hash", iterations: 120000 }, __proto__: { admin: true } });
   assert.ok(account);
   const session = toSession(account);
   assert.equal("password" in session, false);
   assert.equal("credential" in session, false);
-  assert.equal(session.email, "learner@example.com");
+  assert.deepEqual(session, { id: "abc", name: "Learner", joinedAt: "2026-08-22T00:00:00.000Z" });
+  assert.equal("email" in session, false);
+  assert.equal("plan" in session, false);
 });
 
 test("lesson loading remains selected-course and rejects invalid lesson IDs", () => {
@@ -79,7 +81,7 @@ test("course metadata is specific and canonical", async () => {
     params: Promise.resolve({ id: "chatgpt-mastery" }),
     searchParams: Promise.resolve({}),
   });
-  assert.equal(metadata.title, "ChatGPT & GPT-4o Mastery");
+  assert.equal(metadata.title, "Practical ChatGPT Workflows");
   assert.equal(metadata.alternates?.canonical, "/courses/chatgpt-mastery");
   const images = metadata.openGraph?.images;
   assert.ok(Array.isArray(images));
@@ -95,7 +97,7 @@ test("course Open Graph renderer returns a complete PNG", async () => {
   assert.equal(response.headers.get("content-type"), "image/png");
   assert.ok((await response.arrayBuffer()).byteLength > 10_000);
 });
-test("every course has unique reviewed cover metadata and a valid starter resource", () => {
+test("every course has unique cover metadata and a valid starter resource", () => {
   const assets = COURSES.map(coverAssetFor);
   assert.equal(new Set(assets.map((asset) => asset.assetId)).size, 72);
   for (const [index, course] of COURSES.entries()) {

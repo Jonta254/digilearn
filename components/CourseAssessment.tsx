@@ -45,19 +45,19 @@ export function CourseAssessment({ course, test }: { course: Course; test: Asses
   }
 
   return <><SiteHeader /><main id="main-content" className="assessment-main">
-    <nav className="assessment-breadcrumb" aria-label="Assessment breadcrumb"><Link href="/courses">Courses</Link><span aria-hidden="true">/</span><Link href={`/courses/${course.id}`}>{course.title}</Link><span aria-hidden="true">/</span><span>Final assessment</span></nav>
+    <nav className="assessment-breadcrumb" aria-label="Knowledge-check breadcrumb"><Link href="/courses">Courses</Link><span aria-hidden="true">/</span><Link href={`/courses/${course.id}`}>{course.title}</Link><span aria-hidden="true">/</span><span>Knowledge check</span></nav>
     {!started ? <section className="assessment-intro" aria-labelledby="assessment-title">
-      <p className="eyebrow">Final assessment</p>
+      <p className="eyebrow">Formative knowledge check</p>
       <h1 id="assessment-title" ref={headingRef} tabIndex={-1}>{test.title}</h1>
-      <p>Use this assessment after completing the course. You can retake it, and every answer includes an explanation after submission.</p>
+      <p>Use this low-stakes check after completing the lessons. It supports review and next-step decisions; it does not certify competence or replace evaluation of the practical project.</p>
       <dl className="assessment-facts"><div><dt>Questions</dt><dd>{test.questions.length}</dd></div><div><dt>Estimated time</dt><dd>{test.estimatedMinutes} minutes</dd></div><div><dt>Pass mark</dt><dd>{test.passingScore}%</dd></div></dl>
-      <p className="assessment-device-note">Results remain in this browser and are not synchronized to another device.</p>
+      <p className="assessment-device-note">Results remain in this browser, are not synchronized, and must not be used as a credential or paid-access entitlement.</p>
       <div className="assessment-actions"><button className="button primary" type="button" onClick={() => setStarted(true)}>Start assessment</button><Link className="button secondary" href={`/courses/${course.id}`}>Return to course</Link></div>
     </section> : result ? <section aria-labelledby="result-title" aria-live="polite">
       <p className="eyebrow">Assessment complete</p>
-      <h1 id="result-title" ref={headingRef} tabIndex={-1}>{result.passed ? "You passed" : "Keep learning—you can retake it"}</h1>
+      <h1 id="result-title" ref={headingRef} tabIndex={-1}>{result.passed ? "Knowledge check completed" : "Keep learning—you can retake it"}</h1>
       <div className="result-score"><strong>{result.percentage}%</strong><span>{result.correct} of {result.total} correct</span></div>
-      <p>{result.passed ? `You met the ${test.passingScore}% pass mark.` : `Review the explanations below, revisit the relevant lessons, and try again when ready.`}</p>
+      <p>{result.passed ? `You met the ${test.passingScore}% review threshold. This is formative feedback, not certification.` : `Review the explanations below, revisit the relevant lessons, and try again when ready.`}</p>
       <p className="assessment-device-note" role="status">{saved ? "This attempt was saved in this browser." : "This attempt could not be saved. It remains visible until you leave this page."}</p>
       <div className="assessment-actions"><button className="button primary" type="button" onClick={restart}>Retake assessment</button><Link className="button secondary" href={`/courses/${course.id}`}>Return to course</Link></div>
       <section className="assessment-review" aria-labelledby="review-title"><h2 id="review-title">Review your answers</h2>{result.details.map((detail, itemIndex) => <article className={`answer-review ${detail.correct ? "correct" : "incorrect"}`} key={detail.question.id}><p className="eyebrow">Question {itemIndex + 1} · {detail.correct ? "Correct" : "Review"}</p><h3>{detail.question.question}</h3><p><strong>Your answer:</strong> {detail.selected.length ? detail.selected.map((option) => detail.question.options[option]).join("; ") : "Unanswered"}</p><p><strong>Correct answer:</strong> {detail.question.correctAnswer.map((option) => detail.question.options[option]).join("; ")}</p><p>{detail.question.explanation}</p></article>)}</section>

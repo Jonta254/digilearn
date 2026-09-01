@@ -23,7 +23,7 @@ export default function HomePage() {
         </div>
         <ul className="hero-trust" aria-label="DigiLearn platform highlights">
           <li><strong>864</strong><span>guided lessons</span></li>
-          <li><strong>72</strong><span>complete courses</span></li>
+          <li><strong>72</strong><span>structured course drafts</span></li>
           <li><strong>Open</strong><span>access right now</span></li>
         </ul>
         <p className="hero-honesty"><span aria-hidden="true">●</span> No card required. Progress stays on this device.</p>

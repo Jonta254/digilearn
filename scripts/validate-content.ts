@@ -1,8 +1,7 @@
 import { COURSES } from "../app/courses/courses";
 import { getAllCurricula } from "../lib/course-library";
-import { COURSE_PRICE_KES } from "../lib/pricing";
+import { reviewFor, isValidReview } from "../lib/course-governance";
 import { isSafeExternalUrl } from "../lib/safe-url";
-import { editorialFor } from "../lib/course-editorial";
 import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
 import { existsSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
@@ -32,8 +31,8 @@ for (const course of COURSES) {
   courseIds.add(course.id);
   if (!course.thumb.trim()) fail(course.id, "missing artwork");
   if (emoji.test(course.icon)) fail(course.id, "emoji artwork is not permitted");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(editorialFor(course).lastReviewed)) fail(course.id, "missing lastReviewed date");
-  if (!course.free && (!Number.isInteger(COURSE_PRICE_KES) || COURSE_PRICE_KES <= 0)) fail(course.id, "invalid future price");
+  const review = reviewFor(course);
+  if (review.status === "reviewed" && !isValidReview(review)) fail(course.id, "reviewed status requires named reviewer and active review window");
 
   const cover = coverAssetFor(course);
   if (cover.courseId !== course.id || !cover.assetId || !cover.alt || !cover.caption || cover.sourceReview !== "cc0-brand-icons") fail(course.id, "incomplete cover metadata");

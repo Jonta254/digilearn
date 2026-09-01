@@ -128,7 +128,7 @@ function curriculumFor(course: Course): CourseCurriculum {
   const plan = PLANS[course.topic];
   const modules: CourseModule[] = plan.modules.map(([title, concepts], moduleIndex) => ({
     id: `${course.id}-module-${moduleIndex + 1}`,
-    title,
+    title: `${course.tags[moduleIndex % course.tags.length]}: ${title}`,
     summary: `Apply ${course.tags[moduleIndex % course.tags.length]} through ${concepts.join(", ")}.`,
     lessons: concepts.map((concept, lessonIndex) => lessonFor(course, title, concept, moduleIndex * 3 + lessonIndex, plan.caution)),
   }));

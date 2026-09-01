@@ -5,7 +5,7 @@ import { allLessonIds, findLesson, getAllCurricula } from "../lib/course-library
 import { filterCourses } from "../lib/course-search";
 import { LEARNING_ACCESS_MODE, learningAccess } from "../lib/access-policy";
 import { courseProgress, parseNotes, parseProgress } from "../lib/learning-storage";
-import { COURSE_PRICE_KES } from "../lib/pricing";
+import { reviewFor, isValidReview } from "../lib/course-governance";
 
 const COURSE_LIBRARY = getAllCurricula();
 
@@ -38,8 +38,9 @@ test("duration is derived from lessons", () => {
 test("open-preview policy never implies purchase", () => {
   assert.equal(LEARNING_ACCESS_MODE, "open-preview");
   assert.equal(learningAccess.isOpen, true);
-  assert.ok(COURSE_PRICE_KES > 0);
   assert.match(learningAccess.detail, /Payments are not required/);
+  assert.ok(COURSES.every((course) => reviewFor(course).status === "structured-draft"));
+  assert.ok(COURSES.every((course) => !isValidReview(reviewFor(course))));
 });
 
 test("malformed local progress and notes recover safely", () => {

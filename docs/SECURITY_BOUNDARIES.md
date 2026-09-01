@@ -6,15 +6,15 @@
 - Production responses use a restrictive Content Security Policy, clickjacking protection, MIME-sniffing protection, referrer controls and a limited permissions policy.
 - Course, lesson, note, progress and external-reference values are schema-checked and size-limited before use.
 - Corrupt or unavailable browser storage falls back to an empty local state instead of crashing a route.
-- Local profile sessions exclude stored credential material.
+- Device profiles contain only a local identifier, display name and creation date.
 - CI verifies the frozen payment implementation against commit `0c47f6d`.
 - Dependencies are audited and the production build is verified.
 
 ## Browser-local boundary
 
-Profiles, passwords, notes, progress and practice state are not backed by a server. Browser storage is readable by scripts executing on the same origin and can be erased by the learner or browser. DigiLearn therefore does not claim secure authentication, account recovery, synchronization, tamper resistance, access control or backup.
+Device profiles, notes, progress and practice state are not backed by a server. Browser storage is readable by scripts executing on the same origin and can be erased by the learner or browser. DigiLearn therefore does not claim secure authentication, account recovery, synchronization, tamper resistance, access control or backup.
 
-Legacy locally encoded passwords remain accepted only to avoid locking out an existing browser profile. After a successful legacy sign-in, DigiLearn replaces that value with a salted PBKDF2 verifier and removes credential data from the active session. This reduces accidental disclosure but is not equivalent to server-side authentication.
+Legacy profile records are reduced on read to a local identifier, display name and creation date. Email, password, credential, plan and entitlement-like fields are not retained by the active profile model.
 
 ## Requires a future authorized backend
 

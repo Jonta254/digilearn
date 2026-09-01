@@ -6,6 +6,7 @@ import { AccessBadge } from "./CourseCard";
 import { CourseCover } from "./CourseCover";
 import { courseGuidePdfPath, DOWNLOADS_BY_TOPIC } from "@/lib/course-assets";
 import { SiteFooter, SiteHeader } from "./SiteChrome";
+import { reviewFor, reviewLabel } from "@/lib/course-governance";
 
 export function CourseOverview({ course, curriculum }: { course: Course; curriculum: CourseCurriculum }) {
   const editorial = editorialFor(course);
@@ -13,20 +14,21 @@ export function CourseOverview({ course, curriculum }: { course: Course; curricu
   const resource = DOWNLOADS_BY_TOPIC[course.topic];
   const pdf = courseGuidePdfPath(course.id);
   const lessonCount = curriculum.modules.reduce((count, module) => count + module.lessons.length, 0);
+  const review = reviewFor(course);
 
   return <><SiteHeader /><main id="main-content" className="course-overview">
     <header className="course-overview-hero">
       <div>
-        <p className="eyebrow">{course.level} / Reviewed {editorial.lastReviewed}</p>
+        <p className="eyebrow">{course.level} / {reviewLabel(review)} / Version {review.version}</p>
         <AccessBadge course={course} />
         <h1>{course.title}</h1>
         <p className="course-overview-lead">{editorial.outcome}. You will finish with {editorial.project}.</p>
         <div className="hero-actions">
           <Link className="button primary inline-button" href={`/courses/${course.id}?lesson=${firstLesson.id}`}>Start first lesson</Link>
           <a className="button secondary inline-button" href={pdf} download>Download PDF guide</a>
-          <Link className="text-link" href={`/courses/${course.id}/guide`}>Preview guide</Link><Link className="text-link" href={`/courses/${course.id}?assessment=final`}>Final assessment</Link>
+          <Link className="text-link" href={`/courses/${course.id}/guide`}>Preview guide</Link><Link className="text-link" href={`/courses/${course.id}?assessment=final`}>Formative knowledge check</Link>
         </div>
-        <p className="browser-limit">Progress and notes are stored only in this browser. They are not synchronized or backed up.</p>
+        <p className="browser-limit">This open learning manuscript is undergoing course-specific editorial review. It does not provide certification. Progress and notes are stored only in this browser.</p>
       </div>
       <CourseCover course={course} priority />
     </header>

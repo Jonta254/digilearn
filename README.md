@@ -2,7 +2,7 @@
 
 DigiLearn is a Next.js learning application for practical digital skills. It contains 72 stable courses, 864 structured lessons, 864 lesson visuals, printable guides, eight practice decks, deterministic progress and personal notes.
 
-All lessons currently use the centralized `open-preview` policy. Previously paid courses keep their future KES price, but opening learning content does not initiate payment.
+All lessons currently use the centralized `open-preview` policy. No future price is presented until product scope, quality review, currency, tax, refund and entitlement policies are approved.
 
 ## Requirements and installation
 
@@ -77,7 +77,7 @@ Favicon, Apple touch, 192px, 512px, maskable and profile images are derived from
 
 Notes, progress, practice state and profiles stay in the current browser. They do not synchronize, receive cloud backup or provide server authorization. Clearing site data can remove them.
 
-New local profile credentials use a salted PBKDF2 verifier; successful legacy sign-in migrates the old encoded value. Active sessions exclude credential material. This reduces accidental exposure but does not make browser-local authentication equivalent to a secure backend account.
+The optional device profile stores only a display name and local identifier. It collects no email or password and is never treated as authentication or authorization.
 
 The exact protected and future-backend boundaries are documented in [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md). Do not claim cloud accounts, recovery, tamper-resistant progress or production authorization until an explicitly approved backend is introduced.
 
@@ -89,7 +89,7 @@ The application currently runs in `open-preview` mode and contains no payment in
 npm run verify:payments
 ```
 
-International dollar pricing is not configured. It requires a future authorized pricing source, currency policy and supported payment provider.
+No launch price is configured. Pricing requires an authorized product definition, currency and tax policy, refund terms, durable entitlements and supported payment provider.
 
 ## Deployment
 
