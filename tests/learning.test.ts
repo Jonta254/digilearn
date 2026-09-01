@@ -69,10 +69,12 @@ test("invalid course IDs do not resolve", () => {
   assert.equal(findLesson("chatgpt-mastery", "chatgpt-mastery-not-real"), undefined);
 });
 
-test("every lesson has distinct substantive editorial content and a unique visual", () => {
+test("every lesson has distinct substantive editorial content and semantic visuals", () => {
   const lessons = Object.values(COURSE_LIBRARY).flatMap((curriculum) => curriculum.modules.flatMap((module) => module.lessons));
   assert.equal(lessons.length, 864);
-  assert.equal(new Set(lessons.map((lesson) => lesson.visual.id)).size, 864);
+  const visuals = lessons.flatMap((lesson) => lesson.visuals);
+  assert.equal(new Set(visuals.map((visual) => visual.id)).size, visuals.length);
+  assert.ok(visuals.length > lessons.length, "supporting visuals should appear only where the visual structure benefits from one");
   for (const field of [
     lessons.map((lesson) => lesson.introduction),
     lessons.map((lesson) => lesson.activity),
@@ -84,6 +86,13 @@ test("every lesson has distinct substantive editorial content and a unique visua
     assert.ok(lesson.references.length >= 2);
     assert.ok(lesson.references.every((reference) => reference.url.startsWith("https://") && reference.organization));
     assert.ok(lesson.visual.labels.length >= 3);
+    assert.ok(lesson.visuals.length >= 1 && lesson.visuals.length <= 2);
+    assert.equal(lesson.visual, lesson.visuals[0]);
+    for (const visual of lesson.visuals) {
+      assert.ok(visual.items.length >= 3);
+      assert.ok(visual.items.every((item) => item.label && item.detail.length >= 20));
+      assert.ok(visual.takeaway.length >= 40);
+    }
   }
 });
 

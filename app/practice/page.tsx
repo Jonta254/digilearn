@@ -26,7 +26,7 @@ const DECKS: Deck[] = [
   {
     id: "prompt-engineering",
     name: "Prompt Engineering",
-    icon: "Deck",
+    icon: "PE",
     color: "#7C3AED",
     blurb: "Techniques for getting reliable output from LLMs.",
     cards: [
@@ -43,7 +43,7 @@ const DECKS: Deck[] = [
   {
     id: "python",
     name: "Python",
-    icon: "Deck",
+    icon: "Py",
     color: "#16A34A",
     blurb: "Core language mechanics every Python dev should know.",
     cards: [
@@ -60,7 +60,7 @@ const DECKS: Deck[] = [
   {
     id: "javascript",
     name: "JavaScript",
-    icon: "Deck",
+    icon: "JS",
     color: "#EA580C",
     blurb: "Modern JS fundamentals and async behaviour.",
     cards: [
@@ -77,7 +77,7 @@ const DECKS: Deck[] = [
   {
     id: "cybersecurity",
     name: "Cybersecurity",
-    icon: "Deck",
+    icon: "SEC",
     color: "#E11D48",
     blurb: "Foundational security concepts and common attacks.",
     cards: [
@@ -94,7 +94,7 @@ const DECKS: Deck[] = [
   {
     id: "ai-foundations",
     name: "AI Foundations",
-    icon: "Deck",
+    icon: "AI",
     color: "#0284C7",
     blurb: "Machine-learning and LLM concepts from the ground up.",
     cards: [
@@ -111,7 +111,7 @@ const DECKS: Deck[] = [
   {
     id: "git",
     name: "Git & Version Control",
-    icon: "Deck",
+    icon: "Git",
     color: "#D97706",
     blurb: "The everyday commands and ideas behind Git.",
     cards: [
@@ -128,7 +128,7 @@ const DECKS: Deck[] = [
   {
     id: "sql",
     name: "SQL",
-    icon: "Deck",
+    icon: "SQL",
     color: "#0369A1",
     blurb: "Query and model data in relational databases.",
     cards: [
@@ -145,7 +145,7 @@ const DECKS: Deck[] = [
   {
     id: "web-http",
     name: "Web & HTTP",
-    icon: "Deck",
+    icon: "HTTP",
     color: "#DB2777",
     blurb: "How browsers and servers actually talk.",
     cards: [
@@ -366,7 +366,7 @@ export default function PracticePage() {
           <Link href="/practice" className="nav-link active">Practice</Link>
           <Link href="/dashboard" className="nav-link">Dashboard</Link>
         </div>
-        <Link href="/auth?mode=signup" className="nav-cta">Start free &rarr;</Link>
+        <Link href="/courses" className="nav-cta">Browse courses</Link>
       </nav>
 
       <main id="main-content" style={{ maxWidth: 900, margin: "0 auto", padding: "6rem 1.5rem 5rem" }}>
@@ -384,10 +384,10 @@ export default function PracticePage() {
             {/* Stats */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: "1rem", marginBottom: "2rem" }}>
               {[
-                { label: "Due now", value: mounted ? stats.due : 0, icon: "Deck", color: "var(--cyan)" },
-                { label: `Mastered of ${TOTAL_CARDS}`, value: mounted ? stats.mastered : 0, icon: "Deck", color: "var(--green)" },
-                { label: "Day streak", value: mounted ? stats.streak : 0, icon: "Deck", color: "var(--orange)" },
-                { label: "Total reviews", value: mounted ? stats.reviews : 0, icon: "Deck", color: "var(--violet)" },
+                { label: "Due now", value: mounted ? stats.due : 0, icon: "Due", color: "var(--cyan)" },
+                { label: `Mastered of ${TOTAL_CARDS}`, value: mounted ? stats.mastered : 0, icon: "Known", color: "var(--green)" },
+                { label: "Day streak", value: mounted ? stats.streak : 0, icon: "Days", color: "var(--orange)" },
+                { label: "Total reviews", value: mounted ? stats.reviews : 0, icon: "Total", color: "var(--violet)" },
               ].map((s) => (
                 <div key={s.label} className="dash-stat-card">
                   <span style={{ fontSize: "1.35rem" }}>{s.icon}</span>
@@ -400,7 +400,7 @@ export default function PracticePage() {
             {/* All-due CTA or caught-up banner */}
             {mounted && stats.due > 0 ? (
               <button onClick={() => startSession("all", false)} className="btn-primary" style={{ width: "100%", justifyContent: "center", marginBottom: "2.25rem", fontSize: "0.95rem" }}>
-                Review all {stats.due} due card{stats.due > 1 ? "s" : ""} &rarr;
+                Review all {stats.due} due card{stats.due > 1 ? "s" : ""}
               </button>
             ) : mounted ? (
               <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", padding: "1.25rem 1.5rem", borderRadius: "var(--radius)", background: "var(--green-light)", border: "1px solid rgba(var(--green-rgb),0.25)", marginBottom: "2.25rem" }}>
@@ -445,7 +445,7 @@ export default function PracticePage() {
                       className={mounted && ds.due === 0 ? "btn-ghost" : "btn-primary"}
                       style={{ justifyContent: "center", padding: "0.6rem", fontSize: "0.82rem", width: "100%", minHeight: 42, boxShadow: "none" }}
                     >
-                      {mounted && ds.due === 0 ? "Review ahead" : "Study  -> "}
+                      {mounted && ds.due === 0 ? "Review ahead" : "Study deck"}
                     </button>
                   </div>
                 );
@@ -520,7 +520,7 @@ export default function PracticePage() {
                 </div>
               ) : (
                 <div style={{ marginTop: "auto", paddingTop: "1.5rem", color: "var(--text-mute)", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: "1rem" }}>ðŸ‘†</span> Tap the card or press <kbd style={{ fontFamily: "'Fira Code',monospace", background: "var(--bg3)", padding: "1px 6px", borderRadius: 4, fontSize: "0.72rem" }}>Space</kbd> to reveal
+                  <span aria-hidden="true">Reveal</span> Select the card or press <kbd style={{ fontFamily: "'Fira Code',monospace", background: "var(--bg3)", padding: "1px 6px", borderRadius: 4, fontSize: "0.72rem" }}>Space</kbd> to show the answer
                 </div>
               )}
             </button>
@@ -544,7 +544,7 @@ export default function PracticePage() {
         {/* -- DONE VIEW -- */}
         {view === "done" && mounted && (
           <div style={{ textAlign: "center", padding: "2rem 0" }}>
-            <div style={{ fontSize: "3.5rem", marginBottom: "1rem" }}>ðŸŽ‰</div>
+            <div className="practice-complete-mark" aria-hidden="true">Complete</div>
             <h1 style={{ fontSize: "clamp(1.6rem,4vw,2.25rem)", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: "0.5rem" }}>Session complete</h1>
             <p style={{ color: "var(--text-dim)", marginBottom: "2rem" }}>You reviewed {session.reviewed} card{session.reviewed !== 1 ? "s" : ""}. Nicely done.</p>
 

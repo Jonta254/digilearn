@@ -28,6 +28,51 @@ function slug(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
+const VISUAL_KINDS: Record<string, Lesson["visual"]["kind"]> = {
+  structure: "layers", components: "layers", entities: "layers", relationships: "layers", constraints: "layers", identity: "layers",
+  limitations: "comparison", testing: "comparison", validation: "comparison", options: "comparison", evaluation: "comparison", uncertainty: "comparison",
+  maintenance: "cycle", monitoring: "cycle", review: "cycle", reproducibility: "cycle", quality: "cycle", participation: "cycle",
+  deployment: "timeline", response: "timeline", recovery: "timeline", implementation: "timeline", workflow: "timeline", "care pathways": "timeline",
+  risk: "matrix", stakeholders: "matrix", harms: "matrix", bias: "matrix", impact: "matrix", equity: "matrix",
+};
+
+const TOPIC_VISUAL_LANGUAGE: Record<string, [string, string]> = {
+  "ai-tools": ["Bounded input", "Reviewed output"], webdev: ["User and browser need", "Tested interface"], data: ["Question and source data", "Checked finding"],
+  automation: ["Trigger and payload", "Observed run"], security: ["Asset and trust boundary", "Verified control"], business: ["Customer evidence", "Measured outcome"],
+  databases: ["Business rule and records", "Valid data state"], ethics: ["Affected people and context", "Documented mitigation"], finance: ["Records and assumptions", "Reconciled decision"],
+  healthcare: ["Patient and care context", "Safe reviewed outcome"], policy: ["Public need and evidence", "Accountable outcome"],
+};
+
+function lessonVisuals(course: Course, concept: string, tag: string, id: string, brief: NonNullable<ReturnType<typeof getConceptBrief>>): Lesson["visuals"] {
+  const [input, output] = TOPIC_VISUAL_LANGUAGE[course.topic];
+  const kind = VISUAL_KINDS[concept] ?? brief.visualKind;
+  const focus = concept.split(" ").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+  const primary: Lesson["visual"] = {
+    id: `${id}-concept-visual`, kind, title: `${focus}: from context to evidence`,
+    description: `${focus} connects ${input.toLowerCase()} to a ${output.toLowerCase()} in ${course.title}.`,
+    labels: [input, focus, output], caption: `${focus} is the decision layer between the starting context and evidence that the result is fit for purpose.`,
+    takeaway: `${focus} is credible only when the result can be traced back to its purpose, inputs and constraints.`, placement: "after-objectives",
+    items: [
+      { label: input, detail: `Define the purpose, intended user and ${tag} constraints.` },
+      { label: focus, detail: brief.application },
+      { label: output, detail: "Compare the observed result with a normal case, boundary case and stated limitation." },
+    ], connections: ["frames", "produces evidence for"],
+  };
+  if (!["flow", "cycle", "timeline"].includes(kind)) return [primary];
+  return [primary, {
+    id: `${id}-worked-visual`, kind: "flow", title: `A worked ${tag} evidence path`,
+    description: `A four-step worked example for applying ${concept} to ${tag}, including a boundary test and revision.`,
+    labels: ["Known input", "Normal test", "Boundary test", "Revision"], caption: "The boundary result changes the method before the evidence is accepted.",
+    takeaway: "A successful normal case is not enough; the difficult case must influence the final method.", placement: "after-example",
+    items: [
+      { label: "Known input", detail: `Preserve the original ${tag} case and expected result.` },
+      { label: "Normal test", detail: "Confirm the basic path behaves as expected." },
+      { label: "Boundary test", detail: `Expose an assumption in the ${concept} method.` },
+      { label: "Revision", detail: "Change the method, rerun both cases and record the limitation." },
+    ], connections: ["test", "challenge", "improve"],
+  }];
+}
+
 function lessonFor(course: Course, moduleTitle: string, concept: string, index: number, caution?: string): Lesson {
   const tag = course.tags[index % course.tags.length];
   const id = `${course.id}-${slug(moduleTitle)}-${index + 1}`;
@@ -37,6 +82,7 @@ function lessonFor(course: Course, moduleTitle: string, concept: string, index: 
   const options = [`A polished ${tag} output without its input`, "A screenshot showing the tool opened", "A claim that the method always works"];
   const answer = index % 4;
   options.splice(answer, 0, correctAnswer);
+  const visuals = lessonVisuals(course, concept, tag, id, brief);
 
   return {
     id,
@@ -44,8 +90,9 @@ function lessonFor(course: Course, moduleTitle: string, concept: string, index: 
     minutes: 18 + (index % 4) * 4,
     objectives: [`Explain ${concept} in the context of ${course.title}.`, `Apply ${tag} to a bounded practical task.`, "Evaluate the result using explicit quality criteria."],
     keyTerms: [concept, tag, course.topic],
-    introduction: `In ${course.title}, ${concept} determines how a learner uses ${tag} with appropriate evidence. ${brief.definition} This ${course.level.toLowerCase()} lesson focuses on an inspectable decision or output.`,
-    visual: { id: `${id}-visual`, kind: brief.visualKind, title: `${concept} in ${course.title}`, description: `A ${brief.visualKind} diagram relating context, ${concept} and evidence for ${tag}.`, labels: brief.labels, caption: `Connect ${concept} decisions to evidence in ${course.title}.` },
+    introduction: `In ${course.title}, the way a learner handles ${concept} shapes how ${tag} is used and evaluated. ${brief.definition} This ${course.level.toLowerCase()} lesson focuses on a decision or output that another person can inspect.`,
+    visual: visuals[0],
+    visuals,
     blocks: [
       { type: "paragraph", text: `${brief.definition} For ${tag}, distinguish performing an operation from demonstrating that it suits the stated purpose. ${brief.application} Record assumptions that could change the conclusion.` },
       { type: "steps", title: `Apply ${concept} deliberately`, items: [`State the ${course.title} task and the decision it supports.`, `Prepare a small ${tag} case with a known input and difficult boundary.`, brief.application, "Compare the observed result with the expected behaviour and explain differences.", "Save the evidence, limitation and next action in a review record."] },

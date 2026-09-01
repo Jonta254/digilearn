@@ -13,6 +13,10 @@ export type LessonVisual = {
   description: string;
   labels: string[];
   caption: string;
+  takeaway: string;
+  placement: "after-objectives" | "after-steps" | "after-example" | "after-table";
+  items: Array<{ label: string; detail: string }>;
+  connections?: string[];
 };
 
 export type PracticalOutcome = {
@@ -50,6 +54,7 @@ export type Lesson = {
   introduction: string;
   blocks: LessonBlock[];
   visual: LessonVisual;
+  visuals: LessonVisual[];
   commonMistakes: string[];
   activity: string;
   summary: string[];

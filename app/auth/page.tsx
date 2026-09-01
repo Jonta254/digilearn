@@ -85,17 +85,17 @@ function AuthContent() {
   return <main id="main-content" className="auth-page">
     <Link href="/" className="auth-brand" aria-label="DigiLearn home"><BrandLogo /></Link>
     <section className="auth-card" aria-labelledby="auth-title">
-      <h1 id="auth-title">{mode === "signup" ? "Create a local profile" : "Open your local profile"}</h1>
-      <p>{mode === "signup" ? "Keep this browser's learning activity organized." : "Continue learning on this browser."}</p>
+      <h1 id="auth-title">{mode === "signup" ? "Create a profile on this device" : "Open a profile on this device"}</h1>
+      <p>{mode === "signup" ? "Organize learning activity in this browser." : "Continue with a profile previously created in this browser."}</p>
       <aside className="auth-boundary"><strong>Device-local only.</strong> This is not a secure online account: there is no cloud sync, email verification, server authorization, password recovery or cross-device access.</aside>
-      <div className="auth-tabs" role="group" aria-label="Profile mode"><button type="button" className={`auth-tab ${mode === "login" ? "active" : ""}`} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setError(""); }}>Sign in</button><button type="button" className={`auth-tab ${mode === "signup" ? "active" : ""}`} aria-pressed={mode === "signup"} onClick={() => { setMode("signup"); setError(""); }}>Sign up</button></div>
+      <div className="auth-tabs" role="group" aria-label="Profile mode"><button type="button" className={`auth-tab ${mode === "login" ? "active" : ""}`} aria-pressed={mode === "login"} onClick={() => { setMode("login"); setError(""); }}>Open existing</button><button type="button" className={`auth-tab ${mode === "signup" ? "active" : ""}`} aria-pressed={mode === "signup"} onClick={() => { setMode("signup"); setError(""); }}>Create new</button></div>
       <form onSubmit={submit}>
         {mode === "signup" ? <label className="auth-label">Full name<input className="auth-input" type="text" autoComplete="name" maxLength={100} required value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} /></label> : null}
         <label className="auth-label">Email address<input className="auth-input" type="email" autoComplete="email" maxLength={254} required value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} /></label>
         <label className="auth-label">Password<input className="auth-input" type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} minLength={mode === "signup" ? 10 : undefined} maxLength={128} required value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} /></label>
         {mode === "signup" ? <label className="auth-label">Confirm password<input className="auth-input" type="password" autoComplete="new-password" minLength={10} maxLength={128} required value={form.confirm} onChange={(event) => setForm((current) => ({ ...current, confirm: event.target.value }))} /></label> : null}
         {error ? <div className="auth-error" role="alert">{error}</div> : null}
-        <button type="submit" disabled={loading} className="button primary auth-submit">{loading ? "Working..." : mode === "signup" ? "Create local profile" : "Sign in locally"}</button>
+        <button type="submit" disabled={loading} className="button primary auth-submit">{loading ? "Working..." : mode === "signup" ? "Create device profile" : "Open device profile"}</button>
       </form>
       <div className="auth-or"><span>or</span></div>
       <button type="button" className="button quiet auth-submit" onClick={handleDemo} disabled={loading}>Explore with a demo profile</button>

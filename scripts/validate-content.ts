@@ -82,9 +82,13 @@ for (const course of COURSES) {
       for (const reference of lesson.references) {
         if (!reference.title || !reference.organization || !reference.accessed || !isSafeExternalUrl(reference.url) || !reference.url.startsWith("https://")) fail(scope, `invalid source: ${reference.title || reference.url}`);
       }
-      if (visualIds.has(lesson.visual.id)) fail(scope, `duplicate visual ID ${lesson.visual.id}`);
-      visualIds.add(lesson.visual.id);
-      if (!lesson.visual.title || lesson.visual.description.length < 35 || lesson.visual.caption.length < 30 || lesson.visual.labels.length < 3) fail(scope, "incomplete visual specification");
+      if (lesson.visuals.length < 1 || lesson.visuals.length > 2 || lesson.visual !== lesson.visuals[0]) fail(scope, "invalid primary or supporting visual structure");
+      for (const visual of lesson.visuals) {
+        if (visualIds.has(visual.id)) fail(scope, `duplicate visual ID ${visual.id}`);
+        visualIds.add(visual.id);
+        if (!visual.title || visual.description.length < 35 || visual.caption.length < 30 || visual.labels.length < 3 || visual.items.length < 3 || visual.takeaway.length < 40) fail(scope, `incomplete visual specification ${visual.id}`);
+        if (visual.items.some((item) => !item.label || item.detail.length < 20)) fail(scope, `shallow visual item ${visual.id}`);
+      }
       for (const block of lesson.blocks) if (block.type === "code" && (!block.language.trim() || !block.code.trim())) fail(scope, "code block requires a language and real source");
       const searchable = JSON.stringify(lesson);
       for (const phrase of forbidden) if (phrase.test(searchable)) fail(scope, `forbidden placeholder phrase: ${phrase}`);
@@ -104,7 +108,7 @@ for (const [field, values] of duplicateFields) {
 if (COURSES.length !== 72) errors.push(`catalogue: expected 72 courses, found ${COURSES.length}`);
 if (Object.keys(COURSE_LIBRARY).length !== COURSES.length) errors.push("catalogue: curriculum registry does not match catalogue");
 if (globalLessonIds.size !== 864) errors.push(`catalogue: expected 864 lessons, found ${globalLessonIds.size}`);
-if (visualIds.size !== globalLessonIds.size) errors.push("catalogue: every lesson must have a unique visual specification");
+if (visualIds.size < globalLessonIds.size) errors.push("catalogue: every lesson must have a unique primary visual specification");
 if (coverIds.size !== COURSES.length) errors.push("catalogue: every course must have a unique cover asset");
 
 if (errors.length) {

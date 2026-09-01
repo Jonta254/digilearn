@@ -6,7 +6,7 @@ import { LessonReader } from "@/components/LessonReader";
 import { learningAccess } from "@/lib/access-policy";
 import LegacyCoursePage from "./LegacyCoursePage";
 import { CourseOverview } from "@/components/CourseOverview";
-import { Assessment } from "@/components/Assessment";
+import { CourseAssessment } from "@/components/CourseAssessment";
 import { createCourseAssessment } from "@/lib/assessment";
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ lesson?: string; assessment?: string }> };
@@ -34,7 +34,7 @@ export default async function CoursePage({ params, searchParams }: Props) {
   const curriculum = getCurriculum(id);
   if (!course || !curriculum) notFound();
   if (!learningAccess.isOpen) return <LegacyCoursePage />;
-  if (query.assessment === "final") return <Assessment course={course} test={createCourseAssessment(course, curriculum)} />;
+  if (query.assessment === "final") return <CourseAssessment course={course} test={createCourseAssessment(course, curriculum)} />;
   if (!query.lesson) return <CourseOverview course={course} curriculum={curriculum} />;
   const lesson = findLesson(id, query.lesson);
   if (!lesson) notFound();

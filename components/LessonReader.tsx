@@ -18,6 +18,10 @@ function Block({ block }: { block: LessonBlock }) {
   return <div className="table-wrap"><table><caption>{block.caption}</caption><thead><tr>{block.headers.map((header) => <th key={header} scope="col">{header}</th>)}</tr></thead><tbody>{block.rows.map((row) => <tr key={row.join("-")}>{row.map((cell, index) => index === 0 ? <th key={cell} scope="row">{cell}</th> : <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div>;
 }
 
+function VisualsAt({ lesson, placement }: { lesson: Lesson; placement: Lesson["visual"]["placement"] }) {
+  return <>{lesson.visuals.filter((visual) => visual.placement === placement).map((visual) => <SubjectDiagram key={visual.id} visual={visual} />)}</>;
+}
+
 function KnowledgeCheck({ lesson, onComplete }: { lesson: Lesson; onComplete: () => void }) {
   const [selected, setSelected] = useState<number>();
   const [submitted, setSubmitted] = useState(false);
@@ -63,10 +67,15 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
       <main id="main-content" className="lesson-content">
         <div className="lesson-context"><Link href={`/courses/${course.id}`}>{course.title}</Link><span>Lesson {currentIndex + 1} of {lessonIds.length}</span><Link href={`/courses/${course.id}/guide`}>Study guide</Link><button type="button" onClick={() => window.print()}>Print lesson</button></div>
         <article>
-          <p className="eyebrow">Full course currently open</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>
+          <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>
           <section className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
-          <SubjectDiagram visual={lesson.visual} />
-          {lesson.blocks.map((block, index) => <Block key={index} block={block} />)}
+          <VisualsAt lesson={lesson} placement="after-objectives" />
+          {lesson.blocks.map((block, index) => <div className="lesson-block" key={index}>
+            <Block block={block} />
+            {block.type === "steps" ? <VisualsAt lesson={lesson} placement="after-steps" /> : null}
+            {block.type === "example" ? <VisualsAt lesson={lesson} placement="after-example" /> : null}
+            {block.type === "table" ? <VisualsAt lesson={lesson} placement="after-table" /> : null}
+          </div>)}
           <section><h2>Common mistakes</h2><ul>{lesson.commonMistakes.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <section className="practice-activity"><p className="eyebrow">Practice activity</p><h2>Apply the lesson</h2><p>{lesson.activity}</p></section>
           <KnowledgeCheck lesson={lesson} onComplete={() => updateProgress("completedChecks")} />
