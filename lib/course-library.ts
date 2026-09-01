@@ -47,6 +47,22 @@ function lessonVisuals(course: Course, concept: string, tag: string, id: string,
   const [input, output] = TOPIC_VISUAL_LANGUAGE[course.topic];
   const kind = VISUAL_KINDS[concept] ?? brief.visualKind;
   const focus = concept.split(" ").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+  if (course.id === "html-css" && concept === "structure") {
+    return [{
+      id: `${id}-concept-visual`, kind: "layers", title: "How semantic HTML becomes a page structure",
+      description: "A nested document outline showing how landmark elements communicate page hierarchy to browsers and assistive technology.",
+      labels: ["<body>", "<header> + <nav>", "<main> → <section>", "<footer>"],
+      caption: "Landmarks describe the role of each region; nesting communicates which content belongs together.",
+      takeaway: "Choose elements for meaning first, then use CSS to control their presentation.", placement: "after-objectives",
+      items: [
+        { label: "<body>", detail: "Contains the visible document and establishes the page boundary." },
+        { label: "<header> + <nav>", detail: "Identify introductory content and the primary navigation region." },
+        { label: "<main> → <section>", detail: "Nest the page's unique content and group related headings, text and controls." },
+        { label: "<footer>", detail: "Contains supporting information that follows the main content." },
+      ],
+      connections: ["contains", "organises", "is followed by"],
+    }];
+  }
   const primary: Lesson["visual"] = {
     id: `${id}-concept-visual`, kind, title: `${focus}: from context to evidence`,
     description: `${focus} connects ${input.toLowerCase()} to a ${output.toLowerCase()} in ${course.title}.`,

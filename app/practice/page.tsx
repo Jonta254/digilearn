@@ -311,6 +311,8 @@ export default function PracticePage() {
   useEffect(() => {
     if (view !== "study") return;
     const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("button,a,input,textarea,select,[contenteditable='true']")) return;
       if (e.key === " " || e.key === "Enter") { e.preventDefault(); setRevealed((r) => !r); }
       else if (revealed && e.key === "1") grade("missed");
       else if (revealed && e.key === "2") grade("almost");
@@ -443,7 +445,7 @@ export default function PracticePage() {
                     <button
                       onClick={() => startSession(d.id, mounted ? ds.due === 0 : false)}
                       className={mounted && ds.due === 0 ? "btn-ghost" : "btn-primary"}
-                      style={{ justifyContent: "center", padding: "0.6rem", fontSize: "0.82rem", width: "100%", minHeight: 42, boxShadow: "none" }}
+                      style={{ justifyContent: "center", padding: "0.6rem", fontSize: "0.82rem", width: "100%", minHeight: 44, boxShadow: "none" }}
                     >
                       {mounted && ds.due === 0 ? "Review ahead" : "Study deck"}
                     </button>

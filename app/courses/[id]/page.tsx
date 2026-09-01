@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import { COURSES } from "../courses";
 import { findLesson, getCurriculum } from "@/lib/course-library";
 import { LessonReader } from "@/components/LessonReader";
-import { learningAccess } from "@/lib/access-policy";
-import LegacyCoursePage from "./LegacyCoursePage";
 import { CourseOverview } from "@/components/CourseOverview";
 import { CourseAssessment } from "@/components/CourseAssessment";
 import { createCourseAssessment } from "@/lib/assessment";
@@ -33,7 +31,6 @@ export default async function CoursePage({ params, searchParams }: Props) {
   const course = COURSES.find((item) => item.id === id);
   const curriculum = getCurriculum(id);
   if (!course || !curriculum) notFound();
-  if (!learningAccess.isOpen) return <LegacyCoursePage />;
   if (query.assessment === "final") return <CourseAssessment course={course} test={createCourseAssessment(course, curriculum)} />;
   if (!query.lesson) return <CourseOverview course={course} curriculum={curriculum} />;
   const lesson = findLesson(id, query.lesson);

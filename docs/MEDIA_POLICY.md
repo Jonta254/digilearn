@@ -1,6 +1,6 @@
 # DigiLearn media policy
 
-Every visual must explain something the learner needs to understand. DigiLearn currently uses locally bundled course artwork and 864 internally produced, data-driven technical diagrams. It does not claim third-party lesson photography or copied software screenshots.
+Every visual must explain something the learner needs to understand. DigiLearn currently uses locally bundled course artwork and more than 1,200 internally produced, data-driven technical diagram placements. It does not claim third-party lesson photography or copied software screenshots.
 
 ## Approved sources
 

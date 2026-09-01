@@ -1,21 +1,18 @@
-import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 
-const baseline = "0c47f6d";
-const protectedFiles = [
-  ".env.example",
+const forbiddenLegacyFiles = [
   "lib/mpesa.ts",
-  "lib/pricing.ts",
   "app/api/mpesa/callback/route.ts",
   "app/api/mpesa/status/route.ts",
   "app/api/mpesa/stkpush/route.ts",
-  "lib/access-policy.ts",
   "app/courses/[id]/LegacyCoursePage.tsx",
   "app/courses/[id]/PaywallModal.tsx",
 ];
-try {
-  execFileSync("git", ["diff", "--quiet", baseline, "--", ...protectedFiles], { stdio: "inherit" });
-  console.log(`Payment freeze valid: ${protectedFiles.length} protected files match ${baseline}.`);
-} catch {
-  console.error(`Payment freeze failed: protected files differ from ${baseline}.`);
+const existing = forbiddenLegacyFiles.filter(existsSync);
+const accessPolicy = readFileSync("lib/access-policy.ts", "utf8");
+if (existing.length || !accessPolicy.includes('LEARNING_ACCESS_MODE = "open-preview"')) {
+  if (existing.length) console.error(`Legacy payment files must remain absent: ${existing.join(", ")}`);
+  if (!accessPolicy.includes('LEARNING_ACCESS_MODE = "open-preview"')) console.error("Learning access must remain open until the Paystack readiness gate is complete.");
   process.exit(1);
 }
+console.log("Payment guard valid: open-preview access is active and legacy M-Pesa production files are absent.");

@@ -81,9 +81,9 @@ New local profile credentials use a salted PBKDF2 verifier; successful legacy si
 
 The exact protected and future-backend boundaries are documented in [docs/SECURITY_BOUNDARIES.md](docs/SECURITY_BOUNDARIES.md). Do not claim cloud accounts, recovery, tamper-resistant progress or production authorization until an explicitly approved backend is introduced.
 
-## Payment freeze
+## Payment readiness boundary
 
-M-Pesa integration, callback/status/STK Push routes, pricing, payment state, payment environment variables, the legacy paywall and `LEARNING_ACCESS_MODE` are frozen against commit `0c47f6d`.
+The application currently runs in `open-preview` mode and contains no payment initiation, callback, status or entitlement routes. The former M-Pesa implementation and legacy paywall have been removed. `npm run verify:payments` prevents those production surfaces from returning accidentally. Paystack must not be added until server-backed identity, durable entitlements, webhook verification, reconciliation and an authorized pricing policy are designed and reviewed.
 
 ```bash
 npm run verify:payments

@@ -734,7 +734,7 @@ a { color: inherit; text-decoration: none; }
 .content-callout,.practice-activity,.knowledge-check,.takeaways,.note-editor{margin:2.5rem 0;padding:1.4rem 1.5rem;border:1px solid #cad7e7;background:#fff}.content-callout{border-left:4px solid #0d9fb5}.content-callout.safety{border-left-color:#bd6b05;background:#fff9ec}.content-callout.remember{background:#eefaf9}.content-callout h2,.practice-activity h2,.knowledge-check h2,.takeaways h2,.note-editor h2{margin:.15rem 0 .65rem}
 .table-wrap{overflow-x:auto;margin:2.5rem 0}table{width:100%;border-collapse:collapse;background:#fff}caption{text-align:left;font-weight:750;color:#172c49;padding:.75rem 0}th,td{text-align:left;border:1px solid #d5dfeb;padding:.8rem;vertical-align:top;color:#354962}thead th{background:#eaf2fb;color:#172c49}
 .answer-option{display:flex;gap:.7rem;align-items:flex-start;padding:.8rem;margin:.5rem 0;border:1px solid #d4dfeb;background:#fff;cursor:pointer}.answer-option:has(input:checked){border-color:#1767c0;background:#edf5ff}.answer-feedback{padding:1rem;margin-top:1rem}.answer-feedback.correct{background:#e8f7f1;color:#17634c}.answer-feedback.incorrect{background:#fff5e5;color:#805213}
-.button{min-height:42px;border-radius:7px;padding:.65rem 1rem;border:1px solid #b9c9db;font-weight:700;cursor:pointer}.button.primary{background:#155fb0;border-color:#155fb0;color:#fff}.button.quiet{background:#fff;color:#344a64}.button:disabled{opacity:.5;cursor:not-allowed}
+.button{min-height:44px;border-radius:7px;padding:.65rem 1rem;border:1px solid #b9c9db;font-weight:700;cursor:pointer}.button.primary{background:#155fb0;border-color:#155fb0;color:#fff}.button.quiet{background:#fff;color:#344a64}.button:disabled{opacity:.5;cursor:not-allowed}
 .note-heading{display:flex;justify-content:space-between;gap:1rem}.note-heading span{font-size:.72rem;color:#60728a}.note-editor label{display:block;font-weight:650;margin:.8rem 0 .4rem}.note-editor textarea{display:block;width:100%;min-height:180px;padding:1rem;border:1px solid #aebed1;background:#fbfdff;color:#172c49;resize:vertical;font:inherit}.note-actions{display:flex;gap:.7rem;align-items:center;margin-top:.8rem}.note-actions small{margin-left:auto;color:#60728a}
 .lesson-navigation{max-width:760px;margin:3rem auto 0;border-top:1px solid #d6e0ec;padding-top:1.5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem}.lesson-navigation a:last-child{text-align:right}
 :focus-visible{outline:3px solid #f2a51a!important;outline-offset:3px}
@@ -898,3 +898,33 @@ a { color: inherit; text-decoration: none; }
 
 /* Professional assessment workspace */
 .assessment-main{width:min(760px,calc(100% - 2rem));margin:0 auto;padding:clamp(2rem,7vw,5rem) 0;min-height:100vh}.assessment-main h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.12;margin:.75rem 0 1.5rem}.assessment-main>p{color:#526778;margin-bottom:1.25rem}.assessment-main progress{width:100%;height:8px;margin:1rem 0 2rem;accent-color:#0a766e}.assessment-main fieldset{border:0;display:grid;gap:.75rem;margin:2rem 0}.assessment-main legend{font-weight:750;margin-bottom:1rem}.assessment-option{display:flex;gap:.85rem;align-items:flex-start;padding:1rem;border:1px solid #cbd8df;border-radius:10px;cursor:pointer}.assessment-option:has(input:checked){border-color:#0a766e;background:#eef9f7}.assessment-option input{margin-top:.3rem;width:18px;height:18px;accent-color:#0a766e}.assessment-navigation{display:flex;justify-content:space-between;gap:1rem;margin-top:2rem}.assessment-navigation button,.assessment-main [role=alert] button{min-height:44px;padding:.65rem 1rem;border:1px solid #8fa5b2;border-radius:8px;background:#fff;font-weight:700}.result-score{display:flex;gap:1.5rem;align-items:baseline;padding:1.5rem 0;border-block:1px solid #d7e0e5;margin-bottom:1.5rem}.result-score strong{font-size:3rem}.result-score span{font-size:1.5rem;color:#0a766e}.answer-review{padding:1.5rem 0;border-top:1px solid #d7e0e5}.answer-review h3{margin-bottom:.8rem}.answer-review p{margin:.45rem 0;color:#526778}@media(max-width:520px){.assessment-navigation{flex-direction:column}.assessment-navigation button{width:100%}.result-score strong{font-size:2.3rem}}
+
+/* Responsive interaction hardening */
+.mobile-filter-heading{display:none}
+.mobile-nav summary,.outline-toggle,.outline-close,.lesson-context button,.code-figure button,.auth-tab{min-height:44px}
+.mobile-nav summary{display:flex;align-items:center;padding:.5rem .25rem;font-weight:700;list-style-position:inside}
+.lesson-content h1,.lesson-content h2,.course-outline,.course-card-body,.course-overview,.assessment-main,.practice-page{overflow-wrap:anywhere}
+.course-card-meta{gap:.45rem 1rem;justify-content:flex-start}
+.course-card-meta span{white-space:normal}
+@media(max-width:720px){
+  .catalogue-filters{padding-bottom:calc(1.25rem + env(safe-area-inset-bottom))}
+  .mobile-filter-heading{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid #d5e0eb;padding-bottom:.75rem}
+  .mobile-filter-heading button{min-width:64px;min-height:44px;border:1px solid #8ba0b1;border-radius:7px;background:#fff;color:#173450;font-weight:700}
+  .course-card-meta{display:grid;grid-template-columns:1fr 1fr}
+  .course-card-meta span:last-child{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .site-header .brand-logo.compact .brand-wordmark{display:inline;font-size:.9rem}
+  .course-overview-hero h1{font-size:clamp(2.35rem,13vw,3.35rem);overflow-wrap:anywhere}
+  .course-modules>article{grid-template-columns:1fr;gap:.65rem}
+  .course-modules>article>span{font-size:1.25rem}
+  .course-modules li a{align-items:flex-start;min-height:52px}
+  .project-downloads{display:grid}
+  .project-downloads a{display:flex;align-items:center;justify-content:center;min-height:48px;text-align:center}
+  .content-callout,.practice-activity,.knowledge-check,.takeaways,.note-editor{padding:1.15rem}
+}
+@media(max-width:800px){
+  .course-outline.open{padding-top:0;padding-bottom:calc(2rem + env(safe-area-inset-bottom))}
+  .outline-close{position:sticky;top:0;z-index:2;width:100%;padding:.75rem 1rem;background:#fff;border-bottom:1px solid #cbd8e6;text-align:right;font-weight:750}
+  .lesson-context button{padding:.65rem 0}
+}

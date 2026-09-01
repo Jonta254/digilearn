@@ -32,6 +32,6 @@ Use Node.js 20.9 or newer and install with `npm ci`. Before committing, run `npm
 - Set `NEXT_PUBLIC_SITE_URL` to the canonical HTTPS origin.
 - Run `npm ci && npm run verify && npm audit`.
 - Verify response security headers and metadata files.
-- Confirm no real M-Pesa request occurs during smoke tests.
+- Confirm no payment request or entitlement mutation occurs during open-preview smoke tests.
 - Configure external monitoring at the hosting layer; none is bundled in this browser-local stage.
 - Do not enable payments without a separately authorized payment review.

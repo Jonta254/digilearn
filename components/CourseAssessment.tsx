@@ -15,11 +15,13 @@ export function CourseAssessment({ course, test }: { course: Course; test: Asses
   const [confirm, setConfirm] = useState(false);
   const [saved, setSaved] = useState<boolean | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const confirmationRef = useRef<HTMLHeadingElement>(null);
   const question = test.questions[index];
   const result = done ? scoreAssessment(test, answers) : null;
   const answered = Object.values(answers).filter((answer) => answer.length > 0).length;
 
   useEffect(() => { if (started) headingRef.current?.focus(); }, [index, done, started]);
+  useEffect(() => { if (confirm) confirmationRef.current?.focus(); }, [confirm]);
 
   function choose(option: number) {
     const current = answers[question.id] ?? [];
@@ -65,7 +67,7 @@ export function CourseAssessment({ course, test }: { course: Course; test: Asses
       <h1 id="question-title" ref={headingRef} tabIndex={-1}>{question.question}</h1>
       <fieldset><legend>{question.type === "multiple" ? "Select every answer that applies" : "Select one answer"}</legend>{question.options.map((option, optionIndex) => <label className="assessment-option" key={option}><input type={question.type === "multiple" ? "checkbox" : "radio"} name={question.id} checked={(answers[question.id] ?? []).includes(optionIndex)} onChange={() => choose(optionIndex)} /><span>{option}</span></label>)}</fieldset>
       <nav className="assessment-navigation" aria-label="Question navigation"><button type="button" disabled={index === 0} onClick={() => setIndex(index - 1)}>Previous question</button>{index < test.questions.length - 1 ? <button className="button primary" type="button" onClick={() => setIndex(index + 1)}>Next question</button> : <button className="button primary" type="button" onClick={() => submit()}>Submit assessment</button>}</nav>
-      {confirm ? <div className="assessment-confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title"><h2 id="confirm-title">Submit with unanswered questions?</h2><p>{test.questions.length - answered} question{test.questions.length - answered === 1 ? " is" : "s are"} unanswered. Unanswered questions will be marked incorrect.</p><div className="assessment-actions"><button className="button primary" type="button" onClick={() => submit(true)}>Submit assessment</button><button className="button secondary" type="button" onClick={() => setConfirm(false)}>Keep working</button></div></div> : null}
+      {confirm ? <div className="assessment-confirm" role="region" aria-live="assertive" aria-labelledby="confirm-title"><h2 id="confirm-title" ref={confirmationRef} tabIndex={-1}>Submit with unanswered questions?</h2><p>{test.questions.length - answered} question{test.questions.length - answered === 1 ? " is" : "s are"} unanswered. Unanswered questions will be marked incorrect.</p><div className="assessment-actions"><button className="button primary" type="button" onClick={() => submit(true)}>Submit assessment</button><button className="button secondary" type="button" onClick={() => setConfirm(false)}>Keep working</button></div></div> : null}
     </section>}
   </main><SiteFooter /></>;
 }
