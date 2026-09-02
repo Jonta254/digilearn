@@ -8,6 +8,7 @@ import renderCourseOpenGraphImage from "../app/courses/[id]/opengraph-image";
 import { BrandLogo } from "../components/BrandLogo";
 import { CourseCover } from "../components/CourseCover";
 import { HeroCodeDemo } from "../components/HeroCodeDemo";
+import { LessonReader } from "../components/LessonReader";
 import { allLessonIds, findLesson, getCurriculum } from "../lib/course-library";
 import { MAX_NOTE_LENGTH, normalizeNoteBody, parseNotes, parseProgress } from "../lib/learning-storage";
 import { parseLocalAccount, toSession } from "../lib/local-profile";
@@ -75,6 +76,26 @@ test("manifest references complete production icon sizes", () => {
   assert.ok(sizes.has("192x192"));
   assert.ok(sizes.has("512x512"));
   assert.ok(icons.some((icon) => icon.purpose === "maskable"));
+});
+
+test("lesson reader exposes a visible dark brand and skip link", () => {
+  const course = COURSES[0];
+  const curriculum = getCurriculum(course.id)!;
+  const lesson = curriculum.modules[0].lessons[0];
+  const outline = curriculum.modules.map((module) => ({
+    id: module.id,
+    title: module.title,
+    lessons: module.lessons.map(({ id, title, minutes }) => ({ id, title, minutes })),
+  }));
+  const html = renderToStaticMarkup(createElement(LessonReader, {
+    course,
+    outline,
+    durationMinutes: curriculum.durationMinutes,
+    lesson,
+    practicalOutcome: curriculum.practicalOutcome,
+  }));
+  assert.match(html, /href="#main-content">Skip to lesson content/);
+  assert.match(html, /fill="#12304a"/);
 });
 
 test("production metadata never falls back to localhost", () => {

@@ -64,7 +64,7 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
 
   const percent = courseProgress(progress, lessonIds);
   return <div className="learning-shell">
-    <header className="learning-header"><Link href="/" className="wordmark" aria-label="DigiLearn home"><BrandLogo compact tone="light" /></Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button ref={outlineButtonRef} className="outline-toggle" type="button" aria-expanded={outlineOpen} aria-controls="course-outline-panel" onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
+    <header className="learning-header"><a className="skip-link" href="#main-content">Skip to lesson content</a><Link href="/" className="wordmark" aria-label="DigiLearn home"><BrandLogo compact /></Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button ref={outlineButtonRef} className="outline-toggle" type="button" aria-expanded={outlineOpen} aria-controls="course-outline-panel" onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
     {!storageAvailable ? <div className="storage-warning" role="status">Progress could not be saved. Check browser storage settings and available space.</div> : null}
     <div className="learning-progress" aria-label={`${percent}% course progress`}><span style={{ width: `${percent}%` }} /></div>
     <div className="reader-layout">
