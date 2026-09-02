@@ -16,6 +16,7 @@ import { isSafeExternalUrl } from "../lib/safe-url";
 import { COURSES } from "../app/courses/courses";
 import { courseGuidePdfPath, coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
 import { COURSE_IMAGE_ATTRIBUTIONS } from "../lib/image-attributions";
+import { SITE_URL } from "../lib/site-config";
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 
@@ -74,6 +75,10 @@ test("manifest references complete production icon sizes", () => {
   assert.ok(sizes.has("192x192"));
   assert.ok(sizes.has("512x512"));
   assert.ok(icons.some((icon) => icon.purpose === "maskable"));
+});
+
+test("production metadata never falls back to localhost", () => {
+  assert.equal(SITE_URL.origin, "https://digilearn-five.vercel.app");
 });
 
 test("course metadata is specific and canonical", async () => {
