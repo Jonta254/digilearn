@@ -5,6 +5,7 @@ import { CourseCard } from "@/components/CourseCard";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { PATHWAYS } from "@/lib/course-editorial";
 import { HeroVisual } from "@/components/HeroVisual";
+import { LearningStories } from "@/components/LearningStories";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -45,6 +46,8 @@ export default function HomePage() {
     <section className="home-section featured-section"><div className="section-heading"><div><p className="eyebrow">High-value starting points</p><h2>Courses that lead to demonstrable work</h2><p className="section-intro">Recognizable tools, structured practice, and a concrete project at the finish.</p></div><Link href="/courses">View all courses <span aria-hidden="true">→</span></Link></div><div className="editorial-course-grid">{featuredCourseIds.map((id) => <CourseCard key={id} course={COURSES.find((course) => course.id === id)!} />)}</div></section>
 
     <section className="learning-method"><div><p className="eyebrow">A clearer way to learn</p><h2>From curiosity to credible work.</h2><p>DigiLearn connects every explanation to an example, check or practical output—so progress means more than finishing a video.</p><Link className="method-link" href="/practice">See how practice works <span aria-hidden="true">→</span></Link></div><ol><li><strong>Choose a goal</strong><span>Start from the capability you need, not an endless tool list.</span></li><li><strong>Study in context</strong><span>See code, documents, data and decisions used in realistic situations.</span></li><li><strong>Build evidence</strong><span>Complete a practical output and compare it with clear success criteria.</span></li><li><strong>Keep improving</strong><span>Use checks, notes and saved progress to return with purpose.</span></li></ol></section>
+
+    <LearningStories />
 
     <section className="final-cta"><div><p className="eyebrow">Start where you are</p><h2>Your next useful skill can become your next finished project.</h2><p>Browse the full catalogue, choose a clear outcome, and begin with the first practical lesson.</p></div><div><Link className="button primary inline-button" href="/courses">Choose a course</Link><Link href="/dashboard">View your dashboard</Link></div></section>
 

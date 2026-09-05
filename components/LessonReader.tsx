@@ -9,6 +9,8 @@ import { AccessBadge } from "./CourseCard";
 import { SubjectDiagram } from "./SubjectDiagram";
 import { BrandLogo } from "./BrandLogo";
 import { useModalSheet } from "@/lib/use-modal-sheet";
+import { showcaseForLesson } from "@/lib/lesson-showcases";
+import { LessonShowcase } from "./LessonShowcase";
 
 function Block({ block }: { block: LessonBlock }) {
   if (block.type === "paragraph") return <p>{block.text}</p>;
@@ -63,6 +65,7 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
   }
 
   const percent = courseProgress(progress, lessonIds);
+  const showcase = showcaseForLesson(lesson.id);
   return <div className="learning-shell">
     <header className="learning-header"><a className="skip-link" href="#main-content">Skip to lesson content</a><Link href="/" className="wordmark" aria-label="DigiLearn home"><BrandLogo compact /></Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button ref={outlineButtonRef} className="outline-toggle" type="button" aria-expanded={outlineOpen} aria-controls="course-outline-panel" onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
     {!storageAvailable ? <div className="storage-warning" role="status">Progress could not be saved. Check browser storage settings and available space.</div> : null}
@@ -72,7 +75,7 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
       <main id="main-content" className="lesson-content">
         <div className="lesson-context"><Link href={`/courses/${course.id}`}>{course.title}</Link><span>Lesson {currentIndex + 1} of {lessonIds.length}</span><Link href={`/courses/${course.id}/guide`}>Study guide</Link><button type="button" onClick={() => window.print()}>Print lesson</button></div>
         <article>
-          <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>
+          <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>{showcase ? <LessonShowcase showcase={showcase} /> : null}
           <section className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <VisualsAt lesson={lesson} placement="after-objectives" />
           {lesson.blocks.map((block, index) => <div className="lesson-block" key={index}>

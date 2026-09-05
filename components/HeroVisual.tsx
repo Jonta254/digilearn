@@ -4,8 +4,8 @@ export function HeroVisual() {
   return (
     <figure className="hero-visual" aria-labelledby="hero-visual-caption">
       <Image
-        src="/images/hero/digilearn-learner-v1.png"
-        alt="A focused learner building a digital project on her laptop in a warm workspace"
+        src="/images/hero/digilearn-learner-v2.webp"
+        alt="Editorial visualization of an East African learner testing a responsive web project on a laptop and phone"
         fill
         priority
         sizes="(max-width: 900px) 100vw, 52vw"
@@ -20,6 +20,7 @@ export function HeroVisual() {
         <strong>Responsive portfolio</strong>
         <small>HTML · CSS · Accessibility</small>
       </div>
+      <small className="hero-image-disclosure">Original DigiLearn editorial visualization</small>
     </figure>
   );
 }

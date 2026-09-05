@@ -1,8 +1,26 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
 
+const NAV_ITEMS = [
+  { href: "/courses", label: "Courses" },
+  { href: "/practice", label: "Practice" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/pricing", label: "Access" },
+] as const;
+
+function PrimaryLinks() {
+  const pathname = usePathname();
+  return NAV_ITEMS.map((item) => {
+    const active = pathname === item.href || (item.href === "/courses" && pathname.startsWith("/courses/"));
+    return <Link key={item.href} href={item.href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined}>{item.label}</Link>;
+  });
+}
+
 export function SiteHeader() {
-  return <header className="site-header"><a className="skip-link" href="#main-content">Skip to content</a><Link href="/" className="site-brand" aria-label="DigiLearn home"><BrandLogo compact /></Link><nav className="desktop-nav" aria-label="Primary"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link><Link href="/pricing">Access</Link></nav><details className="mobile-nav"><summary>Browse</summary><nav aria-label="Mobile"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link><Link href="/pricing">Access</Link></nav></details><Link href="/courses" className="header-action">Start learning</Link></header>;
+  return <header className="site-header"><a className="skip-link" href="#main-content">Skip to content</a><Link href="/" className="site-brand" aria-label="DigiLearn home"><BrandLogo compact /></Link><nav className="desktop-nav" aria-label="Primary"><PrimaryLinks /></nav><details className="mobile-nav"><summary>Browse</summary><nav aria-label="Mobile"><PrimaryLinks /></nav></details><Link href="/courses" className="header-action">Start learning</Link></header>;
 }
 
 export function SiteFooter() {

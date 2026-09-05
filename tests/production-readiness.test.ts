@@ -17,6 +17,7 @@ import { isSafeExternalUrl } from "../lib/safe-url";
 import { COURSES } from "../app/courses/courses";
 import { courseGuidePdfPath, coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
 import { COURSE_IMAGE_ATTRIBUTIONS } from "../lib/image-attributions";
+import { showcaseForLesson } from "../lib/lesson-showcases";
 import { SITE_URL } from "../lib/site-config";
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -78,6 +79,22 @@ test("manifest references complete production icon sizes", () => {
   assert.ok(icons.some((icon) => icon.purpose === "maskable"));
 });
 
+test("every HTML and CSS lesson has complete local showcase media", () => {
+  const curriculum = getCurriculum("html-css");
+  assert.ok(curriculum);
+
+  for (const lesson of curriculum.modules.flatMap((module) => module.lessons)) {
+    const showcase = showcaseForLesson(lesson.id);
+    assert.ok(showcase, `${lesson.id} needs showcase media`);
+    assert.ok(showcase.alt.length > 40, `${lesson.id} needs meaningful alt text`);
+    assert.ok(showcase.caption.length > 50, `${lesson.id} needs an explanatory caption`);
+
+    const file = join(process.cwd(), "public", showcase.src.slice(1));
+    assert.ok(existsSync(file), `${lesson.id} showcase image is missing`);
+    assert.ok(statSync(file).size >= 80_000, `${lesson.id} showcase image is too shallow`);
+  }
+});
+
 test("lesson reader exposes a visible dark brand and skip link", () => {
   const course = COURSES[0];
   const curriculum = getCurriculum(course.id)!;
@@ -96,6 +113,9 @@ test("lesson reader exposes a visible dark brand and skip link", () => {
   }));
   assert.match(html, /href="#main-content">Skip to lesson content/);
   assert.match(html, /fill="#12304a"/);
+  assert.match(html, /role="list"/);
+  assert.match(html, /Instructional figure/);
+  assert.match(html, /aria-label="[^"]+ (frames|contains|produces evidence for|leads to) [^"]+"/);
 });
 
 test("production metadata never falls back to localhost", () => {

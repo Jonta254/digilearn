@@ -1,6 +1,7 @@
 import { COURSES, type Course } from "@/app/courses/courses";
 import type { CourseCurriculum, CourseModule, Lesson } from "./learning-types";
 import { getConceptBrief, TOPIC_SOURCES } from "./editorial/topic-content";
+import { HTML_CSS_CURRICULUM } from "./editorial/html-css-course";
 
 type TopicPlan = {
   audience: string;
@@ -155,6 +156,10 @@ export function getCurriculum(courseId: string) {
   if (!/^[a-z0-9][a-z0-9-]{0,127}$/.test(courseId)) return undefined;
   const cached = curriculumCache.get(courseId);
   if (cached) return cached;
+  if (courseId === "html-css") {
+    curriculumCache.set(courseId, HTML_CSS_CURRICULUM);
+    return HTML_CSS_CURRICULUM;
+  }
   const course = COURSES.find((item) => item.id === courseId);
   if (!course) return undefined;
   const curriculum = curriculumFor(course);
@@ -167,6 +172,7 @@ export function getAllCurricula(): Record<string, CourseCurriculum> {
 }
 
 export function allLessonIds(courseId: string) {
+  if (courseId === "html-css") return HTML_CSS_CURRICULUM.modules.flatMap((module) => module.lessons.map((lesson) => lesson.id));
   const course = COURSES.find((item) => item.id === courseId);
   if (!course) return [];
   const plan = PLANS[course.topic];

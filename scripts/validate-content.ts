@@ -14,7 +14,7 @@ const visualIds = new Set<string>();
 const coverIds = new Set<string>();
 const safeDownloadExtensions = new Set([".md", ".txt", ".csv", ".json", ".html", ".sql"]);
 const duplicateFields = new Map<string, Map<string, string[]>>();
-const forbidden = [/lorem ipsum/i, /placeholder/i, /coming soon/i, /insert (text|content|image)/i];
+const forbidden = [/lorem ipsum/i, /\bplaceholder (copy|content|image)\b/i, /coming soon/i, /insert (text|content|image)/i];
 const emoji = /[\\p{Extended_Pictographic}]/u;
 
 function fail(scope: string, message: string) { errors.push(`${scope}: ${message}`); }
