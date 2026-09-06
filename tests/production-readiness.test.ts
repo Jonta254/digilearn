@@ -116,6 +116,8 @@ test("lesson reader exposes a visible dark brand and skip link", () => {
   assert.match(html, /role="list"/);
   assert.match(html, /Instructional figure/);
   assert.match(html, /aria-label="[^"]+ (frames|contains|produces evidence for|leads to) [^"]+"/);
+  assert.match(html, /Printable lesson handout/);
+  assert.match(html, /class="lesson-print-footer print-only"/);
 });
 
 test("production metadata never falls back to localhost", () => {
@@ -160,7 +162,7 @@ test("every course has unique cover metadata and a valid starter resource", () =
     assert.ok(statSync(file).size >= 80, `${course.id} resource is shallow`);
     const guide = join(process.cwd(), "public", courseGuidePdfPath(course.id).slice(1));
     assert.ok(existsSync(guide), `${course.id} PDF guide is missing`);
-    assert.ok(statSync(guide).size >= 5_000, `${course.id} PDF guide is shallow`);
+    assert.ok(statSync(guide).size >= 20_000, `${course.id} PDF workbook is shallow`);
   }
 });
 

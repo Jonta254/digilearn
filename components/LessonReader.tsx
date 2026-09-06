@@ -74,6 +74,7 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
       <aside ref={outlineRef} id="course-outline-panel" className={`course-outline ${outlineOpen ? "open" : ""}`} role={outlineOpen ? "dialog" : undefined} aria-modal={outlineOpen ? "true" : undefined} aria-label="Course outline"><button type="button" className="outline-close" onClick={closeOutline}>Close outline</button><p className="eyebrow">{course.level} - {Math.round(durationMinutes / 60)} hours</p><h2>{course.title}</h2>{outline.map((module, moduleIndex) => <section key={module.id}><h3>{moduleIndex + 1}. {module.title}</h3><ol>{module.lessons.map((item) => <li key={item.id}><Link className={item.id === lesson.id ? "active" : ""} href={`/courses/${course.id}?lesson=${item.id}`} onClick={closeOutline}>{progress.completedLessonIds.includes(item.id) ? "Completed: " : ""}{item.title}<small>{item.minutes} min</small></Link></li>)}</ol></section>)}</aside>
       <main id="main-content" className="lesson-content">
         <div className="lesson-context"><Link href={`/courses/${course.id}`}>{course.title}</Link><span>Lesson {currentIndex + 1} of {lessonIds.length}</span><Link href={`/courses/${course.id}/guide`}>Study guide</Link><button type="button" onClick={() => window.print()}>Print lesson</button></div>
+        <header className="lesson-print-header print-only"><div><strong>DigiLearn</strong><span>Printable lesson handout</span></div><dl><div><dt>Course</dt><dd>{course.title}</dd></div><div><dt>Lesson</dt><dd>{currentIndex + 1} of {lessonIds.length}</dd></div><div><dt>Study time</dt><dd>{lesson.minutes} minutes</dd></div><div><dt>Level</dt><dd>{course.level}</dd></div></dl></header>
         <article>
           <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>{showcase ? <LessonShowcase showcase={showcase} /> : null}
           <section className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
@@ -93,6 +94,7 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
           <NoteEditor courseId={course.id} lessonId={lesson.id} />
         </article>
         <nav className="lesson-navigation" aria-label="Lesson controls">{currentIndex > 0 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex - 1]}`}>Previous lesson</Link> : <span /> }<button type="button" className="button primary" onClick={() => updateProgress("completedLessonIds")}>{progress.completedLessonIds.includes(lesson.id) ? "Lesson completed" : "Mark complete"}</button>{currentIndex < lessonIds.length - 1 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex + 1]}`}>Next lesson</Link> : <Link href="/practice">Continue to practice</Link>}</nav>
+        <footer className="lesson-print-footer print-only">DigiLearn · {course.title} · Lesson {currentIndex + 1} · Verify version-sensitive information using the listed primary sources.</footer>
       </main>
     </div>
   </div>;
