@@ -10,21 +10,23 @@ import { LearningStories } from "@/components/LearningStories";
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const featuredCourseIds = ["html-css", "typescript", "python-ai", "security-fundamentals", "chatgpt-mastery", "financial-modelling"];
+const featuredPathways = PATHWAYS.slice(0, 5);
+const lessonCount = COURSES.reduce((total, course) => total + course.lessons, 0);
 
 export default function HomePage() {
   return <><SiteHeader /><main id="main-content">
     <section className="editorial-hero problem-hero hero-rebuilt">
       <div className="hero-copy">
         <p className="eyebrow hero-kicker">Practical digital learning for real work</p>
-        <h1>Learn it. Build it. <span>Show what you can do.</span></h1>
+        <h1>Learn useful skills. <span>Build work that proves them.</span></h1>
         <p className="hero-lead">Go beyond watching tutorials. Follow structured lessons, practise with realistic files, and finish projects you can explain to an employer, client or customer.</p>
         <div className="hero-actions">
-          <Link className="button primary inline-button hero-primary" href="/courses">Explore 72 practical courses <span aria-hidden="true">→</span></Link>
+          <Link className="button primary inline-button hero-primary" href="/courses">Explore courses <span aria-hidden="true">→</span></Link>
           <a className="hero-secondary" href="#learning-goals">Find your learning path</a>
         </div>
         <ul className="hero-trust" aria-label="DigiLearn platform highlights">
-          <li><strong>864</strong><span>guided lessons</span></li>
-          <li><strong>72</strong><span>structured course drafts</span></li>
+          <li><strong>{lessonCount}</strong><span>guided lessons</span></li>
+          <li><strong>{COURSES.length}</strong><span>structured courses</span></li>
           <li><strong>Open</strong><span>access right now</span></li>
         </ul>
         <p className="hero-honesty"><span aria-hidden="true">●</span> No card required. Progress stays on this device.</p>
@@ -38,7 +40,7 @@ export default function HomePage() {
 
     <section id="learning-goals" className="home-section goal-section">
       <div className="section-heading"><div><p className="eyebrow">Start with your outcome</p><h2>What would you like to achieve?</h2><p className="section-intro">Choose a goal and see the courses that move you from explanation to finished work.</p></div></div>
-      <div className="goal-grid">{PATHWAYS.map((pathway, index) => <Link key={pathway.id} href={`/courses?pathway=${pathway.id}`}><small>{String(index + 1).padStart(2, "0")}</small><h3>{pathway.title}</h3><p>{pathway.problem}</p><span>{pathway.courseIds.length} matched courses <b aria-hidden="true">→</b></span></Link>)}</div>
+      <div className="goal-grid">{featuredPathways.map((pathway, index) => <Link key={pathway.id} href={`/courses?pathway=${pathway.id}`}><small>{String(index + 1).padStart(2, "0")}</small><h3>{pathway.title}</h3><p>{pathway.problem}</p><span>{pathway.courseIds.length} matched courses <b aria-hidden="true">→</b></span></Link>)}</div>
     </section>
 
     <section className="home-strip proof-strip" aria-label="Learning evidence"><div><strong>Working code</strong><span>with expected output</span></div><div><strong>Practical files</strong><span>built from safe examples</span></div><div><strong>Knowledge checks</strong><span>linked to each lesson</span></div><div><strong>Local progress</strong><span>honestly stored on this device</span></div></section>
