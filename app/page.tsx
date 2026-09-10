@@ -51,7 +51,7 @@ export default function HomePage() {
 
     <LearningStories />
 
-    <section className="final-cta"><div><p className="eyebrow">Start where you are</p><h2>Your next useful skill can become your next finished project.</h2><p>Browse the full catalogue, choose a clear outcome, and begin with the first practical lesson.</p></div><div><Link className="button primary inline-button" href="/courses">Choose a course</Link><Link href="/dashboard">View your dashboard</Link></div></section>
+    <section className="final-cta"><div><p className="eyebrow">Start where you are</p><h2>Your next useful skill can become your next finished project.</h2><p>Browse the full catalogue, choose a clear outcome, and begin with the first practical lesson.</p></div><div><Link className="button primary inline-button" href="/courses">Choose a course</Link><Link href="/dashboard">View your dashboard</Link><small>All lessons are open. No payment required.</small></div></section>
 
     <section className="local-first-banner"><p className="eyebrow">Open-access stage</p><h2>Learn every lesson without starting a payment.</h2><p>All courses are currently open. Future KES prices remain visible for transparency. Notes, progress and profiles stay in this browser; they do not synchronize or receive cloud backup, and clearing browser data can remove them.</p><Link href="/dashboard">Review local learning data</Link></section>
   </main><SiteFooter /></>;

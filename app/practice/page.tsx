@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import Link from "next/link";
-import { BrandLogo } from "@/components/BrandLogo";
+import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { parsePracticeStore, type PracticeCardState as CardState, type PracticeStore as Store } from "@/lib/practice-storage";
 import { readLocalValue, writeLocalValue } from "@/lib/learning-storage";
 
@@ -328,7 +327,7 @@ export default function PracticePage() {
   const currentBox = currentKey ? getState(currentKey).box : 1;
 
   return (
-    <div style={{ minHeight: "100svh", background: "var(--bg)" }}>
+    <div className="practice-page-shell">
       <style>{`
         .fc {
           background: var(--surface); border: 1px solid var(--border2);
@@ -357,21 +356,9 @@ export default function PracticePage() {
         .deck-tile:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
       `}</style>
 
-      {/* Nav */}
-      <nav className="nav">
-        <Link href="/" className="nav-logo">
-          <BrandLogo compact />
-        </Link>
-        <div className="nav-links">
-          <Link href="/" className="nav-link">Home</Link>
-          <Link href="/courses" className="nav-link">Courses</Link>
-          <Link href="/practice" className="nav-link active">Practice</Link>
-          <Link href="/dashboard" className="nav-link">Dashboard</Link>
-        </div>
-        <Link href="/courses" className="nav-cta">Browse courses</Link>
-      </nav>
+      <SiteHeader />
 
-      <main id="main-content" style={{ maxWidth: 900, margin: "0 auto", padding: "6rem 1.5rem 5rem" }}>
+      <main id="main-content" className="practice-page">
         {/* -- DECKS VIEW -- */}
         {(view === "decks" || !mounted) && (
           <>
@@ -574,6 +561,7 @@ export default function PracticePage() {
           </div>
         )}
       </main>
+      <SiteFooter />
     </div>
   );
 }
