@@ -35,7 +35,7 @@ export type LessonBlock =
   | { type: "steps"; title: string; items: string[] }
   | { type: "example"; title: string; body: string }
   | { type: "callout"; tone: "note" | "safety" | "remember"; title: string; body: string }
-  | { type: "code"; language: string; code: string }
+  | { type: "code"; title?: string; language: string; code: string }
   | { type: "table"; caption: string; headers: string[]; rows: string[][] };
 
 export type KnowledgeCheck = {

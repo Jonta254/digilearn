@@ -29,8 +29,8 @@ def main() -> None:
 
     if len(files) != 72:
         issues.append(f"expected 72 guides, found {len(files)}")
-    if set(page_counts) != {14}:
-        issues.append(f"expected 14 pages per guide, found {sorted(set(page_counts))}")
+    if any(count < 14 or count > 16 for count in page_counts):
+        issues.append(f"expected 14-16 pages per guide including reference appendices, found {sorted(set(page_counts))}")
     if min(sizes, default=0) < 20_000:
         issues.append(f"smallest guide is only {min(sizes, default=0)} bytes")
 
@@ -38,7 +38,7 @@ def main() -> None:
         raise SystemExit("\n".join(issues))
 
     print(
-        f"Verified {len(files)} A4 guides, 14 pages each, "
+        f"Verified {len(files)} A4 guides, {min(page_counts)}-{max(page_counts)} pages each, "
         f"{min(sizes):,}-{max(sizes):,} bytes, with no empty pages."
     )
 

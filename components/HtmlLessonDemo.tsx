@@ -1,0 +1,7 @@
+"use client";
+import { useState } from "react";
+
+export function HtmlLessonDemo() {
+  const [narrow, setNarrow] = useState(false);
+  return <figure className="html-demo"><div className="demo-toolbar"><span>Live HTML &amp; CSS example</span><button type="button" aria-pressed={narrow} onClick={() => setNarrow(!narrow)}>{narrow ? "Use available width" : "Try a narrow layout"}</button></div><div className={`demo-page ${narrow ? "demo-narrow" : ""}`}><div className="demo-landmark"><code>&lt;header&gt;</code><strong>Neighbourhood study club</strong></div><div className="demo-landmark"><code>&lt;main&gt;</code><div className="demo-cards"><section><code>&lt;section&gt;</code><h3>Learn together</h3><p>Bring one question and a notebook. We meet every Saturday at 10 am.</p></section><section><code>&lt;section&gt;</code><h3>This week</h3><p>Build a simple webpage with headings, paragraphs and links.</p></section></div></div><div className="demo-landmark"><code>&lt;footer&gt;</code><span>A learner-built sample page</span></div></div><figcaption>This example is rendered by your browser. Change the available width to see the two sections stack. The labels show document landmarks; CSS controls the layout.</figcaption><details><summary>See the layout rule</summary><pre tabIndex={0}><code>{`.demo-cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));\n  gap: 1rem;\n}\n/* Cards fit the available space without a fixed page width. */`}</code></pre></details></figure>;
+}

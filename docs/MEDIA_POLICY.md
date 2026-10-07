@@ -1,6 +1,8 @@
 # DigiLearn media policy
 
-Every visual must explain something the learner needs to understand. DigiLearn currently uses locally bundled course artwork and more than 1,200 internally produced, data-driven technical diagram placements. It does not claim third-party lesson photography or copied software screenshots.
+Every visual must explain something the learner needs to understand. DigiLearn uses locally bundled licensed photography, course artwork, internally produced technical diagrams, and browser-rendered HTML/CSS examples. Photo credits and licence records are maintained in `lib/image-attributions.ts`. The homepage hero uses a real Kampus Production photograph; lesson examples must not present generated interfaces as actual software output.
+
+Free video resources link to the original educator's lesson page. Record the provider, source URL, checked date, learning purpose and practice prompt in `lib/lesson-support.ts`. Do not copy, rehost or autoplay third-party videos. Explain that optional credentials can cost extra where applicable.
 
 ## Approved sources
 

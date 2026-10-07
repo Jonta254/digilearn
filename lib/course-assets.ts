@@ -21,3 +21,8 @@ export const DOWNLOADS_BY_TOPIC:Record<string,{path:string;label:string;descript
 };
 
 export function courseGuidePdfPath(courseId:string){return `/downloads/course-guides/${courseId}-study-guide.pdf`;}
+export function coursePracticeFile(course: { id: string; topic: string }) {
+  if (course.id === "python-fund") return { path: "/downloads/stock-report-practice.csv", label: "Stock report practice data", description: "Four fictional items, including a threshold quantity, zero stock and a quoted name." };
+  if (course.id === "sql") return { path: "/downloads/customer-report-practice.sql", label: "Customer report SQL fixture", description: "A read-only query with paid, pending, missing-amount and unmatched-customer cases." };
+  return DOWNLOADS_BY_TOPIC[course.topic];
+}

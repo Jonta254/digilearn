@@ -15,7 +15,7 @@ import { parseLocalAccount, toSession } from "../lib/local-profile";
 import { parsePracticeStore } from "../lib/practice-storage";
 import { isSafeExternalUrl } from "../lib/safe-url";
 import { COURSES } from "../app/courses/courses";
-import { courseGuidePdfPath, coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
+import { courseGuidePdfPath, coverAssetFor, coursePracticeFile } from "../lib/course-assets";
 import { COURSE_IMAGE_ATTRIBUTIONS } from "../lib/image-attributions";
 import { showcaseForLesson } from "../lib/lesson-showcases";
 import { SITE_URL } from "../lib/site-config";
@@ -155,7 +155,7 @@ test("every course has unique cover metadata and a valid starter resource", () =
     assert.ok(asset.alt.length > 40 && asset.caption.length > 50);
     assert.ok(asset.iconKeys.length >= 1 && asset.iconKeys.length <= 2, `${course.id} needs a focused icon stack`);
     assert.ok(asset.topicLabel.length > 3 && asset.tone.length > 2);
-    const resource = DOWNLOADS_BY_TOPIC[course.topic];
+    const resource = coursePracticeFile(course);
     assert.ok(resource, `${course.id} needs a mapped starter resource`);
     const file = join(process.cwd(), "public", resource.path.slice(1));
     assert.ok(existsSync(file), `${course.id} resource is missing`);

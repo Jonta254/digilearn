@@ -2,7 +2,7 @@ import { COURSES } from "../app/courses/courses";
 import { getAllCurricula } from "../lib/course-library";
 import { reviewFor, isValidReview } from "../lib/course-governance";
 import { isSafeExternalUrl } from "../lib/safe-url";
-import { coverAssetFor, DOWNLOADS_BY_TOPIC } from "../lib/course-assets";
+import { coverAssetFor, coursePracticeFile } from "../lib/course-assets";
 import { existsSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 
@@ -39,7 +39,7 @@ for (const course of COURSES) {
   if (cover.iconKeys.length < 1 || cover.iconKeys.length > 2 || !cover.topicLabel || !cover.tone) fail(course.id, "incomplete brand-icon cover composition");
   if (coverIds.has(cover.assetId)) fail(course.id, `duplicate cover asset ${cover.assetId}`);
   coverIds.add(cover.assetId);
-  const download = DOWNLOADS_BY_TOPIC[course.topic];
+  const download = coursePracticeFile(course);
   if (!download) fail(course.id, "missing practical download or recorded reason");
   else {
     const downloadPath = join(process.cwd(), "public", download.path.replace(/^\/downloads\//, "downloads/"));

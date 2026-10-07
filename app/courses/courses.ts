@@ -118,5 +118,5 @@ const COURSE_DEFINITIONS: Course[] = [
 export const COURSES: Course[] = COURSE_DEFINITIONS.map((course) => ({
   ...course,
   lessons: 12,
-  hours: 5,
+  hours: course.id === "html-css" ? 6 : 5,
 }));

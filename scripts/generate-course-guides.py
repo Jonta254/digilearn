@@ -26,6 +26,7 @@ S={
 "label":ParagraphStyle("label",parent=base["BodyText"],fontName="Helvetica-Bold",fontSize=7.8,leading=10,textColor=TEAL),
 "lesson":ParagraphStyle("lesson",parent=base["BodyText"],fontName="Helvetica-Bold",fontSize=11,leading=14,textColor=NAVY,spaceAfter=4),
 "prompt":ParagraphStyle("prompt",parent=base["BodyText"],fontSize=8.4,leading=12,textColor=INK,spaceAfter=4),
+"reference":ParagraphStyle("reference",parent=base["BodyText"],fontName="Helvetica-Bold",fontSize=9,leading=12,textColor=INK,spaceBefore=5,spaceAfter=2),
 "write":ParagraphStyle("write",parent=base["BodyText"],fontSize=8,leading=12,textColor=MUTED,spaceAfter=3),
 }
 def clean(v):
@@ -65,7 +66,7 @@ def lesson_panel(lesson, number):
         [p("Evidence to keep","h3"),p("[ ] Original input   [ ] Observed result   [ ] Boundary or failure result   [ ] Limitation and next action","small")],
     ]
     table=Table(rows,colWidths=[38*mm,122*mm])
-    table.setStyle(TableStyle([("SPAN",(0,0),(1,0)),("SPAN",(0,1),(1,1)),("BACKGROUND",(0,0),(-1,0),MINT),("BOX",(0,0),(-1,-1),.6,LINE),("LINEBELOW",(0,1),(-1,1),.5,LINE),("VALIGN",(0,0),(-1,-1),"TOP"),("LEFTPADDING",(0,0),(-1,-1),7),("RIGHTPADDING",(0,0),(-1,-1),7),("TOPPADDING",(0,0),(-1,-1),6),("BOTTOMPADDING",(0,0),(-1,-1),6)]))
+    table.setStyle(TableStyle([("SPAN",(0,0),(1,0)),("SPAN",(0,1),(1,1)),("BACKGROUND",(0,0),(-1,0),MINT),("BOX",(0,0),(-1,-1),.6,LINE),("LINEBELOW",(0,1),(-1,1),.5,LINE),("VALIGN",(0,0),(-1,-1),"TOP"),("LEFTPADDING",(0,0),(-1,-1),7),("RIGHTPADDING",(0,0),(-1,-1),7),("TOPPADDING",(0,0),(-1,-1),4),("BOTTOMPADDING",(0,0),(-1,-1),4)]))
     return table
 def build(item):
     c,e,u=item["course"],item["editorial"],item["curriculum"]; q=u["practicalOutcome"]; path=OUT/f"{c['id']}-study-guide.pdf"; temporary_path=path.with_suffix(".pdf.tmp")
@@ -82,14 +83,21 @@ def build(item):
         for lesson in module["lessons"]:
             story += [lesson_panel(lesson,lesson_number),Spacer(1,5*mm)]
             lesson_number += 1
-        story += [p("MODULE REVIEW","eye"),p("Turn the module into usable evidence","h1"),writing_box("1. RETRIEVE", "Without checking the lessons, explain the module's three most important ideas in your own words.",4),Spacer(1,5*mm),writing_box("2. APPLY", "Describe the example or file you produced, the input used, and the result you observed.",5),Spacer(1,5*mm),writing_box("3. REVIEW", "Record one uncertainty, one source to recheck, and the next deliberate practice action.",4),PageBreak()]
+        story += [PageBreak(),p("MODULE REVIEW","eye"),p("Turn the module into usable evidence","h1"),writing_box("1. RETRIEVE", "Without checking the lessons, explain the module's three most important ideas in your own words.",4),Spacer(1,5*mm),writing_box("2. APPLY", "Describe the example or file you produced, the input used, and the result you observed.",5),Spacer(1,5*mm),writing_box("3. REVIEW", "Record one uncertainty, one source to recheck, and the next deliberate practice action.",4),PageBreak()]
     story += [p("CAPSTONE PROJECT","eye"),p(q["objective"],"h1"),info([("DELIVERABLE",q["expectedOutput"]),("TOOLS",", ".join(q["tools"]))]),p("Production plan","h2"),listing(q["steps"],True),p("Definition of done","h2"),listing(q["successCriteria"])]
     if q.get("safety"): story += [KeepTogether([p("RESPONSIBLE PRACTICE","label"),p(q["safety"])])]
-    story += [PageBreak(),p("PROJECT EVIDENCE","eye"),p("Document decisions another person can review","h1"),writing_box("1. PURPOSE AND USER","State the intended user, need, expected outcome and constraints.",4),Spacer(1,5*mm),writing_box("2. INPUTS AND ASSUMPTIONS","List source files, data, versions, permissions and assumptions.",4),PageBreak(),p("PROJECT EVIDENCE","eye"),p("Tests, limitations and revision","h1"),writing_box("3. NORMAL CASE","Expected result, observed result and evidence location.",4),Spacer(1,5*mm),writing_box("4. BOUNDARY OR FAILURE CASE","What was difficult, what happened and why it matters.",4),Spacer(1,5*mm),writing_box("5. REVISION AND LIMITATION","What changed, what improved and what remains unproven.",4),PageBreak(),p("REVIEW AND SOURCES","eye"),p("Make the work credible and repeatable","h1"),p("Final self-review","h2"),listing(q["selfReview"]),writing_box("FINAL DECISION", "Is the project ready to share? State the evidence, remaining risk, owner and next review date.",4),p("Authoritative references","h2")]
+    story += [PageBreak(),p("PROJECT EVIDENCE","eye"),p("Document decisions another person can review","h1"),writing_box("1. PURPOSE AND USER","State the intended user, need, expected outcome and constraints.",4),Spacer(1,5*mm),writing_box("2. INPUTS AND ASSUMPTIONS","List source files, data, versions, permissions and assumptions.",4),PageBreak(),p("PROJECT EVIDENCE","eye"),p("Tests, limitations and revision","h1"),writing_box("3. NORMAL CASE","Expected result, observed result and evidence location.",4),Spacer(1,5*mm),writing_box("4. BOUNDARY OR FAILURE CASE","What was difficult, what happened and why it matters.",4),Spacer(1,5*mm),writing_box("5. REVISION AND LIMITATION","What changed, what improved and what remains unproven.",4),PageBreak(),p("REVIEW AND SOURCES","eye"),p("Make the work credible and repeatable","h1"),p("Final self-review","h2"),listing(q["selfReview"]),writing_box("FINAL DECISION", "Is the project ready to share? State the evidence, remaining risk, owner and next review date.",4)]
+    closing_notes = [Spacer(1,5*mm),HRFlowable(width="100%",color=LINE,thickness=.7),Spacer(1,3*mm),KeepTogether([p("SOURCE NOTE","label"),p("Product versions, laws and professional standards can change. Recheck the linked primary source before applying version-sensitive information."),p("NEXT IMPROVEMENT","label"),p(q["nextStep"])])]
+    if len(u["references"]) > 6:
+        story += closing_notes
+        story += [PageBreak(),p("PRIMARY REFERENCES","eye"),p("Sources to revisit","h1")]
+    else:
+        story += [p("Authoritative references","h2")]
     for src in u["references"]:
         reviewed=f" - reviewed {src['accessed']}" if src.get("accessed") else ""
-        story += [KeepTogether([p(src["title"],"h3"),p(f"{src['organization']}{reviewed}","small"),p(src["url"],"small")])]
-    story += [Spacer(1,5*mm),HRFlowable(width="100%",color=LINE,thickness=.7),Spacer(1,3*mm),p("SOURCE NOTE","label"),p("Product versions, laws and professional standards can change. Recheck the linked primary source before applying version-sensitive information."),p("NEXT IMPROVEMENT","label"),p(q["nextStep"])]
+        story += [KeepTogether([p(src["title"],"reference"),p(f"{src['organization']}{reviewed}","small"),p(src["url"],"small")])]
+    if len(u["references"]) <= 6:
+        story += closing_notes
     doc.build(story)
     for attempt in range(10):
         try:

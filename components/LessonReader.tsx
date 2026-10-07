@@ -9,15 +9,24 @@ import { AccessBadge } from "./CourseCard";
 import { SubjectDiagram } from "./SubjectDiagram";
 import { BrandLogo } from "./BrandLogo";
 import { useModalSheet } from "@/lib/use-modal-sheet";
-import { showcaseForLesson } from "@/lib/lesson-showcases";
-import { LessonShowcase } from "./LessonShowcase";
+import { LessonSupport } from "./LessonSupport";
+import { HtmlLessonDemo } from "./HtmlLessonDemo";
+
+function CopyCodeButton({ code }: { code: string }) {
+  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
+  async function copy() {
+    try { await navigator.clipboard.writeText(code); setStatus("copied"); }
+    catch { setStatus("error"); }
+  }
+  return <button type="button" onClick={() => { void copy(); }} aria-live="polite">{status === "copied" ? "Copied" : status === "error" ? "Copy failed" : "Copy code"}</button>;
+}
 
 function Block({ block }: { block: LessonBlock }) {
   if (block.type === "paragraph") return <p>{block.text}</p>;
   if (block.type === "steps") return <section><h2>{block.title}</h2><ol className="process-list">{block.items.map((item) => <li key={item}>{item}</li>)}</ol></section>;
   if (block.type === "example") return <aside className="content-callout example"><h2>{block.title}</h2><p>{block.body}</p></aside>;
   if (block.type === "callout") return <aside className={`content-callout ${block.tone}`}><h2>{block.title}</h2><p>{block.body}</p></aside>;
-  if (block.type === "code") return <figure className="code-figure"><figcaption><span>Example file · {block.language}</span><button type="button" onClick={() => navigator.clipboard?.writeText(block.code)}>Copy code</button></figcaption><pre className="code-example" tabIndex={0}><code data-language={block.language}>{block.code}</code></pre></figure>;
+  if (block.type === "code") return <figure className="code-figure"><figcaption><span>{block.title ?? "Example file"} · {block.language}</span><CopyCodeButton code={block.code} /></figcaption><pre className="code-example" tabIndex={0}><code data-language={block.language}>{block.code}</code></pre></figure>;
   return <div className="table-wrap"><table><caption>{block.caption}</caption><thead><tr>{block.headers.map((header) => <th key={header} scope="col">{header}</th>)}</tr></thead><tbody>{block.rows.map((row) => <tr key={row.join("-")}>{row.map((cell, index) => index === 0 ? <th key={cell} scope="row">{cell}</th> : <td key={cell}>{cell}</td>)}</tr>)}</tbody></table></div>;
 }
 
@@ -65,7 +74,6 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
   }
 
   const percent = courseProgress(progress, lessonIds);
-  const showcase = showcaseForLesson(lesson.id);
   return <div className="learning-shell">
     <header className="learning-header"><a className="skip-link" href="#main-content">Skip to lesson content</a><Link href="/" className="wordmark" aria-label="DigiLearn home"><BrandLogo compact /></Link><nav aria-label="Learning navigation"><Link href="/courses">Courses</Link><Link href="/practice">Practice</Link><Link href="/dashboard">Dashboard</Link></nav><button ref={outlineButtonRef} className="outline-toggle" type="button" aria-expanded={outlineOpen} aria-controls="course-outline-panel" onClick={() => setOutlineOpen(!outlineOpen)}>Course outline</button></header>
     {!storageAvailable ? <div className="storage-warning" role="status">Progress could not be saved. Check browser storage settings and available space.</div> : null}
@@ -76,7 +84,7 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
         <div className="lesson-context"><Link href={`/courses/${course.id}`}>{course.title}</Link><span>Lesson {currentIndex + 1} of {lessonIds.length}</span><Link href={`/courses/${course.id}/guide`}>Study guide</Link><button type="button" onClick={() => window.print()}>Print lesson</button></div>
         <header className="lesson-print-header print-only"><div><strong>DigiLearn</strong><span>Printable lesson handout</span></div><dl><div><dt>Course</dt><dd>{course.title}</dd></div><div><dt>Lesson</dt><dd>{currentIndex + 1} of {lessonIds.length}</dd></div><div><dt>Study time</dt><dd>{lesson.minutes} minutes</dd></div><div><dt>Level</dt><dd>{course.level}</dd></div></dl></header>
         <article>
-          <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>{showcase ? <LessonShowcase showcase={showcase} /> : null}
+          <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>{course.id === "html-css" ? <HtmlLessonDemo /> : null}
           <section className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <VisualsAt lesson={lesson} placement="after-objectives" />
           {lesson.blocks.map((block, index) => <div className="lesson-block" key={index}>
@@ -87,7 +95,8 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
           </div>)}
           <section><h2>Common mistakes</h2><ul>{lesson.commonMistakes.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <section className="practice-activity"><p className="eyebrow">Practice activity</p><h2>Apply the lesson</h2><p>{lesson.activity}</p></section>
-          <KnowledgeCheck lesson={lesson} onComplete={() => updateProgress("completedChecks")} />
+          <LessonSupport courseId={course.id} topic={course.topic} />
+          <KnowledgeCheck key={lesson.id} lesson={lesson} onComplete={() => updateProgress("completedChecks")} />
           <section className="takeaways"><h2>Lesson summary</h2><ul>{lesson.summary.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <section><h2>Sources and further reading</h2><ul className="source-list">{lesson.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noreferrer">{reference.title}</a><span>{reference.organization}{reference.accessed ? ` - accessed ${reference.accessed}` : ""}</span></li>)}</ul></section>
           {currentIndex === lessonIds.length - 1 ? <section className="course-project"><p className="eyebrow">Course practical outcome</p><h2>{practicalOutcome.objective}</h2><p><strong>Expected output:</strong> {practicalOutcome.expectedOutput}</p><h3>Production steps</h3><ol>{practicalOutcome.steps.map((step) => <li key={step}>{step}</li>)}</ol><h3>Success criteria</h3><ul>{practicalOutcome.successCriteria.map((criterion) => <li key={criterion}>{criterion}</li>)}</ul>{practicalOutcome.safety ? <p><strong>Safety note:</strong> {practicalOutcome.safety}</p> : null}<p><strong>Next step:</strong> {practicalOutcome.nextStep}</p></section> : null}

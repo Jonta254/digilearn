@@ -19,7 +19,7 @@ export default function HomePage() {
       <div className="hero-copy">
         <p className="eyebrow hero-kicker">Practical digital learning for real work</p>
         <h1>Learn useful skills. <span>Build work that proves them.</span></h1>
-        <p className="hero-lead">Go beyond watching tutorials. Follow structured lessons, practise with realistic files, and finish projects you can explain to an employer, client or customer.</p>
+        <p className="hero-lead">Build a website, make sense of a dataset, or improve a task at work. Learn with examples, practical exercises, clear diagrams and projects you can show someone.</p>
         <div className="hero-actions">
           <Link className="button primary inline-button hero-primary" href="/courses">Explore courses <span aria-hidden="true">→</span></Link>
           <a className="hero-secondary" href="#learning-goals">Find your learning path</a>
@@ -43,7 +43,7 @@ export default function HomePage() {
       <div className="goal-grid">{featuredPathways.map((pathway, index) => <Link key={pathway.id} href={`/courses?pathway=${pathway.id}`}><small>{String(index + 1).padStart(2, "0")}</small><h3>{pathway.title}</h3><p>{pathway.problem}</p><span>{pathway.courseIds.length} matched courses <b aria-hidden="true">→</b></span></Link>)}</div>
     </section>
 
-    <section className="home-strip proof-strip" aria-label="Learning evidence"><div><strong>Working code</strong><span>with expected output</span></div><div><strong>Practical files</strong><span>built from safe examples</span></div><div><strong>Knowledge checks</strong><span>linked to each lesson</span></div><div><strong>Local progress</strong><span>honestly stored on this device</span></div></section>
+    <section className="home-strip proof-strip" aria-label="Learning evidence"><div><strong>Worked examples</strong><span>code, data and expected results</span></div><div><strong>Practical files</strong><span>ready for you to try</span></div><div><strong>Knowledge checks</strong><span>with explanations you can learn from</span></div><div><strong>Saved progress</strong><span>continue on this device</span></div></section>
 
     <section className="home-section featured-section"><div className="section-heading"><div><p className="eyebrow">High-value starting points</p><h2>Courses that lead to demonstrable work</h2><p className="section-intro">Recognizable tools, structured practice, and a concrete project at the finish.</p></div><Link href="/courses">View all courses <span aria-hidden="true">→</span></Link></div><div className="editorial-course-grid">{featuredCourseIds.map((id) => <CourseCard key={id} course={COURSES.find((course) => course.id === id)!} />)}</div></section>
 
@@ -53,6 +53,6 @@ export default function HomePage() {
 
     <section className="final-cta"><div><p className="eyebrow">Start where you are</p><h2>Your next useful skill can become your next finished project.</h2><p>Browse the full catalogue, choose a clear outcome, and begin with the first practical lesson.</p></div><div><Link className="button primary inline-button" href="/courses">Choose a course</Link><Link href="/dashboard">View your dashboard</Link><small>All lessons are open. No payment required.</small></div></section>
 
-    <section className="local-first-banner"><p className="eyebrow">Open-access stage</p><h2>Learn every lesson without starting a payment.</h2><p>All courses are currently open. Future KES prices remain visible for transparency. Notes, progress and profiles stay in this browser; they do not synchronize or receive cloud backup, and clearing browser data can remove them.</p><Link href="/dashboard">Review local learning data</Link></section>
+    <section className="local-first-banner"><p className="eyebrow">Currently free to explore</p><h2>Start a lesson. No payment needed.</h2><p>All courses are currently open. Listed KES prices apply to a future paid offering. Your notes and progress are saved in this browser. Export a learning backup from your dashboard before changing devices or clearing browser data.</p><Link href="/dashboard">Manage notes, progress and backups</Link></section>
   </main><SiteFooter /></>;
 }

@@ -1,0 +1,778 @@
+{
+  "date": "2026-10-07",
+  "widths": [
+    320,
+    360,
+    390,
+    600,
+    768,
+    900,
+    1024,
+    1440,
+    1920
+  ],
+  "checks": [
+    {
+      "checked": 106,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 320
+    },
+    {
+      "checked": 106,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 360
+    },
+    {
+      "checked": 106,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 390
+    },
+    {
+      "checked": 106,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 600
+    },
+    {
+      "checked": 106,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 768
+    },
+    {
+      "checked": 106,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 900
+    },
+    {
+      "checked": 110,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 1024
+    },
+    {
+      "checked": 110,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 1440
+    },
+    {
+      "checked": 110,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/",
+      "width": 1920
+    },
+    {
+      "checked": 312,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 320
+    },
+    {
+      "checked": 312,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 360
+    },
+    {
+      "checked": 312,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 390
+    },
+    {
+      "checked": 312,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 600
+    },
+    {
+      "checked": 315,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 768
+    },
+    {
+      "checked": 315,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 900
+    },
+    {
+      "checked": 319,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 1024
+    },
+    {
+      "checked": 319,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 1440
+    },
+    {
+      "checked": 319,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses",
+      "width": 1920
+    },
+    {
+      "checked": 39,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 320
+    },
+    {
+      "checked": 39,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 360
+    },
+    {
+      "checked": 39,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 390
+    },
+    {
+      "checked": 39,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 600
+    },
+    {
+      "checked": 39,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 768
+    },
+    {
+      "checked": 39,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 900
+    },
+    {
+      "checked": 43,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 1024
+    },
+    {
+      "checked": 43,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 1440
+    },
+    {
+      "checked": 43,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/practice",
+      "width": 1920
+    },
+    {
+      "checked": 44,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 320
+    },
+    {
+      "checked": 44,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 360
+    },
+    {
+      "checked": 44,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 390
+    },
+    {
+      "checked": 44,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 600
+    },
+    {
+      "checked": 44,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 768
+    },
+    {
+      "checked": 44,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 900
+    },
+    {
+      "checked": 48,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 1024
+    },
+    {
+      "checked": 48,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 1440
+    },
+    {
+      "checked": 48,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/dashboard",
+      "width": 1920
+    },
+    {
+      "checked": 43,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 320
+    },
+    {
+      "checked": 43,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 360
+    },
+    {
+      "checked": 43,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 390
+    },
+    {
+      "checked": 43,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 600
+    },
+    {
+      "checked": 43,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 768
+    },
+    {
+      "checked": 43,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 900
+    },
+    {
+      "checked": 47,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 1024
+    },
+    {
+      "checked": 47,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 1440
+    },
+    {
+      "checked": 47,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/pricing",
+      "width": 1920
+    },
+    {
+      "checked": 8,
+      "documentWidth": 320,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 320
+    },
+    {
+      "checked": 8,
+      "documentWidth": 360,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 360
+    },
+    {
+      "checked": 8,
+      "documentWidth": 390,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 390
+    },
+    {
+      "checked": 8,
+      "documentWidth": 600,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 600
+    },
+    {
+      "checked": 8,
+      "documentWidth": 768,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 768
+    },
+    {
+      "checked": 8,
+      "documentWidth": 900,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 900
+    },
+    {
+      "checked": 8,
+      "documentWidth": 1024,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 1024
+    },
+    {
+      "checked": 8,
+      "documentWidth": 1440,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 1440
+    },
+    {
+      "checked": 8,
+      "documentWidth": 1920,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/auth",
+      "width": 1920
+    },
+    {
+      "checked": 123,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 320
+    },
+    {
+      "checked": 123,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 360
+    },
+    {
+      "checked": 123,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 390
+    },
+    {
+      "checked": 123,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 600
+    },
+    {
+      "checked": 123,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 768
+    },
+    {
+      "checked": 123,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 900
+    },
+    {
+      "checked": 127,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 1024
+    },
+    {
+      "checked": 127,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 1440
+    },
+    {
+      "checked": 127,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund",
+      "width": 1920
+    },
+    {
+      "checked": 91,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 320
+    },
+    {
+      "checked": 91,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 360
+    },
+    {
+      "checked": 91,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 390
+    },
+    {
+      "checked": 91,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 600
+    },
+    {
+      "checked": 91,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 768
+    },
+    {
+      "checked": 94,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 900
+    },
+    {
+      "checked": 94,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 1024
+    },
+    {
+      "checked": 94,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 1440
+    },
+    {
+      "checked": 94,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/sql?lesson=sql-applied-project-12",
+      "width": 1920
+    },
+    {
+      "checked": 131,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 320
+    },
+    {
+      "checked": 131,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 360
+    },
+    {
+      "checked": 131,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 390
+    },
+    {
+      "checked": 131,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 600
+    },
+    {
+      "checked": 131,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 768
+    },
+    {
+      "checked": 131,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 900
+    },
+    {
+      "checked": 135,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 1024
+    },
+    {
+      "checked": 135,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 1440
+    },
+    {
+      "checked": 135,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund/guide",
+      "width": 1920
+    },
+    {
+      "checked": 31,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 320
+    },
+    {
+      "checked": 31,
+      "documentWidth": 355,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 360
+    },
+    {
+      "checked": 31,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 390
+    },
+    {
+      "checked": 31,
+      "documentWidth": 595,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 600
+    },
+    {
+      "checked": 31,
+      "documentWidth": 763,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 768
+    },
+    {
+      "checked": 31,
+      "documentWidth": 895,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 900
+    },
+    {
+      "checked": 35,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 1024
+    },
+    {
+      "checked": 35,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 1440
+    },
+    {
+      "checked": 35,
+      "documentWidth": 1915,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 1920
+    }
+  ],
+  "expandedAssessment": [
+    {
+      "checked": 26,
+      "documentWidth": 315,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 320
+    },
+    {
+      "checked": 26,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 390
+    },
+    {
+      "checked": 26,
+      "documentWidth": 386,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 390
+    },
+    {
+      "checked": 30,
+      "documentWidth": 1019,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 1024
+    },
+    {
+      "checked": 30,
+      "documentWidth": 1435,
+      "issueCount": 0,
+      "issues": [],
+      "path": "/courses/python-fund?assessment=final",
+      "width": 1440
+    }
+  ]
+}

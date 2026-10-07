@@ -6,6 +6,7 @@ import { filterCourses } from "../lib/course-search";
 import { LEARNING_ACCESS_MODE, learningAccess } from "../lib/access-policy";
 import { courseProgress, parseNotes, parseProgress } from "../lib/learning-storage";
 import { reviewFor, isValidReview } from "../lib/course-governance";
+import { createLearningBackup, parseLearningBackup } from "../lib/learning-backup";
 
 const COURSE_LIBRARY = getAllCurricula();
 
@@ -54,6 +55,20 @@ test("progress is deterministic", () => {
   const progress = parseProgress(JSON.stringify({ completedLessonIds: ["a", "c"], openedLessonIds: ids, completedChecks: [] }));
   assert.equal(courseProgress(progress, ids), 50);
   assert.equal(courseProgress(progress, []), 0);
+});
+
+test("learning-record backups are versioned and sanitized", () => {
+  const backup = createLearningBackup(
+    JSON.stringify({ completedLessonIds: ["lesson-one", "../bad"], openedLessonIds: ["lesson-one"], completedChecks: [] }),
+    JSON.stringify([{ id: "note", courseId: "course", lessonId: "lesson-one", body: "Useful note", updatedAt: "2026-09-12" }]),
+    JSON.stringify([{ assessmentId: "course-final", courseId: "course", score: 90, passed: true, completedAt: "2026-09-12" }]),
+  );
+  const restored = parseLearningBackup(JSON.stringify(backup));
+  assert.equal(restored?.product, "DigiLearn");
+  assert.deepEqual(restored?.progress.completedLessonIds, ["lesson-one"]);
+  assert.equal(restored?.notes[0]?.body, "Useful note");
+  assert.equal(restored?.assessments[0]?.score, 90);
+  assert.equal(parseLearningBackup('{"product":"Other","version":1}'), undefined);
 });
 
 test("search and filtering cover title, skills, topic, level and status", () => {

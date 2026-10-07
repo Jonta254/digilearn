@@ -2,6 +2,8 @@ import { COURSES, type Course } from "@/app/courses/courses";
 import type { CourseCurriculum, CourseModule, Lesson } from "./learning-types";
 import { getConceptBrief, TOPIC_SOURCES } from "./editorial/topic-content";
 import { HTML_CSS_CURRICULUM } from "./editorial/html-css-course";
+import { addWorkedExample } from "./editorial/worked-examples";
+import { enrichFoundation } from "./editorial/foundation-lessons";
 
 type TopicPlan = {
   audience: string;
@@ -131,7 +133,7 @@ function curriculumFor(course: Course): CourseCurriculum {
     id: `${course.id}-module-${moduleIndex + 1}`,
     title: `${course.tags[moduleIndex % course.tags.length]}: ${title}`,
     summary: `Apply ${course.tags[moduleIndex % course.tags.length]} through ${concepts.join(", ")}.`,
-    lessons: concepts.map((concept, lessonIndex) => lessonFor(course, title, concept, moduleIndex * 3 + lessonIndex, plan.caution)),
+    lessons: concepts.map((concept, lessonIndex) => addWorkedExample(course.id, concept, lessonFor(course, title, concept, moduleIndex * 3 + lessonIndex, plan.caution))),
   }));
   const durationMinutes = modules.flatMap((module) => module.lessons).reduce((sum, lesson) => sum + lesson.minutes, 0);
   return {
@@ -162,7 +164,7 @@ export function getCurriculum(courseId: string) {
   }
   const course = COURSES.find((item) => item.id === courseId);
   if (!course) return undefined;
-  const curriculum = curriculumFor(course);
+  const curriculum = enrichFoundation(curriculumFor(course));
   curriculumCache.set(courseId, curriculum);
   return curriculum;
 }

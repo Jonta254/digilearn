@@ -1,20 +1,20 @@
 import Link from "next/link";
 import type { Course } from "@/app/courses/courses";
 import type { CourseCurriculum } from "@/lib/learning-types";
-import { editorialFor } from "@/lib/course-editorial";
 import { AccessBadge } from "./CourseCard";
 import { CourseCover } from "./CourseCover";
-import { courseGuidePdfPath, DOWNLOADS_BY_TOPIC } from "@/lib/course-assets";
+import { courseGuidePdfPath, coursePracticeFile } from "@/lib/course-assets";
 import { SiteFooter, SiteHeader } from "./SiteChrome";
 import { reviewFor, reviewLabel } from "@/lib/course-governance";
+import { videosForCourse } from "@/lib/lesson-support";
 
 export function CourseOverview({ course, curriculum }: { course: Course; curriculum: CourseCurriculum }) {
-  const editorial = editorialFor(course);
   const firstLesson = curriculum.modules[0].lessons[0];
-  const resource = DOWNLOADS_BY_TOPIC[course.topic];
+  const resource = coursePracticeFile(course);
   const pdf = courseGuidePdfPath(course.id);
   const lessonCount = curriculum.modules.reduce((count, module) => count + module.lessons.length, 0);
   const review = reviewFor(course);
+  const videos = videosForCourse(course.id);
 
   return <><SiteHeader /><main id="main-content" className="course-overview">
     <header className="course-overview-hero">
@@ -22,7 +22,7 @@ export function CourseOverview({ course, curriculum }: { course: Course; curricu
         <p className="eyebrow">{course.level} / {reviewLabel(review)} / Version {review.version}</p>
         <AccessBadge course={course} />
         <h1>{course.title}</h1>
-        <p className="course-overview-lead">{editorial.outcome}. You will finish with {editorial.project}.</p>
+        <p className="course-overview-lead">{curriculum.overview}</p>
         <div className="hero-actions">
           <Link className="button primary inline-button" href={`/courses/${course.id}?lesson=${firstLesson.id}`}>Start first lesson</Link>
           <a className="button secondary inline-button" href={pdf} download={`${course.id}-workbook.pdf`}>Download A4 workbook (PDF)</a>
@@ -62,10 +62,11 @@ export function CourseOverview({ course, curriculum }: { course: Course; curricu
     </section>
 
     <section className="course-modules"><p className="eyebrow">Course plan</p><h2>From first concept to finished work</h2>
-      {curriculum.modules.map((module, index) => <article key={module.id}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{module.title}</h3><p>{module.summary}</p><ol>{module.lessons.map((lesson) => <li key={lesson.id}><Link href={`/courses/${course.id}?lesson=${lesson.id}`}>{lesson.title}<small>{lesson.minutes} min</small></Link></li>)}</ol></div></article>)}
+      {curriculum.modules.map((module, index) => <article key={module.id}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{module.title}</h3><p>{module.summary}</p><ol>{module.lessons.map((lesson, lessonIndex) => <li key={lesson.id} className="lesson-plan-card"><Link href={`/courses/${course.id}?lesson=${lesson.id}`}><div className="lesson-plan-meta"><span>Lesson {String(curriculum.modules.slice(0, index).reduce((total, item) => total + item.lessons.length, 0) + lessonIndex + 1).padStart(2, "0")}</span><small>{lesson.minutes} min</small></div><h4>{lesson.title}</h4><p>{lesson.objectives[0] || lesson.introduction}</p><span className="lesson-plan-action">Open lesson <span aria-hidden="true">→</span></span></Link></li>)}</ol></div></article>)}
     </section>
 
-    <section className="course-sources"><p className="eyebrow">Source-led learning</p><h2>Authoritative references</h2><p>Course claims are grounded in primary documentation and recognized public guidance. Recheck version-sensitive information before professional use.</p>
+    {videos.length ? <section className="course-sources video-resources"><p className="eyebrow">Free companion lessons</p><h2>Learn from a different explanation</h2>{videos.map(video => <article key={video.url}><span className="video-provider">{video.provider}</span><h3><a href={video.url} target="_blank" rel="noopener noreferrer">{video.title} ↗</a></h3><p>{video.purpose}</p><p><strong>Practice prompt:</strong> {video.task}</p><small>Checked {video.reviewed}. Opens on the provider’s site. Optional certificates may cost extra.</small></article>)}</section> : null}
+    <section className="course-sources"><p className="eyebrow">Source-led learning</p><h2>Authoritative references</h2><p>Use these primary references to check the method and any version-specific details before applying your work.</p>
       <ul>{curriculum.references.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a><span>{source.organization}</span></li>)}</ul>
     </section>
   </main><SiteFooter /></>;
