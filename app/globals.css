@@ -1145,3 +1145,25 @@ pre, pre code { overflow-wrap: normal; word-break: normal; }
 .lesson-plan-card p { margin: 0; font-size: .85rem; line-height: 1.65; color: #526779; }
 .lesson-plan-action { width: 100%; margin-top: auto; padding-top: .8rem; border-top: 1px solid #e3e9ed; }
 @media (prefers-reduced-motion: reduce) { .editorial-course-card, .course-modules .lesson-plan-card > a { transition: none; transform: none; } }
+/* Learning flow: section landmarks, practice review and portable notes. */
+.course-modules > h2, .course-review-plan h2, .course-sources > h2 { font-size: clamp(1.65rem, 3vw, 2.6rem); line-height: 1.2; letter-spacing: -.025em; margin: .55rem 0 1.5rem; }
+.course-modules > article h3 { font-size: 1.25rem; line-height: 1.4; margin-bottom: .55rem; }
+.course-modules > article > div > p { color: #526779; line-height: 1.65; margin-bottom: 1.25rem; max-width: 75ch; }
+.course-review-plan { padding: clamp(1.25rem, 4vw, 3rem); border: 1px solid #cadcd8; border-radius: 12px; background: #f2f8f6; }
+.course-review-plan p { max-width: 65ch; line-height: 1.7; color: #425c66; }
+.course-review-plan ul { padding-left: 1.25rem; margin: 1.5rem 0; display: grid; gap: .85rem; line-height: 1.65; }
+.lesson-section-nav { display: flex; flex-wrap: wrap; gap: .65rem; padding: 1rem; margin: 1.75rem 0; border: 1px solid #d7e2e8; border-radius: 8px; background: #f5f8fa; }
+.lesson-section-nav > span { flex-basis: 100%; font-size: .75rem; font-weight: 700; color: #4c6677; }
+.lesson-section-nav a { padding: .45rem .7rem; border: 1px solid #cad9e3; border-radius: 5px; font-size: .8rem; background: white; color: #155fb0; }
+.lesson-section-nav a:focus-visible { outline: 3px solid #155fb0; outline-offset: 2px; }
+.lesson-content [id^="lesson-"] { scroll-margin-top: 6rem; }
+.practice-review { margin-top: 1.25rem; border-top: 1px solid #b5cdc8; padding-top: 1rem; }
+.practice-review summary { cursor: pointer; font-weight: 700; line-height: 1.5; }
+.practice-review ol { padding-left: 1.25rem; margin-top: 1rem; }
+.practice-review li { margin-bottom: .75rem; }
+.note-help { margin: .75rem 0 1rem; font-size: .88rem; line-height: 1.6; color: #526779; }
+.note-template { margin-bottom: 1rem; }
+.note-export { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1rem 0; }
+.note-export > span { font-size: .82rem; color: #73520c; }
+.lesson-completion-status { max-width: 760px; margin: 2rem auto 0; font-size: .85rem; line-height: 1.65; color: #526779; }
+@media print { .lesson-section-nav, .note-template, .note-export, .lesson-completion-status { display: none !important; } }

@@ -66,11 +66,16 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
   }, [course.id, lesson.id]);
 
   function updateProgress(key: "completedLessonIds" | "completedChecks") {
-    setProgress((current) => {
-      const next = { ...current, [key]: [...new Set([...current[key], lesson.id])] };
-      setStorageAvailable(writeLocalValue(PROGRESS_KEY, JSON.stringify(next)));
-      return next;
-    });
+    const next = { ...progress, [key]: [...new Set([...progress[key], lesson.id])] };
+    setStorageAvailable(writeLocalValue(PROGRESS_KEY, JSON.stringify(next)));
+    setProgress(next);
+  }
+
+  function toggleComplete() {
+    if (!progress.completedLessonIds.includes(lesson.id)) return updateProgress("completedLessonIds");
+    const next = { ...progress, completedLessonIds: progress.completedLessonIds.filter(id => id !== lesson.id) };
+    setStorageAvailable(writeLocalValue(PROGRESS_KEY, JSON.stringify(next)));
+    setProgress(next);
   }
 
   const percent = courseProgress(progress, lessonIds);
@@ -85,24 +90,26 @@ export function LessonReader({ course, outline, durationMinutes, lesson, practic
         <header className="lesson-print-header print-only"><div><strong>DigiLearn</strong><span>Printable lesson handout</span></div><dl><div><dt>Course</dt><dd>{course.title}</dd></div><div><dt>Lesson</dt><dd>{currentIndex + 1} of {lessonIds.length}</dd></div><div><dt>Study time</dt><dd>{lesson.minutes} minutes</dd></div><div><dt>Level</dt><dd>{course.level}</dd></div></dl></header>
         <article>
           <p className="eyebrow">Lesson {currentIndex + 1} of {lessonIds.length}</p><AccessBadge course={course} /><h1>{lesson.title}</h1><p className="lesson-intro">{lesson.introduction}</p>{course.id === "html-css" ? <HtmlLessonDemo /> : null}
-          <section className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
+          <nav className="lesson-section-nav" aria-label="On this lesson"><span>On this lesson</span><a href="#lesson-objectives">Objectives</a><a href="#lesson-method">Working method</a><a href="#lesson-practice">Practice</a><a href="#lesson-check">Knowledge check</a><a href="#lesson-notes">Notes</a></nav>
+          <section id="lesson-objectives" className="objectives"><h2>Learning objectives</h2><ul>{lesson.objectives.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <VisualsAt lesson={lesson} placement="after-objectives" />
-          {lesson.blocks.map((block, index) => <div className="lesson-block" key={index}>
+          {lesson.blocks.map((block, index) => <div className="lesson-block" id={index === 0 ? "lesson-method" : undefined} key={index}>
             <Block block={block} />
             {block.type === "steps" ? <VisualsAt lesson={lesson} placement="after-steps" /> : null}
             {block.type === "example" ? <VisualsAt lesson={lesson} placement="after-example" /> : null}
             {block.type === "table" ? <VisualsAt lesson={lesson} placement="after-table" /> : null}
           </div>)}
           <section><h2>Common mistakes</h2><ul>{lesson.commonMistakes.map((item) => <li key={item}>{item}</li>)}</ul></section>
-          <section className="practice-activity"><p className="eyebrow">Practice activity</p><h2>Apply the lesson</h2><p>{lesson.activity}</p></section>
+          <section id="lesson-practice" className="practice-activity"><p className="eyebrow">Practice activity</p><h2>Apply the lesson</h2><p>{lesson.activity}</p><details className="practice-review"><summary>How to check your work</summary><ol><li>Write down the expected result before running or submitting your work.</li><li>Try a normal example, an empty or missing input, and a boundary case where the rule changes.</li><li>Compare the actual result with your prediction. Record the smallest example that explains a difference.</li><li>Explain one change you made and why it improved the result. Save your evidence in the lesson notes.</li></ol></details></section>
           <LessonSupport courseId={course.id} topic={course.topic} />
-          <KnowledgeCheck key={lesson.id} lesson={lesson} onComplete={() => updateProgress("completedChecks")} />
+          <div id="lesson-check"><KnowledgeCheck key={lesson.id} lesson={lesson} onComplete={() => updateProgress("completedChecks")} /></div>
           <section className="takeaways"><h2>Lesson summary</h2><ul>{lesson.summary.map((item) => <li key={item}>{item}</li>)}</ul></section>
           <section><h2>Sources and further reading</h2><ul className="source-list">{lesson.references.map((reference) => <li key={reference.url}><a href={reference.url} target="_blank" rel="noreferrer">{reference.title}</a><span>{reference.organization}{reference.accessed ? ` - accessed ${reference.accessed}` : ""}</span></li>)}</ul></section>
           {currentIndex === lessonIds.length - 1 ? <section className="course-project"><p className="eyebrow">Course practical outcome</p><h2>{practicalOutcome.objective}</h2><p><strong>Expected output:</strong> {practicalOutcome.expectedOutput}</p><h3>Production steps</h3><ol>{practicalOutcome.steps.map((step) => <li key={step}>{step}</li>)}</ol><h3>Success criteria</h3><ul>{practicalOutcome.successCriteria.map((criterion) => <li key={criterion}>{criterion}</li>)}</ul>{practicalOutcome.safety ? <p><strong>Safety note:</strong> {practicalOutcome.safety}</p> : null}<p><strong>Next step:</strong> {practicalOutcome.nextStep}</p></section> : null}
-          <NoteEditor courseId={course.id} lessonId={lesson.id} />
+          <div id="lesson-notes"><NoteEditor courseId={course.id} lessonId={lesson.id} lessonTitle={lesson.title} /></div>
         </article>
-        <nav className="lesson-navigation" aria-label="Lesson controls">{currentIndex > 0 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex - 1]}`}>Previous lesson</Link> : <span /> }<button type="button" className="button primary" onClick={() => updateProgress("completedLessonIds")}>{progress.completedLessonIds.includes(lesson.id) ? "Lesson completed" : "Mark complete"}</button>{currentIndex < lessonIds.length - 1 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex + 1]}`}>Next lesson</Link> : <Link href="/practice">Continue to practice</Link>}</nav>
+        <p className="lesson-completion-status" role="status">{progress.completedLessonIds.includes(lesson.id) ? "Lesson marked complete. You can reopen it below for another practice session." : "When you can explain the method and show your practice result, mark this lesson complete."} {progress.completedChecks.includes(lesson.id) ? "Knowledge check passed." : "The knowledge check is available above."}</p>
+        <nav className="lesson-navigation" aria-label="Lesson controls">{currentIndex > 0 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex - 1]}`}>Previous lesson</Link> : <span /> }<button type="button" className="button primary" aria-pressed={progress.completedLessonIds.includes(lesson.id)} onClick={toggleComplete}>{progress.completedLessonIds.includes(lesson.id) ? "Reopen lesson" : "Mark complete"}</button>{currentIndex < lessonIds.length - 1 ? <Link href={`/courses/${course.id}?lesson=${lessonIds[currentIndex + 1]}`}>Next lesson</Link> : <Link href={`/courses/${course.id}?assessment=final`}>Final knowledge check</Link>}</nav>
         <footer className="lesson-print-footer print-only">DigiLearn · {course.title} · Lesson {currentIndex + 1} · Verify version-sensitive information using the listed primary sources.</footer>
       </main>
     </div>
